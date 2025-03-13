@@ -1,13 +1,16 @@
+
 ﻿#include <iostream>
 #include "GUI.hpp"
 #include<string>
 #include"HashTable.hpp"
+
 using namespace std;
+
+
 HashTable myHashTable(10);
 GUI Gui;
 
 TypeDataStructure CurrentStruture = MENU;
-
 
 
 void GUI::Start() {
@@ -155,21 +158,26 @@ void GUI::DrawSecondMenu() {
 void GUI::DrawHashTable() {
 	Gui.DrawSecondMenu();
 	myHashTable.drawHashTable();  // Gọi hàm vẽ Hash Table
-	Gui.DrawBack();
 }
 
 void GUI::DrawLinkedList() {
+
 	Gui.DrawSecondMenu();
+
 	Gui.DrawBack();
 }
 
 void GUI::DrawAVLTree() {
+
 	Gui.DrawSecondMenu();
+
 	Gui.DrawBack();
 }
 
 void GUI::DrawGraph() {
+
 	Gui.DrawSecondMenu();
+
 	Gui.DrawBack();
 }
 
@@ -189,6 +197,7 @@ void GUI::DrawBack() {
 		}
 	}
 }
+
 
 void GUI::InputInsert() {
 	int key = GetCharPressed();

@@ -27,9 +27,12 @@
     <ClCompile Include="Button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="HashTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+=======
+>>>>>>> de6dd92 (Demo Menu)
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GUI.hpp">
@@ -41,8 +44,11 @@
     <ClInclude Include="Button.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="HashTable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+=======
+>>>>>>> de6dd92 (Demo Menu)
   </ItemGroup>
 </Project>

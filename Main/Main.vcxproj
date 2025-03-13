@@ -131,13 +131,19 @@
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Main.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="HashTable.cpp" />
+=======
+>>>>>>> de6dd92 (Demo Menu)
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.hpp" />
     <ClInclude Include="Config.hpp" />
     <ClInclude Include="GUI.hpp" />
+<<<<<<< HEAD
     <ClInclude Include="HashTable.hpp" />
+=======
+>>>>>>> de6dd92 (Demo Menu)
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

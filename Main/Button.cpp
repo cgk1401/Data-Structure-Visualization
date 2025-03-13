@@ -1,3 +1,4 @@
+
 #include "Button.hpp"
 
 ButtonInit buttoninit(0, SecondMenuHeight + SecondMenuHeight * float(1) / 6, SecondMenuWidth* float(1) / 3, SecondMenuHeight * 1 / 6, "Init", RED);
@@ -31,5 +32,6 @@ bool Button::IsClick() {
 	Rectangle rectange = { coordinateX, coordinateY, width, height };
 	return (CheckCollisionPointRec(mouse, rectange) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON));
 }
+
 
 
