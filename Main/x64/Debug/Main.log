@@ -1,0 +1,21 @@
+﻿  Button.cpp
+  Config.cpp
+  GUI.cpp
+D:\TaiLieuHCMUS\Sem II\CS163\Exercise\Project\Main\Main\GUI.cpp(13,26): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\TaiLieuHCMUS\Sem II\CS163\Exercise\Project\Main\Main\GUI.cpp(13,13): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\TaiLieuHCMUS\Sem II\CS163\Exercise\Project\Main\Main\GUI.cpp(51,88): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\TaiLieuHCMUS\Sem II\CS163\Exercise\Project\Main\Main\GUI.cpp(51,59): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\TaiLieuHCMUS\Sem II\CS163\Exercise\Project\Main\Main\GUI.cpp(67,85): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\TaiLieuHCMUS\Sem II\CS163\Exercise\Project\Main\Main\GUI.cpp(67,51): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\TaiLieuHCMUS\Sem II\CS163\Exercise\Project\Main\Main\GUI.cpp(68,86): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\TaiLieuHCMUS\Sem II\CS163\Exercise\Project\Main\Main\GUI.cpp(68,52): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\TaiLieuHCMUS\Sem II\CS163\Exercise\Project\Main\Main\GUI.cpp(69,83): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\TaiLieuHCMUS\Sem II\CS163\Exercise\Project\Main\Main\GUI.cpp(69,49): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\TaiLieuHCMUS\Sem II\CS163\Exercise\Project\Main\Main\GUI.cpp(70,81): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\TaiLieuHCMUS\Sem II\CS163\Exercise\Project\Main\Main\GUI.cpp(70,47): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\TaiLieuHCMUS\Sem II\CS163\Exercise\Project\Main\Main\GUI.cpp(115,66): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Main.cpp
+  Generating Code...
+  Main.vcxproj -> D:\TaiLieuHCMUS\Sem II\CS163\Exercise\Project\Main\x64\Debug\Main.exe
+  'pwsh.exe' is not recognized as an internal or external command,
+  operable program or batch file.
