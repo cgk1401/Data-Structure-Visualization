@@ -1,13 +1,15 @@
 
 #include <iostream>
 #include "GUI.hpp"
-#include <raylib.h>
-#include "Config.hpp"
-
 
 using namespace std;
+
 GUI Gui;
+
 TypeDataStructure CurrentStruture = MENU;
+
+
+
 void GUI::Start() {
 
 	InitWindow(ScreenWidth, ScreenHeight, "Data Stucture Visulization");
@@ -84,7 +86,7 @@ void GUI::DrawMainMenu() {
 		else if (CheckCollisionPointRec(mouse, AVLTREEBUTTON) == true) {
 			CurrentStruture = AVLTREE;
 		}
-		
+
 		else if (CheckCollisionPointRec(mouse, GRAPHBUTTON) == true) {
 
 			CurrentStruture = GRAPH;
@@ -94,19 +96,40 @@ void GUI::DrawMainMenu() {
 
 }
 
+void GUI::DrawSecondMenu() {
+	DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, GRAY);
+	buttoninit.DrawButton();
+	buttoninsert.DrawButton();
+	buttondelete.DrawButton();
+	buttonsearch.DrawButton();
+
+	if (buttoninsert.IsClick() == true) {
+		Gui.ClickInsert = true;
+	}
+	if (Gui.ClickInsert == true) {
+		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+		Gui.InputInsert();
+	}
+
+}
 void GUI::DrawHashTable() {
+
+	Gui.DrawSecondMenu();
 	Gui.DrawBack();
 }
 
 void GUI::DrawLinkedList() {
+	Gui.DrawSecondMenu();
 	Gui.DrawBack();
 }
 
 void GUI::DrawAVLTree() {
+	Gui.DrawSecondMenu();
 	Gui.DrawBack();
 }
 
 void GUI::DrawGraph() {
+	Gui.DrawSecondMenu();
 	Gui.DrawBack();
 }
 
@@ -124,6 +147,27 @@ void GUI::DrawBack() {
 		if (CheckCollisionPointRec(mouse, BackButton)) {
 			CurrentStruture = MENU;
 		}
+	}
+}
+
+void GUI::InputInsert() {
+	int key = GetCharPressed();
+	while (key > 0) {
+		if (key >= '0' && key <= '9') {
+			inputstring += char(key);
+		}
+		key = GetCharPressed();
+	}
+	DrawText(inputstring.c_str(), SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+
+	if (IsKeyPressed(KEY_ENTER)) {
+		cout << "Value: " << inputstring << endl;
+		inputstring = "";
+		Gui.ClickInsert = false;
+	}
+
+	if (IsKeyPressed(KEY_BACKSPACE) && !inputstring.empty()) {
+		inputstring.pop_back();
 	}
 }
 
