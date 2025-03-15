@@ -1,6 +1,7 @@
 
 ﻿#include <iostream>
 #include "GUI.hpp"
+<<<<<<< HEAD
 #include<string>
 #include"HashTable.hpp"
 
@@ -8,11 +9,20 @@ using namespace std;
 
 
 HashTable myHashTable(10);
+=======
+
+using namespace std;
+
+>>>>>>> d3ef482 (Fix gitignore and update demo menu)
 GUI Gui;
 
 TypeDataStructure CurrentStruture = MENU;
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> d3ef482 (Fix gitignore and update demo menu)
 void GUI::Start() {
 
 	InitWindow(ScreenWidth, ScreenHeight, "Data Stucture Visulization");
@@ -99,6 +109,7 @@ void GUI::DrawMainMenu() {
 
 }
 
+<<<<<<< HEAD
 
 void GUI::DrawSecondMenu() {
     DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, GRAY);
@@ -164,20 +175,54 @@ void GUI::DrawLinkedList() {
 
 	Gui.DrawSecondMenu();
 
+=======
+void GUI::DrawSecondMenu() {
+	DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, GRAY);
+	buttoninit.DrawButton();
+	buttoninsert.DrawButton();
+	buttondelete.DrawButton();
+	buttonsearch.DrawButton();
+
+	if (buttoninsert.IsClick() == true) {
+		Gui.ClickInsert = true;
+	}
+	if (Gui.ClickInsert == true) {
+		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+		Gui.InputInsert();
+	}
+
+}
+void GUI::DrawHashTable() {
+
+	Gui.DrawSecondMenu();
+	Gui.DrawBack();
+}
+
+void GUI::DrawLinkedList() {
+	Gui.DrawSecondMenu();
+>>>>>>> d3ef482 (Fix gitignore and update demo menu)
 	Gui.DrawBack();
 }
 
 void GUI::DrawAVLTree() {
+<<<<<<< HEAD
 
 	Gui.DrawSecondMenu();
 
+=======
+	Gui.DrawSecondMenu();
+>>>>>>> d3ef482 (Fix gitignore and update demo menu)
 	Gui.DrawBack();
 }
 
 void GUI::DrawGraph() {
+<<<<<<< HEAD
 
 	Gui.DrawSecondMenu();
 
+=======
+	Gui.DrawSecondMenu();
+>>>>>>> d3ef482 (Fix gitignore and update demo menu)
 	Gui.DrawBack();
 }
 
@@ -198,7 +243,10 @@ void GUI::DrawBack() {
 	}
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> d3ef482 (Fix gitignore and update demo menu)
 void GUI::InputInsert() {
 	int key = GetCharPressed();
 	while (key > 0) {
@@ -209,12 +257,17 @@ void GUI::InputInsert() {
 	}
 	DrawText(inputstring.c_str(), SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
 
+<<<<<<< HEAD
 	if (IsKeyPressed(KEY_ENTER) && !inputstring.empty()) {
 		int value = std::stoi(inputstring);  // Chuyển input thành số nguyên
 		myHashTable.insert(value);  // Chèn số vào Hash Table
 		myHashTable.drawHashTable();  // Vẽ lại Hash Table để cập nhật giao diện
 
 		cout << "Inserted Value: " << value << endl;  // Debug
+=======
+	if (IsKeyPressed(KEY_ENTER)) {
+		cout << "Value: " << inputstring << endl;
+>>>>>>> d3ef482 (Fix gitignore and update demo menu)
 		inputstring = "";
 		Gui.ClickInsert = false;
 	}
@@ -224,6 +277,7 @@ void GUI::InputInsert() {
 	}
 }
 
+<<<<<<< HEAD
 void GUI::InputInit() {
 	int key = GetCharPressed();
 	while (key > 0) {
@@ -320,3 +374,5 @@ void GUI::InputSearch() {
 		inputstring.pop_back();
 	}
 }
+=======
+>>>>>>> d3ef482 (Fix gitignore and update demo menu)

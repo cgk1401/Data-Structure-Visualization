@@ -59,4 +59,10 @@ build/
 *.suo
 *.ncb
 *.opensdf
+<<<<<<< HEAD
 *.VC.opendb
+=======
+*.VC.opendb
+
+
+>>>>>>> d3ef482 (Fix gitignore and update demo menu)
