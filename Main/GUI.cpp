@@ -125,6 +125,10 @@ void GUI::DrawLinkedList() {
 
 void GUI::DrawAVLTree() {
 	Gui.DrawSecondMenu();
+	if (Gui.ClickInsertEnter == true) {
+
+		Gui.tree.DrawTree();
+	}
 	Gui.DrawBack();
 }
 
@@ -135,7 +139,7 @@ void GUI::DrawGraph() {
 
 void GUI::DrawBack() {
 
-	DrawText("Data Structure Visualization", ScreenWidth * float(2) / 5, 100, 40, WHITE);
+	DrawText("Data Structure Visualization", ScreenWidth * float(2) / 5, 50, 40, WHITE);
 
 	Rectangle BackButton = { 50, 50, 150, 50 };
 	DrawRectangleRec(BackButton, RED);
@@ -162,6 +166,9 @@ void GUI::InputInsert() {
 
 	if (IsKeyPressed(KEY_ENTER)) {
 		cout << "Value: " << inputstring << endl;
+		
+		tree.Insert(tree.Root, stoi(inputstring), tree.NodeList);
+		Gui.ClickInsertEnter = true;
 		inputstring = "";
 		Gui.ClickInsert = false;
 	}

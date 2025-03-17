@@ -5,6 +5,7 @@
 #include "Config.hpp"
 #include "Button.hpp"
 #include <raylib.h>
+#include "AVLTree.hpp"
 
 
 enum TypeDataStructure { MENU, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
@@ -14,7 +15,10 @@ enum TypeDataStructure { MENU, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
 class GUI {
 public:
 	string inputstring = "";
-	bool ClickInsert;
+	bool ClickInsert = false;
+	bool ClickInsertEnter = false;
+	AVLTree tree;
+	
 
 	void Start();
 	void DrawMainMenu();
