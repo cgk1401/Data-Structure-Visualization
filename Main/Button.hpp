@@ -40,11 +40,16 @@ class ButtonSearch : public Button {
 public:
 	ButtonSearch(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
 };
+class ButtonClear : public Button {
+public:
+	ButtonClear(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
+};
 
 extern ButtonInit buttoninit;
 extern ButtonInsert buttoninsert;
 extern ButtonDelete buttondelete;
 extern ButtonSearch buttonsearch;
+extern ButtonClear buttonclear;
 
 
 

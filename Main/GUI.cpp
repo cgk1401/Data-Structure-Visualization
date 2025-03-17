@@ -1,8 +1,10 @@
 
 #include <iostream>
+#include <string>
 #include "GUI.hpp"
+#include "Graph.hpp"
 
-using namespace std;
+//using namespace std;
 
 GUI Gui;
 
@@ -20,7 +22,7 @@ void GUI::Start() {
 
 
 		BeginDrawing();
-		ClearBackground(GREEN);
+		ClearBackground(VIOLET);
 		if (CurrentStruture == MENU) {
 			Gui.DrawMainMenu();
 		}
@@ -112,6 +114,71 @@ void GUI::DrawSecondMenu() {
 	}
 
 }
+
+void GUI::DrawGraphMenu() {
+	DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, GRAY);
+	buttoninit.DrawButton();
+	buttoninsert.DrawButton();
+	buttondelete.DrawButton();
+	buttonsearch.DrawButton();
+	buttonclear.DrawButton();
+
+	if (buttoninit.IsClick() == true) {
+		Gui.ClickInit = true;
+	}
+	if (Gui.ClickInit == true) {
+		
+		DrawText("Vertex : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(0.7) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+		
+		if (gr_init_state.waitingForVertex == true) {
+			int tmp = Input(SecondMenuWidth * float(1) / 3 + 140, SecondMenuHeight + SecondMenuHeight * float(0.7) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
+			
+			if (tmp != -1) {
+				gr_init_state.n_vertex = tmp;
+				gr_init_state.waitingForVertex = false;
+				gr_init_state.waitingForEdge = true;
+			}
+		}
+
+		if (gr_init_state.waitingForEdge == true) {
+			DrawText(std::to_string(gr_init_state.n_vertex).c_str(), SecondMenuWidth * float(1) / 3 + 140, SecondMenuHeight + SecondMenuHeight * float(0.7) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+			DrawText("Edge : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(1.1) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+		 
+			int tmp = Input(SecondMenuWidth * float(1) / 3 + 140, SecondMenuHeight + SecondMenuHeight * float(1.1) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
+			
+			if (tmp != -1) {
+				gr_init_state.n_edge = tmp;
+				gr_init_state.waitingForVertex = true;
+				gr_init_state.waitingForEdge = false;
+
+				graph.clear();
+				graph.rand_graph(gr_init_state.n_vertex, gr_init_state.n_edge);
+				graph.print_nodes();
+
+				Gui.ClickInit = false;
+			}
+		}
+	}
+
+	if (buttoninsert.IsClick() == true) {
+		Gui.ClickInsert = true;
+	}
+	if (Gui.ClickInsert == true) {
+		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+		//int val = Gui.InputInsert();
+		int val = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
+
+		if (val != -1) {
+			graph.add_node(val);
+			Gui.ClickInsert = false;
+		}
+	}
+
+	if (buttonclear.IsClick() == true) {
+		graph.clear();
+	}
+}
+
 void GUI::DrawHashTable() {
 
 	Gui.DrawSecondMenu();
@@ -129,7 +196,8 @@ void GUI::DrawAVLTree() {
 }
 
 void GUI::DrawGraph() {
-	Gui.DrawSecondMenu();
+	graph.draw();
+	Gui.DrawGraphMenu();
 	Gui.DrawBack();
 }
 
@@ -150,7 +218,7 @@ void GUI::DrawBack() {
 	}
 }
 
-void GUI::InputInsert() {
+int GUI::InputInsert() {
 	int key = GetCharPressed();
 	while (key > 0) {
 		if (key >= '0' && key <= '9') {
@@ -160,14 +228,47 @@ void GUI::InputInsert() {
 	}
 	DrawText(inputstring.c_str(), SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
 
-	if (IsKeyPressed(KEY_ENTER)) {
-		cout << "Value: " << inputstring << endl;
+	if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER)) {
+		int val = std::stoi(inputstring);
+		std::cout << "Value: " << val << endl;
+
 		inputstring = "";
-		Gui.ClickInsert = false;
+
+		return val;
 	}
 
 	if (IsKeyPressed(KEY_BACKSPACE) && !inputstring.empty()) {
 		inputstring.pop_back();
 	}
+
+	return -1;
+}
+
+int GUI::Input(int posX, int posY) {
+	int key = GetCharPressed();
+	while (key > 0) {
+		if (key >= '0' && key <= '9') {
+			inputstring += char(key);
+		}
+		key = GetCharPressed();
+	}
+	DrawText(inputstring.c_str(), posX, posY, 20, WHITE);
+
+	if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER)) {
+		if (inputstring == "") { return -1; }
+
+		int val = std::stoi(inputstring);
+		std::cout << "Value: " << val << endl;
+
+		inputstring = "";
+
+		return val;
+	}
+
+	if (IsKeyPressed(KEY_BACKSPACE) && !inputstring.empty()) {
+		inputstring.pop_back();
+	}
+
+	return -1;
 }
 

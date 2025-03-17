@@ -129,12 +129,14 @@
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Config.cpp" />
+    <ClCompile Include="Graph.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.hpp" />
     <ClInclude Include="Config.hpp" />
+    <ClInclude Include="Graph.hpp" />
     <ClInclude Include="GUI.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
