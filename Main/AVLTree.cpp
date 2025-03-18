@@ -25,8 +25,8 @@ Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& 
     if (root == nullptr) {
         bool isLeft = (parent && data < parent->val);
         root = new Node(data, (parent ? parent->depth + 1 : 1), 1, 0, NodeList.size(), isLeft,
-            Vector2{ (parent ? parent->position.x + (isLeft ? -DistanceHorizontal : DistanceHorizontal) : ScreenWidth / 2),
-                     (parent ? parent->position.y + DistanceVertical : 100) },
+            Vector2{ (parent ? parent->position.x + (isLeft ? -DistanceHorizontal : DistanceHorizontal) : ScreenWidth * 5 / 8.0f),
+                     (parent ? parent->position.y + DistanceVertical : 200) },
             nullptr, nullptr, parent);
         NodeList.push_back(root);
         return root;
@@ -44,7 +44,7 @@ Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& 
 void AVLTree::MoveTree(Node* root, bool isLeft) {
     if (root == nullptr) return;
     root->position.x = root->position.x+ ( isLeft ? -DistanceHorizontal : DistanceHorizontal);
-    root->position.y = (root->depth - Root->depth) * DistanceVertical + 150 * 1.0f;
+    root->position.y = (root->depth - Root->depth) * DistanceVertical + 200 * 1.0f;
     if (root->left != nullptr) MoveTree(root->left, isLeft);
     if (root->right != nullptr) MoveTree(root->right, isLeft);
 
@@ -67,7 +67,7 @@ void AVLTree::balanceTree() {
 
     for (auto& node : nodeList) {
         if (node == Root) {
-            node->position = { ScreenWidth / 2 - 30 , 150 * 1.0f };
+            node->position = { ScreenWidth * 5 / 8.0f  , 200 * 1.0f };
             node->depth = 1;
         }
         else {
@@ -77,13 +77,11 @@ void AVLTree::balanceTree() {
                 if (node->val != cur->val) node->depth = ++depth;
 
                 if (node->val < cur->val) {
-                    //if (cur->left && node->val > cur->left->val) 
-                    MoveTree(cur->left, true);
+                    if (cur->left && node->val > cur->left->val) MoveTree(cur->left, true);
                     cur = cur->left;
                 }
                 else if (node->val > cur->val) {
-                    //if (cur->right && node->val < cur->right->val) 
-                    MoveTree(cur->right, false);
+                    if (cur->right && node->val < cur->right->val) MoveTree(cur->right, false);
                     cur = cur->right;
                 }
                 else {
