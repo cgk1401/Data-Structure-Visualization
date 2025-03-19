@@ -13,13 +13,18 @@ public:
 	float DistanceVertical;
 
 	AVLTree();
-	//~AVLTree();
+
 
 	void Insert(Node*& root, int data, vector <Node*> &NodeList);
 	Node* InsertHelper(Node*& root, int data, Node* parnent, vector <Node*> &NodeList);
+	int GetHeight(Node* node);
+	Node* RotationLeft(Node*& root);
+	Node* RotationRight(Node*& root);
+
+
 	void MoveTree(Node* root, bool isLeft);
 	void balanceTree();
-	void DrawTreeHelper(Node* node);
+	void DrawTreeHelper(Node* root);
 	void DrawTree();
 	
 

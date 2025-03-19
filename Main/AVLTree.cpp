@@ -39,8 +39,109 @@ Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& 
         root->right = InsertHelper(root->right, data, root, NodeList);
     }
 
+    root->balanceFactor = GetHeight(root->left) - GetHeight(root->right);
+    root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
+
+    if (root->balanceFactor > 1 && data < root->left->val) {
+        // Left - Left
+        root = RotationRight(root);
+        return root;
+    }
+    else if (root->balanceFactor > 1 && data > root->left->val) {
+        // Left - Right
+        root->left = RotationLeft(root->left);
+        root = RotationRight(root);
+        return root;
+    }
+    else if (root->balanceFactor < -1 && data > root->right->val) {
+        // Right - Right 
+        root = RotationLeft(root);
+        return root;
+    }
+    else if (root->balanceFactor < -1 && data < root->right->val) {
+        // Right - Right
+        root->right = RotationRight(root->right);
+        root = RotationLeft(root);
+        return root;
+    }
+
     return root;  
 }
+
+int AVLTree::GetHeight(Node* root) {
+    if (root == nullptr) return 0;
+    return root->height;
+}
+
+Node* AVLTree::RotationLeft(Node*& root) {
+
+    if (root == nullptr) return nullptr;
+
+    Node* newroot = root->right; // the right child of root
+    Node* child = newroot->left; // the left child of newroot
+
+    // updata parent
+    newroot->parent = root->parent;
+
+    newroot->left = root;
+    root->parent = newroot;
+    root->right = child;
+
+    if (child != nullptr) {
+        child->parent = root;
+        child->isLeft = false;
+    }
+
+    newroot->isLeft = root->isLeft; 
+
+    
+    root->isLeft = true;
+
+    root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
+    newroot->height = 1 + max(GetHeight(newroot->left), GetHeight(newroot->right));
+
+    swap(NodeList[root->nodeIndex], NodeList[newroot->nodeIndex]);
+
+    for (int i = 0; i < NodeList.size(); i++) NodeList[i]->nodeIndex = i;
+
+    return newroot;
+
+}
+
+Node* AVLTree::RotationRight(Node*& root) {
+    if (root == nullptr) return nullptr;
+
+    Node* newroot = root->left;// the left child of root
+    Node* child = newroot->right; // the right child of newroot
+
+    // updata parent
+    newroot->parent = root->parent;
+
+    newroot->right = root;
+    root->parent = newroot;
+    root->left = child;
+
+    
+    if (child != nullptr) {
+        child->parent = root;
+        child->isLeft = true;
+    }
+
+    newroot->isLeft = root->isLeft;
+
+    
+    root->isLeft = false;
+
+    root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
+    newroot->height = 1 + max(GetHeight(newroot->left), GetHeight(newroot->right));
+
+    swap(NodeList[root->nodeIndex], NodeList[newroot->nodeIndex]);
+    for (int i = 0; i < NodeList.size(); i++) NodeList[i]->nodeIndex = i;
+
+
+    return newroot;
+}
+
 void AVLTree::MoveTree(Node* root, bool isLeft) {
     if (root == nullptr) return;
     root->position.x = root->position.x+ ( isLeft ? -DistanceHorizontal : DistanceHorizontal);
@@ -112,7 +213,7 @@ void AVLTree::DrawTree() {
 void AVLTree::DrawTreeHelper(Node* node) {
 	if (node == nullptr) return;
 
-	// Vẽ đường nối từ node cha đến node con
+	
 	if (node->left) {
 		DrawLineEx(node->position, node->left->position, 3, DARKGRAY);
 	}
@@ -120,32 +221,15 @@ void AVLTree::DrawTreeHelper(Node* node) {
 		DrawLineEx(node->position, node->right->position, 3, DARKGRAY);
 	}
 
-	// Vẽ node
+	// Draw node
 	DrawCircle(node->position.x, node->position.y, 30, BLACK);
 	DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, RED);
 
-	// Đệ quy vẽ node con
+	
 	DrawTreeHelper(node->left);
 	DrawTreeHelper(node->right);
 }
 
 
 
-//void AVLTree::SetDistance(int sizetree) {
-//	if (sizetree < 15) {
-//		DistanceHorizontal = 100;
-//		DistanceVertical = 100;
-//	}
-//	else if (sizetree < 30) {
-//		DistanceHorizontal = 80;
-//		DistanceVertical = 80;
-//	}
-//	else if (sizetree < 40) {
-//		DistanceHorizontal = 60;
-//		DistanceVertical = 80;
-//	}
-//	else {
-//		DistanceHorizontal = 50;
-//		DistanceVertical = 80;
-//	}
-//}
+
