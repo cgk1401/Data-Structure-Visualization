@@ -108,7 +108,11 @@ void GUI::DrawSecondMenu() {
 	}
 	if (Gui.ClickInsert == true) {
 		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-		Gui.InputInsert();
+		int val = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
+
+		if (val != -1) {
+			Gui.ClickInsert = false;
+		}
 	}
 
 }
@@ -150,7 +154,7 @@ void GUI::DrawBack() {
 	}
 }
 
-void GUI::InputInsert() {
+int GUI::Input(int posX, int posY) {
 	int key = GetCharPressed();
 	while (key > 0) {
 		if (key >= '0' && key <= '9') {
@@ -158,16 +162,23 @@ void GUI::InputInsert() {
 		}
 		key = GetCharPressed();
 	}
-	DrawText(inputstring.c_str(), SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+	DrawText(inputstring.c_str(), posX, posY, 20, WHITE);
 
-	if (IsKeyPressed(KEY_ENTER)) {
-		cout << "Value: " << inputstring << endl;
+	if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER)) {
+		if (inputstring == "") { return -1; }
+
+		int val = std::stoi(inputstring);
+		std::cout << "Input:" << val << std::endl;
+
 		inputstring = "";
-		Gui.ClickInsert = false;
+
+		return val;
 	}
 
 	if (IsKeyPressed(KEY_BACKSPACE) && !inputstring.empty()) {
 		inputstring.pop_back();
 	}
+
+	return -1;
 }
 

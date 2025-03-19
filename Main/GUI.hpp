@@ -24,7 +24,8 @@ public:
 	void DrawAVLTree();
 	void DrawGraph();
 	void DrawBack();
-	void InputInsert();
+	
+	int Input(int posX, int posY);
 
 };
 
