@@ -13,12 +13,17 @@ enum TypeDataStructure { MENU, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
 
 
 class GUI {
-public:
+private : 
+	AVLTree tree;
+	
+public :
 	string inputstring = "";
 	bool ClickInsert = false;
 	bool ClickInsertEnter = false;
-	AVLTree tree;
-	
+	bool ClickInit = false;
+
+
+public:
 
 	void Start();
 	void DrawMainMenu();
@@ -28,7 +33,9 @@ public:
 	void DrawAVLTree();
 	void DrawGraph();
 	void DrawBack();
-	void InputInsert();
+	
+
+	int Input(int posX, int posY);
 
 };
 

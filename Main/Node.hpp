@@ -16,9 +16,13 @@ public :
     int nodeIndex;     
     bool isLeft;       
     Vector2 position;  
-    Node* left;        
-    Node* right;       
-    Node* parent;      
+
+
+public :
+    Node* left;
+    Node* right;
+    Node* parent;
+
 
     Node(int val, int depth, int height, int balanceFactor, int nodeIdex, bool isLeft, Vector2 position, Node* left, Node* right, Node* parent);
 

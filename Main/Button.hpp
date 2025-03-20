@@ -21,6 +21,7 @@ public:
 
 	Button(float coordinateX, float coordinateY, float width, float height, string s, Color color);
 	void DrawButton();
+	bool IsCover();
 	bool IsClick();
 };
 class ButtonInit : public Button {

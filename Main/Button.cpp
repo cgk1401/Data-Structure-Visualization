@@ -5,6 +5,7 @@ ButtonInsert buttoninsert(0, SecondMenuHeight + SecondMenuHeight * float(2) / 6,
 ButtonDelete buttondelete(0, SecondMenuHeight + SecondMenuHeight * float(3) / 6, SecondMenuWidth* float(1) / 3, SecondMenuHeight * 1 / 6, "Search", PINK);
 ButtonSearch buttonsearch(0, SecondMenuHeight + SecondMenuHeight * float(4) / 6, SecondMenuWidth* float(1) / 3, SecondMenuHeight * 1 / 6, "Delete", DARKBLUE);
 
+
 Button::Button(float coordinateX, float coordinateY, float width, float height, string s, Color color) {
 	this->coordinateX = coordinateX;
 	this->coordinateY = coordinateY;
@@ -14,17 +15,31 @@ Button::Button(float coordinateX, float coordinateY, float width, float height, 
 	this->color = color;
 }
 
-
+bool Button::IsCover() {
+	return GetMouseX() >= this->coordinateX && GetMouseX() <= this->coordinateX + this->width && GetMouseY() >= this->coordinateY && GetMouseY() <= this->coordinateY + this->height;
+}
 void Button::DrawButton() {
 	int textWidth = MeasureText(this->s.c_str(), 20);
 	int centerX = this->coordinateX + (this->width - textWidth) / 2;
 	int centerY = this->coordinateY + (this->height - 20) / 2;
 
+	Color drawColor = this->color;
 
-	DrawRectangle(coordinateX, coordinateY, width, height, color);
+	if (IsCover() == true) {
+		drawColor = Color{
+			(unsigned char)(color.r * 0.7f),
+			(unsigned char)(color.g * 0.7f),
+			(unsigned char)(color.b * 0.7f),
+			color.a
+		};
+	}
+
+	DrawRectangle(coordinateX, coordinateY, width, height, drawColor);
 	DrawText(this->s.c_str(), centerX, centerY, 20, WHITE);
 
 }
+
+
 
 bool Button::IsClick() {
 	Vector2 mouse = GetMousePosition();

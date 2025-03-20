@@ -20,7 +20,7 @@ void GUI::Start() {
 
 
 		BeginDrawing();
-		ClearBackground(GREEN);
+		ClearBackground(DARKGREEN);
 		if (CurrentStruture == MENU) {
 			Gui.DrawMainMenu();
 		}
@@ -102,18 +102,8 @@ void GUI::DrawSecondMenu() {
 	buttoninsert.DrawButton();
 	buttondelete.DrawButton();
 	buttonsearch.DrawButton();
-
-	if (buttoninsert.IsClick() == true) {
-		Gui.ClickInsert = true;
-	}
-	if (Gui.ClickInsert == true) {
-		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-		Gui.InputInsert();
-	}
-
 }
 void GUI::DrawHashTable() {
-
 	Gui.DrawSecondMenu();
 	Gui.DrawBack();
 }
@@ -125,10 +115,40 @@ void GUI::DrawLinkedList() {
 
 void GUI::DrawAVLTree() {
 	Gui.DrawSecondMenu();
-	if (Gui.ClickInsertEnter == true) {
 
-		Gui.tree.DrawTree();
+
+	if (buttoninsert.IsClick() == true) {
+		Gui.ClickInsert = true;
 	}
+	if (Gui.ClickInsert == true) {
+		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+		int value = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
+		if (value != -1) {
+			tree.Insert(tree.Root, value, tree.NodeList);
+			Gui.ClickInsert = false;
+		}
+	}
+	if (Gui.ClickInsertEnter == true) {
+		tree.DrawTree();
+	}
+
+	if (buttoninit.IsClick() == true) {
+		if (Gui.ClickInit == true) {
+			tree.Clear(tree.Root);
+			tree.NodeList.clear();
+			tree.Random();
+			Gui.ClickInit = true;
+		}
+		else {
+			tree.Random();
+			Gui.ClickInit = true;
+		}
+		Gui.ClickInsert = false;
+	}
+	if (Gui.ClickInit == true) tree.DrawTree();
+
+	
+
 	Gui.DrawBack();
 }
 
@@ -150,11 +170,12 @@ void GUI::DrawBack() {
 		Vector2 mouse = GetMousePosition();
 		if (CheckCollisionPointRec(mouse, BackButton)) {
 			CurrentStruture = MENU;
+			tree.Clear(tree.Root);
 		}
 	}
 }
 
-void GUI::InputInsert() {
+int GUI::Input(int posX, int posY) {
 	int key = GetCharPressed();
 	while (key > 0) {
 		if (key >= '0' && key <= '9') {
@@ -162,19 +183,22 @@ void GUI::InputInsert() {
 		}
 		key = GetCharPressed();
 	}
-	DrawText(inputstring.c_str(), SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+	DrawText(inputstring.c_str(), posX, posY, 20, WHITE);
 
-	if (IsKeyPressed(KEY_ENTER)) {
-		cout << "Value: " << inputstring << endl;
-		
-		tree.Insert(tree.Root, stoi(inputstring), tree.NodeList);
-		Gui.ClickInsertEnter = true;
+	if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER)) {
+		if (inputstring == "") { return -1; }
+
+		int val = std::stoi(inputstring);
+		std::cout << "Input:" << val << std::endl;
 		inputstring = "";
-		Gui.ClickInsert = false;
+		Gui.ClickInsertEnter = true;
+		return val;
 	}
 
 	if (IsKeyPressed(KEY_BACKSPACE) && !inputstring.empty()) {
 		inputstring.pop_back();
 	}
+
+	return -1;
 }
 

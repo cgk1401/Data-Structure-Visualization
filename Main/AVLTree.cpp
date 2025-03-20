@@ -4,9 +4,8 @@ using namespace std;
 
 AVLTree::AVLTree() {
 	Root = nullptr;
-    NodeList;
 	DistanceHorizontal = 60;
-	DistanceVertical = 100;
+	DistanceVertical = 120;
 
 
 }
@@ -15,10 +14,10 @@ void AVLTree::Insert(Node*& root, int data, vector<Node*>& NodeList) {
     for (Node* node : NodeList) {
         if (data == node->val) return;
     }
+
     InsertHelper(root, data, nullptr, NodeList);
     balanceTree();
-    
-    
+
 }
 
 Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& NodeList) {
@@ -31,7 +30,7 @@ Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& 
         NodeList.push_back(root);
         return root;
     }
-
+    
     if (data < root->val) {
         root->left = InsertHelper(root->left, data, root, NodeList);
     }
@@ -162,9 +161,9 @@ void AVLTree::Random() {
         int number_random = dist1(gen1);
         Insert(Root, number_random, NodeList);
     }
+
     // mỗi lần random phải xóa NodeList và Root;
     balanceTree();
-
 }
 
 void AVLTree::Clear(Node* &root) {
@@ -234,33 +233,28 @@ void AVLTree::balanceTree() {
 
 
 
-
-
-
 void AVLTree::DrawTree() {
 	DrawTreeHelper(Root);
 }
 
-
-
 void AVLTree::DrawTreeHelper(Node* node) {
-	if (node == nullptr) return;
+    if (node == nullptr) return;
 
-	
-	if (node->left) {
-		DrawLineEx(node->position, node->left->position, 3, DARKGRAY);
-	}
-	if (node->right) {
-		DrawLineEx(node->position, node->right->position, 3, DARKGRAY);
-	}
 
-	// Draw node
-	DrawCircle(node->position.x, node->position.y, 30, BLACK);
-	DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, RED);
+    if (node->left) {
+        DrawLineEx(node->position, node->left->position, 3, DARKGRAY);
+    }
+    if (node->right) {
+        DrawLineEx(node->position, node->right->position, 3, DARKGRAY);
+    }
 
-	
-	DrawTreeHelper(node->left);
-	DrawTreeHelper(node->right);
+    // Draw node
+    DrawCircle(node->position.x, node->position.y, 30, BLACK);
+    DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, RED);
+
+
+    DrawTreeHelper(node->left);
+    DrawTreeHelper(node->right);
 }
 
 
