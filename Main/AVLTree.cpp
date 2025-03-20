@@ -4,9 +4,9 @@ using namespace std;
 
 AVLTree::AVLTree() {
 	Root = nullptr;
-
+    NodeList;
 	DistanceHorizontal = 60;
-	DistanceVertical = 60;
+	DistanceVertical = 100;
 
 
 }
@@ -26,7 +26,7 @@ Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& 
         bool isLeft = (parent && data < parent->val);
         root = new Node(data, (parent ? parent->depth + 1 : 1), 1, 0, NodeList.size(), isLeft,
             Vector2{ (parent ? parent->position.x + (isLeft ? -DistanceHorizontal : DistanceHorizontal) : ScreenWidth * 5 / 8.0f),
-                     (parent ? parent->position.y + DistanceVertical : 200) },
+                     (parent ? parent->position.y + DistanceVertical : 250) },
             nullptr, nullptr, parent);
         NodeList.push_back(root);
         return root;
@@ -142,6 +142,39 @@ Node* AVLTree::RotationRight(Node*& root) {
     return newroot;
 }
 
+void AVLTree::Random() {
+    random_device rd;
+    mt19937 gen(rd());
+    mt19937 gen1(rd());
+    uniform_int_distribution<int> dist(2, 40);
+    uniform_int_distribution<int> dist1(1, 200);
+    int size = dist(gen);
+    cout << size << " ";
+    if (size > 30) {
+        DistanceHorizontal = 40;
+        DistanceVertical = 80;
+    }
+    if (size > 35) {
+        DistanceHorizontal = 35;
+        DistanceVertical = 90;
+    }
+    for (int i = 0; i < size; i++) {
+        int number_random = dist1(gen1);
+        Insert(Root, number_random, NodeList);
+    }
+    // mỗi lần random phải xóa NodeList và Root;
+    balanceTree();
+
+}
+
+void AVLTree::Clear(Node* &root) {
+    if (root == nullptr) return;
+    Clear(root->left);
+    Clear(root->right);
+    delete(root);
+    root = nullptr;
+}
+
 void AVLTree::MoveTree(Node* root, bool isLeft) {
     if (root == nullptr) return;
     root->position.x = root->position.x+ ( isLeft ? -DistanceHorizontal : DistanceHorizontal);
@@ -168,7 +201,7 @@ void AVLTree::balanceTree() {
 
     for (auto& node : nodeList) {
         if (node == Root) {
-            node->position = { ScreenWidth * 5 / 8.0f  , 200 * 1.0f };
+            node->position = { ScreenWidth * 5 / 8.0f  , 250 * 1.0f };
             node->depth = 1;
         }
         else {
