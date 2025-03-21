@@ -238,7 +238,7 @@ void AVLTree::DrawTree() {
 }
 
 void AVLTree::DrawTreeHelper(Node* node) {
-    if (node == nullptr) return;
+    /*if (node == nullptr) return;
 
 
     if (node->left) {
@@ -246,15 +246,25 @@ void AVLTree::DrawTreeHelper(Node* node) {
     }
     if (node->right) {
         DrawLineEx(node->position, node->right->position, 3, DARKGRAY);
+    }*/
+    for (Node* node : NodeList) {
+        if (node->left) {
+            DrawLineEx(node->position, node->left->position, 3, DARKGRAY);
+        }
+        if (node->right) {
+            DrawLineEx(node->position, node->right->position, 3, DARKGRAY);
+        }
+        DrawCircle(node->position.x, node->position.y, 30 , BLACK);
+        DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, RED);
     }
 
-    // Draw node
-    DrawCircle(node->position.x, node->position.y, 30, BLACK);
+
+    /*DrawCircle(node->position.x, node->position.y, 30 * nodeScaleMap[node->val], BLACK);
     DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, RED);
 
 
     DrawTreeHelper(node->left);
-    DrawTreeHelper(node->right);
+    DrawTreeHelper(node->right);*/
 }
 
 

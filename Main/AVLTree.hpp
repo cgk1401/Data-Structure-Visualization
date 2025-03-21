@@ -5,8 +5,6 @@
 #include "Config.hpp"
 #include <random>
 #include <queue>
-#include <chrono>
-#include <thread>
 
 class AVLTree {
 public :

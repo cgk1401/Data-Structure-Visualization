@@ -61,6 +61,3 @@ build/
 *.opensdf
 *.VC.opendb
 
-*.vcxproj
-*.vcxproj.filters
-

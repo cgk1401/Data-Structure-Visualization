@@ -1,5 +1,4 @@
-
-#include <iostream>
+﻿#include <iostream>
 #include "GUI.hpp"
 
 using namespace std;
@@ -20,7 +19,9 @@ void GUI::Start() {
 
 
 		BeginDrawing();
-		ClearBackground(DARKGREEN);
+		//0, 255, 255, 255
+		//{ 50, 200, 110, 150 }
+		ClearBackground({80, 220, 220, 150 });
 		if (CurrentStruture == MENU) {
 			Gui.DrawMainMenu();
 		}
@@ -60,11 +61,15 @@ void GUI::DrawMainMenu() {
 
 	Rectangle GRAPHBUTTON = { ScreenWidth * float(3) / 5, ScreenHeight * float(3) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
 
-	DrawRectangleRec(HASHTABLEBUTTON, DARKGRAY);
-	DrawRectangleRec(LINKEDLISTBUTTON, DARKGRAY);
-	DrawRectangleRec(AVLTREEBUTTON, DARKGRAY);
-	DrawRectangleRec(GRAPHBUTTON, DARKGRAY);
+	//DrawRectangleRec(HASHTABLEBUTTON, DARKGRAY);
+	//DrawRectangleRec(LINKEDLISTBUTTON, DARKGRAY);
+	//DrawRectangleRec(AVLTREEBUTTON, DARKGRAY);
+	//DrawRectangleRec(GRAPHBUTTON, DARKGRAY);
 
+	DrawRectangleRounded(HASHTABLEBUTTON, 0.3f, 10, DARKGRAY);
+	DrawRectangleRounded(LINKEDLISTBUTTON, 0.3f, 10, DARKGRAY);
+	DrawRectangleRounded(AVLTREEBUTTON, 0.3f, 10, DARKGRAY);
+	DrawRectangleRounded(GRAPHBUTTON, 0.3f, 10, DARKGRAY);
 
 	DrawText("HASHTABLE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, WHITE);
 	DrawText("LINKEDLIST", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, WHITE);
@@ -97,11 +102,12 @@ void GUI::DrawMainMenu() {
 }
 
 void GUI::DrawSecondMenu() {
-	DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, GRAY);
+	DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, RAYWHITE);
 	buttoninit.DrawButton();
 	buttoninsert.DrawButton();
 	buttondelete.DrawButton();
 	buttonsearch.DrawButton();
+	//buttonrandom.DrawButton();
 }
 void GUI::DrawHashTable() {
 	Gui.DrawSecondMenu();
@@ -116,38 +122,76 @@ void GUI::DrawLinkedList() {
 void GUI::DrawAVLTree() {
 	Gui.DrawSecondMenu();
 
+	if (buttoninit.IsClick() == true) {
+		Gui.ClickInit_AVLTree = true;
+		Gui.ClickInitEnter_AVLTree = true;
+		
+
+		Gui.ClickInsert_AVLTree = false;
+		Gui.ClickInsertEnter_AVLTree = false;
+
+		Gui.ClickSearch_AVLTree = false;
+		Gui.ClickSearchEnter_AVLTree = false;
+
+		Gui.ClickDelete_AVLTree = false;
+		Gui.ClickDeleteEnter_AVLTree = false;
+	}
+
+	if (Gui.ClickInit_AVLTree == true) {
+		buttonrandom.DrawButton();
+		buttonloadfile.DrawButton();
+		if (buttonrandom.IsClick() == true) {
+			if (Gui.ClickRandom_AVLTree == true) {
+				// nút random đã được bấm trước đó => resert lại cây
+				tree.Clear(tree.Root);
+				tree.NodeList.clear();
+				tree.Random();
+				tree.DrawTree();
+			}
+			else {
+				// nút random chưa được bấm trước đó
+				tree.Random();
+			}
+			Gui.ClickRandom_AVLTree = true;
+		}
+		if (buttonloadfile.IsClick() == true) {
+			if (Gui.LoadFileAVLTree() == true) Gui.ClickLoadFile_AVLTree = true;
+		}
+	}
+
+	if (Gui.ClickRandom_AVLTree == true) tree.DrawTree();
+	if (Gui.ClickLoadFile_AVLTree == true) tree.DrawTree();
 
 	if (buttoninsert.IsClick() == true) {
-		Gui.ClickInsert = true;
+		Gui.ClickInsert_AVLTree = true;
+		Gui.ClickInsertEnter_AVLTree = true;
+
+		Gui.ClickInit_AVLTree = false;
+		//Gui.ClickInitEnter_AVLTree = false;
+		Gui.ClickRandom_AVLTree = false;
+		Gui.ClickLoadFile_AVLTree == true;
+
+		Gui.ClickSearch_AVLTree = false;
+		Gui.ClickSearchEnter_AVLTree = false;
+
+		Gui.ClickDelete_AVLTree = false;
+		Gui.ClickDeleteEnter_AVLTree = false;
 	}
-	if (Gui.ClickInsert == true) {
-		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+
+	if (Gui.ClickInsert_AVLTree == true) {
+		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, BLACK);
 		int value = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
 		if (value != -1) {
 			tree.Insert(tree.Root, value, tree.NodeList);
-			Gui.ClickInsert = false;
+			Gui.ClickInsert_AVLTree = false;
+			Gui.ClickInsertEnter_AVLTree = true;
 		}
 	}
-	if (Gui.ClickInsertEnter == true) {
-		tree.DrawTree();
-	}
-
-	if (buttoninit.IsClick() == true) {
-		if (Gui.ClickInit == true) {
-			tree.Clear(tree.Root);
-			tree.NodeList.clear();
-			tree.Random();
-			Gui.ClickInit = true;
-		}
-		else {
-			tree.Random();
-			Gui.ClickInit = true;
-		}
-		Gui.ClickInsert = false;
-	}
-	if (Gui.ClickInit == true) tree.DrawTree();
-
 	
+
+	if (Gui.ClickInsertEnter_AVLTree == true) tree.DrawTree();
+
+
 
 	Gui.DrawBack();
 }
@@ -171,8 +215,30 @@ void GUI::DrawBack() {
 		if (CheckCollisionPointRec(mouse, BackButton)) {
 			CurrentStruture = MENU;
 			tree.Clear(tree.Root);
+			tree.NodeList.clear();
 		}
 	}
+}
+
+bool GUI::LoadFileAVLTree() {
+	const char* path = tinyfd_openFileDialog(
+		"Open AVL File", "", 0, nullptr, nullptr, 0
+	);
+	if (path == nullptr) return false;
+
+	ifstream ifs(path);
+
+	if (ifs.is_open() == false) return false;
+
+	tree.Clear(tree.Root);
+	tree.NodeList.clear();
+
+	int x; 
+	while (ifs >> x) tree.Insert(tree.Root, x, tree.NodeList);
+
+	ifs.close();
+	return true;
+
 }
 
 int GUI::Input(int posX, int posY) {
@@ -183,7 +249,7 @@ int GUI::Input(int posX, int posY) {
 		}
 		key = GetCharPressed();
 	}
-	DrawText(inputstring.c_str(), posX, posY, 20, WHITE);
+	DrawText(inputstring.c_str(), posX, posY, 20, BLACK);
 
 	if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER)) {
 		if (inputstring == "") { return -1; }
@@ -191,7 +257,6 @@ int GUI::Input(int posX, int posY) {
 		int val = std::stoi(inputstring);
 		std::cout << "Input:" << val << std::endl;
 		inputstring = "";
-		Gui.ClickInsertEnter = true;
 		return val;
 	}
 
@@ -201,4 +266,3 @@ int GUI::Input(int posX, int posY) {
 
 	return -1;
 }
-

@@ -6,6 +6,9 @@
 #include "Button.hpp"
 #include <raylib.h>
 #include "AVLTree.hpp"
+#include "tinyfiledialogs.h"
+
+#include <fstream>
 
 
 enum TypeDataStructure { MENU, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
@@ -13,15 +16,31 @@ enum TypeDataStructure { MENU, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
 
 
 class GUI {
-private : 
+private:
 	AVLTree tree;
-	
-public :
-	string inputstring = "";
-	bool ClickInsert = false;
-	bool ClickInsertEnter = false;
-	bool ClickInit = false;
 
+public:
+	string inputstring = "";
+	
+public : 
+	bool ClickInsert_AVLTree = false;
+	bool ClickInsertEnter_AVLTree = false;
+
+public :
+	bool ClickInitEnter_AVLTree = false;
+	bool ClickInit_AVLTree = false;
+
+public : 
+	bool ClickDelete_AVLTree = false;
+	bool ClickDeleteEnter_AVLTree = false;
+
+public :
+	bool ClickSearch_AVLTree = false;
+	bool ClickSearchEnter_AVLTree = false;
+
+public :
+	bool ClickRandom_AVLTree = false;
+	bool ClickLoadFile_AVLTree = false;
 
 public:
 
@@ -33,7 +52,8 @@ public:
 	void DrawAVLTree();
 	void DrawGraph();
 	void DrawBack();
-	
+
+	bool LoadFileAVLTree();
 
 	int Input(int posX, int posY);
 

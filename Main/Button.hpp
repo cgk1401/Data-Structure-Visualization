@@ -42,12 +42,20 @@ public:
 	ButtonSearch(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
 };
 
+class ButtonRandom : public Button {
+public:
+	ButtonRandom(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
+};
+class ButtonLoadFile : public Button {
+public:
+	ButtonLoadFile(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
+};
 extern ButtonInit buttoninit;
 extern ButtonInsert buttoninsert;
 extern ButtonDelete buttondelete;
 extern ButtonSearch buttonsearch;
-
-
+extern ButtonRandom buttonrandom;
+extern ButtonLoadFile buttonloadfile;
 
 
 #endif // BUTTON_HPP
