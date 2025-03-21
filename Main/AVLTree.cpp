@@ -162,7 +162,6 @@ void AVLTree::Random() {
         Insert(Root, number_random, NodeList);
     }
 
-    // mỗi lần random phải xóa NodeList và Root;
     balanceTree();
 }
 

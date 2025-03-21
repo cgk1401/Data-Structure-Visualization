@@ -9,6 +9,14 @@ TypeDataStructure CurrentStruture = MENU;
 
 
 
+void GUI::SetActiveMenuAVLTree(ActiveMenuTypeAVLTree newMenu) {
+	if (activemenu_avltree == newMenu) {
+		activemenu_avltree = newMenu;
+	}
+	else {
+		activemenu_avltree = newMenu;
+	}
+}
 void GUI::Start() {
 
 	InitWindow(ScreenWidth, ScreenHeight, "Data Stucture Visulization");
@@ -21,7 +29,8 @@ void GUI::Start() {
 		BeginDrawing();
 		//0, 255, 255, 255
 		//{ 50, 200, 110, 150 }
-		ClearBackground({80, 220, 220, 150 });
+		//{80, 220, 220, 150 }
+		ClearBackground({ 212, 149, 158, 250 });
 		if (CurrentStruture == MENU) {
 			Gui.DrawMainMenu();
 		}
@@ -66,15 +75,15 @@ void GUI::DrawMainMenu() {
 	//DrawRectangleRec(AVLTREEBUTTON, DARKGRAY);
 	//DrawRectangleRec(GRAPHBUTTON, DARKGRAY);
 
-	DrawRectangleRounded(HASHTABLEBUTTON, 0.3f, 10, DARKGRAY);
-	DrawRectangleRounded(LINKEDLISTBUTTON, 0.3f, 10, DARKGRAY);
-	DrawRectangleRounded(AVLTREEBUTTON, 0.3f, 10, DARKGRAY);
-	DrawRectangleRounded(GRAPHBUTTON, 0.3f, 10, DARKGRAY);
+	DrawRectangleRounded(HASHTABLEBUTTON, 0.3f, 10, {235, 207, 195, 250});
+	DrawRectangleRounded(LINKEDLISTBUTTON, 0.3f, 10, { 235, 207, 195, 250 });
+	DrawRectangleRounded(AVLTREEBUTTON, 0.3f, 10, { 235, 207, 195, 250 });
+	DrawRectangleRounded(GRAPHBUTTON, 0.3f, 10, { 235, 207, 195, 250 });
 
-	DrawText("HASHTABLE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, WHITE);
-	DrawText("LINKEDLIST", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, WHITE);
-	DrawText("AVLTREE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, WHITE);
-	DrawText("GRAPH", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, WHITE);
+	DrawText("HASHTABLE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, {198, 88, 93, 250});
+	DrawText("LINKEDLIST", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, { 198, 88, 93, 250 });
+	DrawText("AVLTREE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, { 198, 88, 93, 250 });
+	DrawText("GRAPH", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, { 198, 88, 93, 250 });
 
 	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
 		Vector2 mouse = GetMousePosition();
@@ -107,7 +116,6 @@ void GUI::DrawSecondMenu() {
 	buttoninsert.DrawButton();
 	buttondelete.DrawButton();
 	buttonsearch.DrawButton();
-	//buttonrandom.DrawButton();
 }
 void GUI::DrawHashTable() {
 	Gui.DrawSecondMenu();
@@ -122,74 +130,56 @@ void GUI::DrawLinkedList() {
 void GUI::DrawAVLTree() {
 	Gui.DrawSecondMenu();
 
-	if (buttoninit.IsClick() == true) {
-		Gui.ClickInit_AVLTree = true;
-		Gui.ClickInitEnter_AVLTree = true;
-		
+	if (buttoninit.IsClick()) Gui.SetActiveMenuAVLTree(INIT_AVLTREE);
+	else if (buttoninsert.IsClick()) Gui.SetActiveMenuAVLTree(INSERT_AVLTREE);
+	else if (buttonsearch.IsClick()) Gui.SetActiveMenuAVLTree(SEARCH_AVLTREE);
+	else if (buttondelete.IsClick()) Gui.SetActiveMenuAVLTree(DELETE_AVLTREE);
 
-		Gui.ClickInsert_AVLTree = false;
-		Gui.ClickInsertEnter_AVLTree = false;
-
-		Gui.ClickSearch_AVLTree = false;
-		Gui.ClickSearchEnter_AVLTree = false;
-
-		Gui.ClickDelete_AVLTree = false;
-		Gui.ClickDeleteEnter_AVLTree = false;
-	}
-
-	if (Gui.ClickInit_AVLTree == true) {
+	if (activemenu_avltree == INIT_AVLTREE) {
 		buttonrandom.DrawButton();
 		buttonloadfile.DrawButton();
-		if (buttonrandom.IsClick() == true) {
-			if (Gui.ClickRandom_AVLTree == true) {
-				// nút random đã được bấm trước đó => resert lại cây
+
+		if (buttonrandom.IsClick()) {
+			if (Gui.isClickRandom == true) {
+				// The tree has been randomized before
 				tree.Clear(tree.Root);
 				tree.NodeList.clear();
+				// Randomize the tree again
 				tree.Random();
-				tree.DrawTree();
 			}
 			else {
-				// nút random chưa được bấm trước đó
+				// The tree has not been randomized before
 				tree.Random();
 			}
-			Gui.ClickRandom_AVLTree = true;
+			Gui.isClickRandom = true;
+			Gui.isClickLoadFile = false;
 		}
-		if (buttonloadfile.IsClick() == true) {
-			if (Gui.LoadFileAVLTree() == true) Gui.ClickLoadFile_AVLTree = true;
+
+		if (buttonloadfile.IsClick()) {
+			// Clear the existing tree before loading from file
+			tree.Clear(tree.Root);
+			Gui.LoadFileAVLTree();
+			Gui.isClickLoadFile = true;
+			Gui.isClickRandom = false;
 		}
+
+		if (Gui.isClickRandom == true) tree.DrawTree();
+
+		if (Gui.isClickLoadFile == true) tree.DrawTree();
+
+
 	}
+	else if (activemenu_avltree == INSERT_AVLTREE) {
 
-	if (Gui.ClickRandom_AVLTree == true) tree.DrawTree();
-	if (Gui.ClickLoadFile_AVLTree == true) tree.DrawTree();
-
-	if (buttoninsert.IsClick() == true) {
-		Gui.ClickInsert_AVLTree = true;
-		Gui.ClickInsertEnter_AVLTree = true;
-
-		Gui.ClickInit_AVLTree = false;
-		//Gui.ClickInitEnter_AVLTree = false;
-		Gui.ClickRandom_AVLTree = false;
-		Gui.ClickLoadFile_AVLTree == true;
-
-		Gui.ClickSearch_AVLTree = false;
-		Gui.ClickSearchEnter_AVLTree = false;
-
-		Gui.ClickDelete_AVLTree = false;
-		Gui.ClickDeleteEnter_AVLTree = false;
-	}
-
-	if (Gui.ClickInsert_AVLTree == true) {
 		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, BLACK);
 		int value = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
 		if (value != -1) {
 			tree.Insert(tree.Root, value, tree.NodeList);
-			Gui.ClickInsert_AVLTree = false;
-			Gui.ClickInsertEnter_AVLTree = true;
 		}
-	}
-	
+		Gui.isClickInsert = true;
 
-	if (Gui.ClickInsertEnter_AVLTree == true) tree.DrawTree();
+		if (Gui.isClickInsert == true) tree.DrawTree();
+	}
 
 
 

@@ -12,35 +12,27 @@
 
 
 enum TypeDataStructure { MENU, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
-
+enum ActiveMenuTypeAVLTree {NONE, INIT_AVLTREE, INSERT_AVLTREE, SEARCH_AVLTREE, DELETE_AVLTREE};
 
 
 class GUI {
 private:
+
 	AVLTree tree;
+	ActiveMenuTypeAVLTree activemenu_avltree = NONE;
 
 public:
 	string inputstring = "";
 	
-public : 
-	bool ClickInsert_AVLTree = false;
-	bool ClickInsertEnter_AVLTree = false;
+public :
+
+	void SetActiveMenuAVLTree(ActiveMenuTypeAVLTree newMenu);
 
 public :
-	bool ClickInitEnter_AVLTree = false;
-	bool ClickInit_AVLTree = false;
+	bool isClickRandom = false;
+	bool isClickLoadFile = false;
+	bool isClickInsert = false;
 
-public : 
-	bool ClickDelete_AVLTree = false;
-	bool ClickDeleteEnter_AVLTree = false;
-
-public :
-	bool ClickSearch_AVLTree = false;
-	bool ClickSearchEnter_AVLTree = false;
-
-public :
-	bool ClickRandom_AVLTree = false;
-	bool ClickLoadFile_AVLTree = false;
 
 public:
 
