@@ -7,6 +7,7 @@
 #include <raylib.h>
 #include "AVLTree.hpp"
 #include "tinyfiledialogs.h"
+#include "InsertAnimationAVLTree.hpp"
 
 #include <fstream>
 
@@ -20,6 +21,8 @@ private:
 
 	AVLTree tree;
 	ActiveMenuTypeAVLTree activemenu_avltree = NONE;
+
+	InsertAnimationAVLTree insertanimationavltree;
 
 public:
 	string inputstring = "";
@@ -35,6 +38,7 @@ public :
 
 
 public:
+	GUI();
 
 	void Start();
 	void DrawMainMenu();

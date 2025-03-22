@@ -1,6 +1,6 @@
 #include "Node.hpp"
 
-Node::Node(int val, int depth, int height, int balanceFactor, int nodeIdex, bool isLeft, Vector2 position, Node* left, Node* right, Node* parent) {
+Node::Node(int val, int depth, int height, int balanceFactor, int nodeIdex, bool isLeft, Vector2 position, Node* left, Node* right, Node* parent, bool isNodeInserted, bool isNodeHighLighted, bool isLeftEdgeHightLigted, bool isRightEdgeHightLighted) {
     this->val = val;
     this->depth = depth;
     this->height = height;
@@ -11,4 +11,8 @@ Node::Node(int val, int depth, int height, int balanceFactor, int nodeIdex, bool
     this->left = left;
     this->right = right;
     this->parent = parent;
+    this->isNodeInserted = isNodeInserted;
+    this->isNodeHighLighted = isNodeHighLighted;
+    this->isLeftEdgeHightLigted = isLeftEdgeHightLigted;
+    this->isRightEdgeHightLighted = isRightEdgeHightLighted;
 }

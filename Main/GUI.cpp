@@ -8,6 +8,9 @@ GUI Gui;
 TypeDataStructure CurrentStruture = MENU;
 
 
+GUI::GUI()
+	: insertanimationavltree(&tree)
+{}
 
 void GUI::SetActiveMenuAVLTree(ActiveMenuTypeAVLTree newMenu) {
 	if (activemenu_avltree == newMenu) {
@@ -17,6 +20,7 @@ void GUI::SetActiveMenuAVLTree(ActiveMenuTypeAVLTree newMenu) {
 		activemenu_avltree = newMenu;
 	}
 }
+
 void GUI::Start() {
 
 	InitWindow(ScreenWidth, ScreenHeight, "Data Stucture Visulization");
@@ -129,11 +133,12 @@ void GUI::DrawLinkedList() {
 
 void GUI::DrawAVLTree() {
 	Gui.DrawSecondMenu();
-
+	// Xử lý nút menu
 	if (buttoninit.IsClick()) Gui.SetActiveMenuAVLTree(INIT_AVLTREE);
 	else if (buttoninsert.IsClick()) Gui.SetActiveMenuAVLTree(INSERT_AVLTREE);
 	else if (buttonsearch.IsClick()) Gui.SetActiveMenuAVLTree(SEARCH_AVLTREE);
 	else if (buttondelete.IsClick()) Gui.SetActiveMenuAVLTree(DELETE_AVLTREE);
+
 
 	if (activemenu_avltree == INIT_AVLTREE) {
 		buttonrandom.DrawButton();
@@ -163,24 +168,32 @@ void GUI::DrawAVLTree() {
 			Gui.isClickRandom = false;
 		}
 
-		if (Gui.isClickRandom == true) tree.DrawTree();
-
-		if (Gui.isClickLoadFile == true) tree.DrawTree();
-
-
 	}
+
+	if (Gui.isClickRandom == true) tree.DrawTree();
+
+	if (Gui.isClickLoadFile == true) tree.DrawTree();
+
+
 	else if (activemenu_avltree == INSERT_AVLTREE) {
 
 		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, BLACK);
 		int value = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
 		if (value != -1) {
-			tree.Insert(tree.Root, value, tree.NodeList);
+			Gui.insertanimationavltree.StartInsert(value);
+			Gui.isClickInsert = true;
+
 		}
-		Gui.isClickInsert = true;
-
-		if (Gui.isClickInsert == true) tree.DrawTree();
 	}
+	if (Gui.isClickInsert == true) {
+		Gui.insertanimationavltree.UpdateStep();
+		tree.DrawTree();
 
+		if (Gui.insertanimationavltree.isFinished() == true) {
+			Gui.isClickInsert = false;
+			Gui.activemenu_avltree = NONE;
+		}
+	}
 
 
 	Gui.DrawBack();

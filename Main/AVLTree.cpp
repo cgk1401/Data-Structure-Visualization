@@ -26,7 +26,7 @@ Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& 
         root = new Node(data, (parent ? parent->depth + 1 : 1), 1, 0, NodeList.size(), isLeft,
             Vector2{ (parent ? parent->position.x + (isLeft ? -DistanceHorizontal : DistanceHorizontal) : ScreenWidth * 5 / 8.0f),
                      (parent ? parent->position.y + DistanceVertical : 250) },
-            nullptr, nullptr, parent);
+            nullptr, nullptr, parent, false, false, false, false);
         NodeList.push_back(root);
         return root;
     }
@@ -237,15 +237,7 @@ void AVLTree::DrawTree() {
 }
 
 void AVLTree::DrawTreeHelper(Node* node) {
-    /*if (node == nullptr) return;
 
-
-    if (node->left) {
-        DrawLineEx(node->position, node->left->position, 3, DARKGRAY);
-    }
-    if (node->right) {
-        DrawLineEx(node->position, node->right->position, 3, DARKGRAY);
-    }*/
     for (Node* node : NodeList) {
         if (node->left) {
             DrawLineEx(node->position, node->left->position, 3, DARKGRAY);
@@ -253,17 +245,24 @@ void AVLTree::DrawTreeHelper(Node* node) {
         if (node->right) {
             DrawLineEx(node->position, node->right->position, 3, DARKGRAY);
         }
-        DrawCircle(node->position.x, node->position.y, 30 , BLACK);
-        DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, RED);
+        //DrawCircle(node->position.x, node->position.y, 30 , BLACK);
+        // Node mới được chèn
+        if (node->isNodeInserted) {
+            DrawCircle(node->position.x, node->position.y, 35, BLUE);
+            DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, WHITE);
+        }
+        // Node đang được highlight khi duyệt insert
+        else if (node->isNodeHighLighted) {
+            DrawCircle(node->position.x, node->position.y, 30, ORANGE);
+            DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, WHITE);
+        }
+        // Node bình thường
+        else {
+            DrawCircle(node->position.x, node->position.y, 30, BLACK);
+            DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, WHITE);
+        }
+
     }
-
-
-    /*DrawCircle(node->position.x, node->position.y, 30 * nodeScaleMap[node->val], BLACK);
-    DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, RED);
-
-
-    DrawTreeHelper(node->left);
-    DrawTreeHelper(node->right);*/
 }
 
 
