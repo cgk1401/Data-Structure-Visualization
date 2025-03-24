@@ -28,6 +28,7 @@ public:
 	string inputstring = "";
 	bool ClickInit = false;
 	bool ClickInsert = false;
+	bool ClickDelete = false;
 
 	void Start();
 	void DrawMainMenu();
@@ -38,7 +39,6 @@ public:
 	void DrawGraph();
 	void DrawBack();
 
-	int InputInsert();
 	int Input(int posX, int posY);
 
 	void DrawGraphMenu();

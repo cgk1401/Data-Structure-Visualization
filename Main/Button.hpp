@@ -22,6 +22,7 @@ public:
 	Button(float coordinateX, float coordinateY, float width, float height, string s, Color color);
 	void DrawButton();
 	bool IsClick();
+	void setColor(Color color);
 };
 class ButtonInit : public Button {
 public:

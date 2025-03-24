@@ -16,13 +16,20 @@ void GUI::Start() {
 
 	InitWindow(ScreenWidth, ScreenHeight, "Data Stucture Visulization");
 
+	for (int i = 0; i < 6; i++) { C[i] = ColorPalette[2][i]; } // init color
+	buttoninit.setColor(C[2]);
+	buttoninsert.setColor(C[2]);
+	buttondelete.setColor(C[2]);
+	buttonsearch.setColor(C[2]);
+	buttonclear.setColor(C[2]);
+
 	SetTargetFPS(60);
 
 	while (WindowShouldClose() == false) {
 
 
 		BeginDrawing();
-		ClearBackground(VIOLET);
+		ClearBackground(C[4]);
 		if (CurrentStruture == MENU) {
 			Gui.DrawMainMenu();
 		}
@@ -52,7 +59,7 @@ void GUI::Start() {
 }
 
 void GUI::DrawMainMenu() {
-	DrawText("Choose Data Structure", ScreenWidth * float(2) / 5, ScreenHeight * float(5) / 6, 40, WHITE);
+	DrawText("Choose Data Structure", ScreenWidth * float(2) / 5, ScreenHeight * float(5) / 6, 40, C[0]);
 
 	Rectangle HASHTABLEBUTTON = { ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
 
@@ -62,16 +69,16 @@ void GUI::DrawMainMenu() {
 
 	Rectangle GRAPHBUTTON = { ScreenWidth * float(3) / 5, ScreenHeight * float(3) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
 
-	DrawRectangleRec(HASHTABLEBUTTON, DARKGRAY);
-	DrawRectangleRec(LINKEDLISTBUTTON, DARKGRAY);
-	DrawRectangleRec(AVLTREEBUTTON, DARKGRAY);
-	DrawRectangleRec(GRAPHBUTTON, DARKGRAY);
+	DrawRectangleRec(HASHTABLEBUTTON, C[2]);
+	DrawRectangleRec(LINKEDLISTBUTTON, C[2]);
+	DrawRectangleRec(AVLTREEBUTTON, C[2]);
+	DrawRectangleRec(GRAPHBUTTON, C[2]);
 
 
-	DrawText("HASHTABLE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, WHITE);
-	DrawText("LINKEDLIST", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, WHITE);
-	DrawText("AVLTREE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, WHITE);
-	DrawText("GRAPH", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, WHITE);
+	DrawText("HASHTABLE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
+	DrawText("LINKEDLIST", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
+	DrawText("AVLTREE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
+	DrawText("GRAPH", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
 
 	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
 		Vector2 mouse = GetMousePosition();
@@ -99,7 +106,7 @@ void GUI::DrawMainMenu() {
 }
 
 void GUI::DrawSecondMenu() {
-	DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, GRAY);
+	DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, C[1]);
 	buttoninit.DrawButton();
 	buttoninsert.DrawButton();
 	buttondelete.DrawButton();
@@ -109,62 +116,7 @@ void GUI::DrawSecondMenu() {
 		Gui.ClickInsert = true;
 	}
 	if (Gui.ClickInsert == true) {
-		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-		Gui.InputInsert();
-	}
-
-}
-
-void GUI::DrawGraphMenu() {
-	DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, GRAY);
-	buttoninit.DrawButton();
-	buttoninsert.DrawButton();
-	buttondelete.DrawButton();
-	buttonsearch.DrawButton();
-	buttonclear.DrawButton();
-
-	if (buttoninit.IsClick() == true) {
-		Gui.ClickInit = true;
-	}
-	if (Gui.ClickInit == true) {
-		
-		DrawText("Vertex : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(0.7) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-		
-		if (gr_init_state.waitingForVertex == true) {
-			int tmp = Input(SecondMenuWidth * float(1) / 3 + 140, SecondMenuHeight + SecondMenuHeight * float(0.7) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
-			
-			if (tmp != -1) {
-				gr_init_state.n_vertex = tmp;
-				gr_init_state.waitingForVertex = false;
-				gr_init_state.waitingForEdge = true;
-			}
-		}
-
-		if (gr_init_state.waitingForEdge == true) {
-			DrawText(std::to_string(gr_init_state.n_vertex).c_str(), SecondMenuWidth * float(1) / 3 + 140, SecondMenuHeight + SecondMenuHeight * float(0.7) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-			DrawText("Edge : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(1.1) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-		 
-			int tmp = Input(SecondMenuWidth * float(1) / 3 + 140, SecondMenuHeight + SecondMenuHeight * float(1.1) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
-			
-			if (tmp != -1) {
-				gr_init_state.n_edge = tmp;
-				gr_init_state.waitingForVertex = true;
-				gr_init_state.waitingForEdge = false;
-
-				graph.clear();
-				graph.rand_graph(gr_init_state.n_vertex, gr_init_state.n_edge);
-				graph.print_nodes();
-
-				Gui.ClickInit = false;
-			}
-		}
-	}
-
-	if (buttoninsert.IsClick() == true) {
-		Gui.ClickInsert = true;
-	}
-	if (Gui.ClickInsert == true) {
-		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, C[0]);
 		//int val = Gui.InputInsert();
 		int val = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
 
@@ -174,9 +126,17 @@ void GUI::DrawGraphMenu() {
 		}
 	}
 
-	if (buttonclear.IsClick() == true) {
-		graph.clear();
-	}
+}
+
+void GUI::DrawGraphMenu() {
+	DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, C[1]);
+	
+	buttoninit.DrawButton();
+	buttoninsert.DrawButton();
+	buttondelete.DrawButton();
+	buttonsearch.DrawButton();
+	buttonclear.DrawButton();
+	
 }
 
 void GUI::DrawHashTable() {
@@ -196,14 +156,84 @@ void GUI::DrawAVLTree() {
 }
 
 void GUI::DrawGraph() {
-	graph.draw();
 	Gui.DrawGraphMenu();
 	Gui.DrawBack();
+
+	if (buttoninit.IsClick() == true) {
+		Gui.ClickInit = true;
+	}
+	if (Gui.ClickInit == true) {
+
+		DrawText("Vertex : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(0.7) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, C[0]);
+
+		if (gr_init_state.waitingForVertex == true) {
+			int tmp = Input(SecondMenuWidth * float(1) / 3 + 140, SecondMenuHeight + SecondMenuHeight * float(0.7) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
+
+			if (tmp != -1) {
+				gr_init_state.n_vertex = tmp;
+				gr_init_state.waitingForVertex = false;
+				gr_init_state.waitingForEdge = true;
+			}
+		}
+
+		if (gr_init_state.waitingForEdge == true) {
+			DrawText(std::to_string(gr_init_state.n_vertex).c_str(), SecondMenuWidth * float(1) / 3 + 140, SecondMenuHeight + SecondMenuHeight * float(0.7) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, C[0]);
+			DrawText("Edge : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(1.1) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, C[0]);
+
+			int tmp = Input(SecondMenuWidth * float(1) / 3 + 140, SecondMenuHeight + SecondMenuHeight * float(1.1) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
+
+			if (tmp != -1) {
+				gr_init_state.n_edge = tmp;
+				gr_init_state.waitingForVertex = true;
+				gr_init_state.waitingForEdge = false;
+
+				graph.clear();
+				graph.rand_graph(gr_init_state.n_vertex, gr_init_state.n_edge);
+				graph.print_nodes();
+
+				Gui.ClickInit = false;
+			}
+		}
+	}
+
+	if (buttoninsert.IsClick() == true) {
+		Gui.ClickInsert = true;
+	}
+	if (Gui.ClickInsert == true) {
+		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, C[0]);
+		int val = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
+
+		if (val != -1) {
+			graph.add_node(val);
+			Gui.ClickInsert = false;
+		}
+	}
+
+	if (buttondelete.IsClick() == true) {
+		if (graph.get_active1() >= 0) { graph.delete_node(graph.get_active1()); }
+		else { Gui.ClickDelete = true; }
+	}
+	if (Gui.ClickDelete == true) {
+		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(3) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, C[0]);
+		int val = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(3) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
+	
+		if (val != -1) {
+			graph.delete_node(val);
+			Gui.ClickDelete = false;
+		}
+	}
+
+	if (buttonclear.IsClick() == true) {
+		graph.clear();
+	}
+
+	graph.update();
+	graph.draw();
 }
 
 void GUI::DrawBack() {
 
-	DrawText("Data Structure Visualization", ScreenWidth * float(2) / 5, 100, 40, WHITE);
+	DrawText("Graph", ScreenWidth * float(2) / 5, 100, 40, C[0]);
 
 	Rectangle BackButton = { 50, 50, 150, 50 };
 	DrawRectangleRec(BackButton, RED);
@@ -213,35 +243,14 @@ void GUI::DrawBack() {
 	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
 		Vector2 mouse = GetMousePosition();
 		if (CheckCollisionPointRec(mouse, BackButton)) {
+			if (CurrentStruture == GRAPH) { graph.clear(); }
+
 			CurrentStruture = MENU;
+
+			ClickInit = false;
+			ClickInsert = false;
 		}
 	}
-}
-
-int GUI::InputInsert() {
-	int key = GetCharPressed();
-	while (key > 0) {
-		if (key >= '0' && key <= '9') {
-			inputstring += char(key);
-		}
-		key = GetCharPressed();
-	}
-	DrawText(inputstring.c_str(), SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-
-	if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER)) {
-		int val = std::stoi(inputstring);
-		std::cout << "Value: " << val << endl;
-
-		inputstring = "";
-
-		return val;
-	}
-
-	if (IsKeyPressed(KEY_BACKSPACE) && !inputstring.empty()) {
-		inputstring.pop_back();
-	}
-
-	return -1;
 }
 
 int GUI::Input(int posX, int posY) {
@@ -252,7 +261,7 @@ int GUI::Input(int posX, int posY) {
 		}
 		key = GetCharPressed();
 	}
-	DrawText(inputstring.c_str(), posX, posY, 20, WHITE);
+	DrawText(inputstring.c_str(), posX, posY, 20, C[0]);
 
 	if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER)) {
 		if (inputstring == "") { return -1; }
