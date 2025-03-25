@@ -28,11 +28,17 @@
       <Filter>Source Files</Filter>
     </ClCompile>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <ClCompile Include="HashTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
 =======
 >>>>>>> de6dd92 (Demo Menu)
+=======
+    <ClCompile Include="HashTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+>>>>>>> a8b8bc2 (Update logic and animtation HashTable4)
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GUI.hpp">
@@ -45,10 +51,16 @@
       <Filter>Header Files</Filter>
     </ClInclude>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <ClInclude Include="HashTable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
 =======
 >>>>>>> de6dd92 (Demo Menu)
+=======
+    <ClInclude Include="HashTable.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+>>>>>>> a8b8bc2 (Update logic and animtation HashTable4)
   </ItemGroup>
 </Project>

@@ -21,7 +21,11 @@ public:
     void insert(int key);
     bool search(int key);
     void remove(int key);
+<<<<<<< HEAD
     void display(); 
+=======
+    void display();
+>>>>>>> a8b8bc2 (Update logic and animtation HashTable4)
     void drawHashTable();
     HashTable& operator=(const HashTable& other);
     void init(int newCapacity);
