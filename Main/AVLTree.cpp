@@ -149,6 +149,8 @@ void AVLTree::Random() {
     uniform_int_distribution<int> dist1(1, 200);
     int size = dist(gen);
     cout << size << " ";
+    Clear(Root);
+    NodeList.clear();
     if (size > 30) {
         DistanceHorizontal = 40;
         DistanceVertical = 80;
@@ -161,7 +163,7 @@ void AVLTree::Random() {
         int number_random = dist1(gen1);
         Insert(Root, number_random, NodeList);
     }
-
+   
     balanceTree();
 }
 
@@ -247,6 +249,8 @@ void AVLTree::DrawTreeHelper(Node* node) {
         }
         //DrawCircle(node->position.x, node->position.y, 30 , BLACK);
         // Node mới được chèn
+    }
+    for (Node* node : NodeList) {
         if (node->isNodeInserted) {
             DrawCircle(node->position.x, node->position.y, 35, BLUE);
             DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, WHITE);
@@ -261,7 +265,6 @@ void AVLTree::DrawTreeHelper(Node* node) {
             DrawCircle(node->position.x, node->position.y, 30, BLACK);
             DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, WHITE);
         }
-
     }
 }
 

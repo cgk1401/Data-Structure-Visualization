@@ -145,17 +145,7 @@ void GUI::DrawAVLTree() {
 		buttonloadfile.DrawButton();
 
 		if (buttonrandom.IsClick()) {
-			if (Gui.isClickRandom == true) {
-				// The tree has been randomized before
-				tree.Clear(tree.Root);
-				tree.NodeList.clear();
-				// Randomize the tree again
 				tree.Random();
-			}
-			else {
-				// The tree has not been randomized before
-				tree.Random();
-			}
 			Gui.isClickRandom = true;
 			Gui.isClickLoadFile = false;
 		}
