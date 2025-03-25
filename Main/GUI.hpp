@@ -16,6 +16,7 @@ public:
     GUI() {}
 
     string inputstring = "";
+    bool ClickInit = false;
     bool ClickInsert = false;
     bool ClickDelete = false;
 
@@ -28,10 +29,9 @@ public:
     void DrawGraph();
     void DrawBack();
 
-    int InputInsert();
     int Input(int posX, int posY);
 
-    void DrawLinkedListMenu();
+    void DrawListMenu();
 };
 
 extern GUI Gui;
