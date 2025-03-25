@@ -120,6 +120,19 @@ void GUI::DrawSecondMenu() {
 	buttoninsert.DrawButton();
 	buttondelete.DrawButton();
 	buttonsearch.DrawButton();
+
+	if (buttoninsert.IsClick() == true) {
+		Gui.ClickInsert = true;
+	}
+	if (Gui.ClickInsert == true) {
+		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+		int val = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
+
+		if (val != -1) {
+			Gui.ClickInsert = false;
+		}
+	}
+
 }
 void GUI::DrawHashTable() {
 	Gui.DrawSecondMenu();
@@ -214,9 +227,8 @@ void GUI::DrawBack() {
 }
 
 bool GUI::LoadFileAVLTree() {
-	const char* path = tinyfd_openFileDialog(
-		"Open AVL File", "", 0, nullptr, nullptr, 0
-	);
+	const char* path = tinyfd_openFileDialog("Open AVL File", "", 0, nullptr, nullptr, 0);
+
 	if (path == nullptr) return false;
 
 	ifstream ifs(path);
@@ -242,6 +254,7 @@ int GUI::Input(int posX, int posY) {
 		}
 		key = GetCharPressed();
 	}
+
 	DrawText(inputstring.c_str(), posX, posY, 20, BLACK);
 
 	if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER)) {
@@ -252,6 +265,7 @@ int GUI::Input(int posX, int posY) {
 		inputstring = "";
 		return val;
 	}
+
 
 	if (IsKeyPressed(KEY_BACKSPACE) && !inputstring.empty()) {
 		inputstring.pop_back();

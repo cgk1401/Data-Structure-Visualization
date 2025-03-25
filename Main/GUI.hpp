@@ -49,8 +49,11 @@ public:
 	void DrawGraph();
 	void DrawBack();
 
+
 	bool LoadFileAVLTree();
 
+
+	
 	int Input(int posX, int posY);
 
 };
