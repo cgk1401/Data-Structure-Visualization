@@ -145,7 +145,7 @@ void GUI::DrawAVLTree() {
 		buttonloadfile.DrawButton();
 
 		if (buttonrandom.IsClick()) {
-				tree.Random();
+			tree.Random();
 			Gui.isClickRandom = true;
 			Gui.isClickLoadFile = false;
 		}
