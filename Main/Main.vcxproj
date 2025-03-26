@@ -132,23 +132,13 @@
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="HashTable.cpp" />
     <ClCompile Include="Main.cpp" />
-<<<<<<< HEAD
-    <ClCompile Include="HashTable.cpp" />
-=======
->>>>>>> de6dd92 (Demo Menu)
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.hpp" />
     <ClInclude Include="Config.hpp" />
     <ClInclude Include="GUI.hpp" />
-<<<<<<< HEAD
-<<<<<<< HEAD
     <ClInclude Include="HashTable.hpp" />
-=======
->>>>>>> de6dd92 (Demo Menu)
-=======
-    <ClInclude Include="HashTable.hpp" />
->>>>>>> a8b8bc2 (Update logic and animtation HashTable4)
+    <ClInclude Include="Node.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

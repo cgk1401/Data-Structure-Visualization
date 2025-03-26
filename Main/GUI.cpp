@@ -8,6 +8,11 @@ GUI Gui;
 
 TypeDataStructure CurrentStruture = MENU;
 
+
+GUI::GUI()
+	: table(10)
+{}
+
 void GUI::Start() {
 
 	InitWindow(ScreenWidth, ScreenHeight, "Data Stucture Visulization");
@@ -94,149 +99,102 @@ void GUI::DrawMainMenu() {
 
 }
 
-<<<<<<< HEAD
 
 void GUI::DrawSecondMenu() {
-    DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, GRAY);
-    buttoninit.DrawButton();
-    buttoninsert.DrawButton();
-    buttondelete.DrawButton();
-    buttonsearch.DrawButton();
-	// Xử lý Insert
-    if (buttoninsert.IsClick()) {
-        Gui.ClickInsert = true;
-    }
-    if (Gui.ClickInsert) {
-        DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, 
-                 SecondMenuHeight + SecondMenuHeight * float(2) / 6 + 
-                 (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-        Gui.InputInsert();
-    }
-
-    // Xử lý Init
-	if (buttoninit.IsClick()) {
-		Gui.ClickInit = true;
-	}
-	if (Gui.ClickInit) {
-		DrawText("Size : ", SecondMenuWidth * float(1) / 3 + 40,
-			SecondMenuHeight + SecondMenuHeight * float(1) / 6 +
-			(SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-		Gui.InputInit();
-	}
-	//Xử lý Delete
-	if (buttondelete.IsClick() == true) {
-		Gui.ClickDelete = true;
-	}
-	if (buttondelete.IsClick()) {
-		Gui.ClickDelete = true;
-		inputstring = "";  // Reset input để tránh lỗi nhập trước đó
-	}
-	if (Gui.ClickDelete) {
-		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40,
-			SecondMenuHeight + SecondMenuHeight * float(3) / 6 +
-			(SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-		Gui.InputDelete();
-	}
-	//Xử lý Delete
-	if (buttonsearch.IsClick()) {
-		Gui.ClickSearch = true;
-		inputstring = "";  // Reset input để tránh lỗi nhập trước đó
-	}
-	if (Gui.ClickSearch) {
-		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40,
-			SecondMenuHeight + SecondMenuHeight * float(4) / 6 +
-			(SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-		Gui.InputSearch();
-	}
-
-}
-
-void GUI::DrawSecondMenu() {
-	DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, GRAY);
+	DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, RAYWHITE);
 	buttoninit.DrawButton();
 	buttoninsert.DrawButton();
 	buttondelete.DrawButton();
 	buttonsearch.DrawButton();
-	// Xử lý Insert
-	if (buttoninsert.IsClick()) {
-		Gui.ClickInsert = true;
-	}
-	if (Gui.ClickInsert) {
-		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40,
-			SecondMenuHeight + SecondMenuHeight * float(2) / 6 +
-			(SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-		Gui.InputInsert();
-	}
-
-	// Xử lý Init
-	if (buttoninit.IsClick()) {
-		Gui.ClickInit = true;
-	}
-	if (Gui.ClickInit) {
-		DrawText("Size : ", SecondMenuWidth * float(1) / 3 + 40,
-			SecondMenuHeight + SecondMenuHeight * float(1) / 6 +
-			(SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-		Gui.InputInit();
-	}
-	//Xử lý Delete
-	if (buttondelete.IsClick() == true) {
-		Gui.ClickDelete = true;
-	}
-	if (buttondelete.IsClick()) {
-		Gui.ClickDelete = true;
-		inputstring = "";  // Reset input để tránh lỗi nhập trước đó
-	}
-	if (Gui.ClickDelete) {
-		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40,
-			SecondMenuHeight + SecondMenuHeight * float(3) / 6 +
-			(SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-		Gui.InputDelete();
-	}
-	//Xử lý Delete
-	if (buttonsearch.IsClick()) {
-		Gui.ClickSearch = true;
-		inputstring = "";  // Reset input để tránh lỗi nhập trước đó
-	}
-	if (Gui.ClickSearch) {
-		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40,
-			SecondMenuHeight + SecondMenuHeight * float(4) / 6 +
-			(SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-		Gui.InputSearch();
-	}
-
 }
 
 void GUI::DrawHashTable() {
 	Gui.DrawSecondMenu();
-	myHashTable.drawHashTable();  // Gọi hàm vẽ Hash Table
 	Gui.DrawBack();
+	
+	// Xử lý Insert
+	if (buttoninsert.IsClick()) {
+		Gui.isClickInsert = true;
+	}
+	if (Gui.isClickInsert) {
+		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40,
+			SecondMenuHeight + SecondMenuHeight * float(2) / 6 +
+			(SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+		int val = Gui.Input(SecondMenuWidth * 1 / 3 + 120,
+			SecondMenuHeight + SecondMenuHeight * 1 / 6 +
+			(SecondMenuHeight * 1 / 6) * 1 / 2);
+		if (val != -1) {
+			table.insert(val);
+			Gui.isClickInsert = false;
+		}
+	}
+
+	// Xử lý Init
+	if (buttoninit.IsClick()) {
+		Gui.isClickInit = true;
+	}
+	if (Gui.isClickInit) {
+		DrawText("Size : ", SecondMenuWidth * float(1) / 3 + 40,
+			SecondMenuHeight + SecondMenuHeight * float(1) / 6 +
+			(SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+		int val=Gui.Input(SecondMenuWidth * 1 / 3 + 120,
+			SecondMenuHeight + SecondMenuHeight * 1 / 6 +
+			(SecondMenuHeight * 1 / 6) * 1 / 2);
+		if (val != -1) {
+			table.init(val);
+			Gui.isClickInit = false;
+		}
+	}
+	//Xử lý Delete
+	if (buttondelete.IsClick() == true) {
+		Gui.isClickDelete = true;
+	}
+	if (Gui.isClickDelete) {
+		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40,
+			SecondMenuHeight + SecondMenuHeight * float(3) / 6 +
+			(SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+		int val = Gui.Input(SecondMenuWidth * float(1) / 3 + 120,
+			SecondMenuHeight + SecondMenuHeight * float(3) / 6 +
+			(SecondMenuHeight * float(1) / 6) * 1 / 2);
+		if (val != -1) {
+			table.remove(val);
+			Gui.isClickDelete = false;
+		}
+		
+	}
+
+	//Xử lý Search
+	if (buttonsearch.IsClick()) {
+		Gui.isClickSearch = true;
+	}
+	if (Gui.isClickSearch) {
+		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40,
+			SecondMenuHeight + SecondMenuHeight * float(4) / 6 +
+			(SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+		int val =Gui.Input(SecondMenuWidth * float(1) / 3 + 120,
+			SecondMenuHeight + SecondMenuHeight * float(3) / 6 +
+			(SecondMenuHeight * float(1) / 6) * 1 / 2);
+		if (val != -1) {
+			table.search(val);
+			Gui.isClickSearch = false;
+		}
+	}
+	
+	table.drawHashTable();
 }
 
 void GUI::DrawLinkedList() {
 	Gui.DrawSecondMenu();
->>>>>>> d3ef482 (Fix gitignore and update demo menu)
 	Gui.DrawBack();
 }
 
 void GUI::DrawAVLTree() {
-<<<<<<< HEAD
-
 	Gui.DrawSecondMenu();
-
-=======
-	Gui.DrawSecondMenu();
->>>>>>> d3ef482 (Fix gitignore and update demo menu)
 	Gui.DrawBack();
 }
 
 void GUI::DrawGraph() {
-<<<<<<< HEAD
-
 	Gui.DrawSecondMenu();
-
-=======
-	Gui.DrawSecondMenu();
->>>>>>> d3ef482 (Fix gitignore and update demo menu)
 	Gui.DrawBack();
 }
 
@@ -257,11 +215,8 @@ void GUI::DrawBack() {
 	}
 }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> d3ef482 (Fix gitignore and update demo menu)
-void GUI::InputInsert() {
+int GUI::Input(int posX, int posY) {
 	int key = GetCharPressed();
 	while (key > 0) {
 		if (key >= '0' && key <= '9') {
@@ -269,48 +224,20 @@ void GUI::InputInsert() {
 		}
 		key = GetCharPressed();
 	}
-	DrawText(inputstring.c_str(), SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
+	DrawText(inputstring.c_str(), posX, posY, 20, BLACK);
 
-	if (IsKeyPressed(KEY_ENTER)) {
-		cout << "Value: " << inputstring << endl;
+	if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER)) {
+		if (inputstring == "") { return -1; }
+
+		int val = std::stoi(inputstring);
+		std::cout << "Input:" << val << std::endl;
 		inputstring = "";
-		Gui.ClickDelete = false;  // Đặt lại trạng thái click
+		return val;
 	}
 
 	if (IsKeyPressed(KEY_BACKSPACE) && !inputstring.empty()) {
 		inputstring.pop_back();
 	}
+
+	return -1;
 }
-
-<<<<<<< HEAD
-void GUI::InputInit() {
-	int key = GetCharPressed();
-	while (key > 0) {
-		if (key >= '0' && key <= '9') {
-			inputstring += char(key);
-		}
-		key = GetCharPressed();
-	}
-	DrawText(inputstring.c_str(), SecondMenuWidth * 1 / 3 + 120,
-		SecondMenuHeight + SecondMenuHeight * 1 / 6 +
-		(SecondMenuHeight * 1 / 6) * 1 / 2, 20, WHITE);
-
-	if (IsKeyPressed(KEY_ENTER)) {
-		int bucketSize = std::stoi(inputstring);
-		if (bucketSize > 0) {
-			myHashTable = HashTable(bucketSize);  // Khởi tạo lại bảng băm
-			myHashTable.drawHashTable();  // Cập nhật giao diện
-			cout << "Created new Hash Table with " << bucketSize << " buckets!" << endl;
-		}
-		else {
-			cout << "Invalid bucket size!" << endl;
-		}
-		inputstring = "";
-		Gui.ClickInit = false;
-	}
-
-	if (IsKeyPressed(KEY_BACKSPACE) && !inputstring.empty()) {
-		inputstring.pop_back();
-	}
-}
-

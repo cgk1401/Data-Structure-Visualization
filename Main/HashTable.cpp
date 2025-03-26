@@ -84,7 +84,8 @@ void HashTable::drawHashTable() {
         int x = centerX + (targetX - centerX) * easedProgress;
         int y = centerY + (targetY - centerY) * easedProgress;
 
-        DrawRectangle(x, y, bucketWidth, bucketHeight, YELLOW);
+        Color bucketColor = (i == highlightedIndex) ? PINK : YELLOW;
+        DrawRectangle(x, y, bucketWidth, bucketHeight, bucketColor);
         DrawRectangleLines(x, y, bucketWidth, bucketHeight, BLACK);
 
         // Hiện số sau khi animation hoàn tất
@@ -96,18 +97,25 @@ void HashTable::drawHashTable() {
         // Đánh số thứ tự bucket
         std::string index = std::to_string(i);
         DrawText(index.c_str(), x + 35, y - 20, 20, WHITE);
-    }
+        /*
+        // Nếu bucket đang được highlight (tìm kiếm), đổi màu thành hồng
+        Color bucketColor = (i == highlightedIndex) ? PINK : YELLOW;
+        DrawRectangle(x, y, bucketWidth, bucketHeight, bucketColor);
+        DrawRectangleLines(x, y, bucketWidth, bucketHeight, BLACK);*/
+    } 
+   
 }
 
-bool HashTable::search(int key) {
+void HashTable::search(int key) {
     int index = hashFunction(key);
     int start = index;
 
     while (table[index] != EMPTY) {
         if (table[index] == key) {
             highlightedIndex = index;  // Lưu vị trí cần highlight
+            std::cout << "Found at index:  " << highlightedIndex << ':' << index << std::endl;
             drawHashTable();         // Vẽ lại giao diện
-            return true;
+            return;
         }
         index = (index + 1) % capacity;
         if (index == start) break;
@@ -115,7 +123,6 @@ bool HashTable::search(int key) {
 
     highlightedIndex = -1;  // Không tìm thấy thì bỏ highlight
     drawHashTable();
-    return false;
 }
 
 void HashTable::remove(int key) {
