@@ -21,8 +21,13 @@ public:
 
 	Button(float coordinateX, float coordinateY, float width, float height, string s, Color color);
 	void DrawButton();
+<<<<<<< HEAD
 	bool IsCover();
 	bool IsClick();
+=======
+	bool IsClick();
+	void setColor(Color color);
+>>>>>>> LinkedList
 };
 class ButtonInit : public Button {
 public:
@@ -41,6 +46,7 @@ class ButtonSearch : public Button {
 public:
 	ButtonSearch(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
 };
+<<<<<<< HEAD
 
 class ButtonRandom : public Button {
 public:
@@ -50,12 +56,25 @@ class ButtonLoadFile : public Button {
 public:
 	ButtonLoadFile(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
 };
+=======
+class ButtonClear : public Button {
+public:
+	ButtonClear(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
+};
+
+>>>>>>> LinkedList
 extern ButtonInit buttoninit;
 extern ButtonInsert buttoninsert;
 extern ButtonDelete buttondelete;
 extern ButtonSearch buttonsearch;
+<<<<<<< HEAD
 extern ButtonRandom buttonrandom;
 extern ButtonLoadFile buttonloadfile;
+=======
+extern ButtonClear buttonclear;
+
+
+>>>>>>> LinkedList
 
 
 #endif // BUTTON_HPP

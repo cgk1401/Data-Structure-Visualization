@@ -24,6 +24,7 @@
     <ClCompile Include="Button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="AVLTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -31,14 +32,20 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="tinyfiledialogs.c">
+=======
+    <ClCompile Include="LinkedList.cpp">
+>>>>>>> LinkedList
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="InsertAnimationAVLTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+=======
+>>>>>>> LinkedList
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GUI.hpp">
@@ -50,6 +57,7 @@
     <ClInclude Include="Button.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="Node.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -60,6 +68,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InsertAnimationAVLTree.hpp">
+=======
+    <ClInclude Include="LinkedList.hpp">
+>>>>>>> LinkedList
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
