@@ -4,12 +4,6 @@
 
 using namespace std;
 
-<<<<<<< HEAD
-float ScreenWidth = 2500;
-float ScreenHeight = 1300;
-float SecondMenuWidth = 625;//ScreenWidth * float(1) / 4;
-float SecondMenuHeight = 650;// ScreenHeight* float(1) / 2;
-=======
 float ScreenWidth = 2000;
 float ScreenHeight = 900;
 float SecondMenuWidth = 500;//ScreenWidth * float(1) / 4;
@@ -59,4 +53,3 @@ C[3] : Edge
 C[4] : Background
 C[5] : Active node
 */
->>>>>>> LinkedList

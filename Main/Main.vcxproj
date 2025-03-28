@@ -104,21 +104,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-<<<<<<< HEAD
-      <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\Project\CS163\Data-Structure-Visualization\Main;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-=======
       <AdditionalIncludeDirectories>c:\raylib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
->>>>>>> LinkedList
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-<<<<<<< HEAD
-=======
       <AdditionalLibraryDirectories>c:\raylib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>raylib.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
->>>>>>> LinkedList
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -138,8 +130,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClCompile Include="AVLTree.cpp" />
+    <ClCompile Include="LinkedList.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="GUI.cpp" />
@@ -151,24 +143,12 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\tinyfiledialogs\tinyfiledialogs.h" />
     <ClInclude Include="AVLTree.hpp" />
+    <ClInclude Include="LinkedList.hpp" />
     <ClInclude Include="Button.hpp" />
     <ClInclude Include="Config.hpp" />
     <ClInclude Include="GUI.hpp" />
     <ClInclude Include="InsertAnimationAVLTree.hpp" />
     <ClInclude Include="Node.hpp" />
-=======
-    <ClCompile Include="Button.cpp" />
-    <ClCompile Include="Config.cpp" />
-    <ClCompile Include="LinkedList.cpp" />
-    <ClCompile Include="GUI.cpp" />
-    <ClCompile Include="Main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Button.hpp" />
-    <ClInclude Include="Config.hpp" />
-    <ClInclude Include="LinkedList.hpp" />
-    <ClInclude Include="GUI.hpp" />
->>>>>>> LinkedList
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -242,10 +242,10 @@ void AVLTree::DrawTreeHelper(Node* node) {
 
     for (Node* node : NodeList) {
         if (node->left) {
-            DrawLineEx(node->position, node->left->position, 3, DARKGRAY);
+            DrawLineEx(node->position, node->left->position, 3, C[3]);
         }
         if (node->right) {
-            DrawLineEx(node->position, node->right->position, 3, DARKGRAY);
+            DrawLineEx(node->position, node->right->position, 3, C[3]);
         }
         //DrawCircle(node->position.x, node->position.y, 30 , BLACK);
         // Node mới được chèn
@@ -253,17 +253,17 @@ void AVLTree::DrawTreeHelper(Node* node) {
     for (Node* node : NodeList) {
         if (node->isNodeInserted) {
             DrawCircle(node->position.x, node->position.y, 35, BLUE);
-            DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, WHITE);
+            DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, C[0]);
         }
         // Node đang được highlight khi duyệt insert
         else if (node->isNodeHighLighted) {
-            DrawCircle(node->position.x, node->position.y, 30, ORANGE);
-            DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, WHITE);
+            DrawCircle(node->position.x, node->position.y, 30, C[5]);
+            DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, C[0]);
         }
         // Node bình thường
         else {
-            DrawCircle(node->position.x, node->position.y, 30, BLACK);
-            DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, WHITE);
+            DrawCircle(node->position.x, node->position.y, 30, C[1]);
+            DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, C[0]);
         }
     }
 }
