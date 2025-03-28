@@ -5,30 +5,28 @@
 
 class InsertAnimationAVLTree {
 private :
-	AVLTree* tree; // gốc cây để xử lý
+	AVLTree* tree; 
 
-	int animationstep; // các bước hiện độ họa trong quá trình insert
-	int insertvalue; // giá trị muốn insert
+	int animationstep; 
+	int insertvalue; 
+	Node* Noderotate;
 
-	vector <pair <Node*, bool>> path; // đường đi từ gốc đến vị trí insert
+	vector <pair <Node*, bool>> path; 
 	int idexpath;
 
-	void HightLightPath(); // hightlight đường đi từ gốc đến vị trí insert , step 1
-	void AnimationInsert(); // hiệu ứng khi insert, step 2
-
-	void Finalize(); // kết thúc quá trình insert, step 3
-	// step 0 kết thúc animation quá trình insert
-
-	int frameCounter = 0; // đếm số frame đã qua
-	int delayFrames = 30; // chạy đủ 30 frame mới thực hiện tiế
+	
+	int frameCounter = 0; 
+	int delayFrames = 30; 
 
 public :
 	
 	InsertAnimationAVLTree(AVLTree* root);
 
-	void StartInsert(int value); // bắt đầu hiệu ứng insert với giá trị cần insert là value;
-	void UpdateStep(); // điều chỉnh các bước trong quá trình insert;
-	bool isFinished() const ;// kiểm tra quá trình insert đã kết thúc chưa
+	void StartInsert(int value); 
+	void UpdateStep(); 
+	bool isFinished() const ;
+	
+	void SetTree(AVLTree* tree);
 
 };
 

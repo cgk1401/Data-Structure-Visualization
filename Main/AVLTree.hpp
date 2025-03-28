@@ -24,11 +24,14 @@ public :
 	void DrawTree();
 	
 public:
-	void Insert(Node*& root, int data, vector <Node*> &NodeList);
-	Node* InsertHelper(Node*& root, int data, Node* parnent, vector <Node*> &NodeList);
+	void Insert(Node*& root, int data, vector <Node*> &NodeList, bool isNeedRotate);
+	Node* InsertHelper(Node*& root, int data, Node* parnent, vector <Node*> &NodeList, bool isNeedRotate);
 	int GetHeight(Node* node);
 	Node* RotationLeft(Node*& root);
 	Node* RotationRight(Node*& root);
+
+	void UpdateHeightAndBalanceFactor(Node*& root);
+	Node* GetNodeRotate();
 
 	void Random();
 	void Clear(Node* &root);

@@ -10,17 +10,15 @@ AVLTree::AVLTree() {
 
 }
 
-void AVLTree::Insert(Node*& root, int data, vector<Node*>& NodeList) {
+void AVLTree::Insert(Node*& root, int data, vector<Node*>& NodeList, bool isNeedRotate) {
     for (Node* node : NodeList) {
         if (data == node->val) return;
     }
 
-    InsertHelper(root, data, nullptr, NodeList);
-    balanceTree();
-
+    InsertHelper(root, data, nullptr, NodeList, isNeedRotate);
 }
 
-Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& NodeList) {
+Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& NodeList, bool isNeedRotate) {
     if (root == nullptr) {
         bool isLeft = (parent && data < parent->val);
         root = new Node(data, (parent ? parent->depth + 1 : 1), 1, 0, NodeList.size(), isLeft,
@@ -30,38 +28,40 @@ Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& 
         NodeList.push_back(root);
         return root;
     }
-    
+
     if (data < root->val) {
-        root->left = InsertHelper(root->left, data, root, NodeList);
+        root->left = InsertHelper(root->left, data, root, NodeList, isNeedRotate);
     }
     else if (data > root->val) {
-        root->right = InsertHelper(root->right, data, root, NodeList);
+        root->right = InsertHelper(root->right, data, root, NodeList, isNeedRotate);
     }
 
-    root->balanceFactor = GetHeight(root->left) - GetHeight(root->right);
-    root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
+    if (isNeedRotate == true) {
+        root->balanceFactor = GetHeight(root->left) - GetHeight(root->right);
+        root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
 
-    if (root->balanceFactor > 1 && data < root->left->val) {
-        // Left - Left
-        root = RotationRight(root);
-        return root;
-    }
-    else if (root->balanceFactor > 1 && data > root->left->val) {
-        // Left - Right
-        root->left = RotationLeft(root->left);
-        root = RotationRight(root);
-        return root;
-    }
-    else if (root->balanceFactor < -1 && data > root->right->val) {
-        // Right - Right 
-        root = RotationLeft(root);
-        return root;
-    }
-    else if (root->balanceFactor < -1 && data < root->right->val) {
-        // Right - Right
-        root->right = RotationRight(root->right);
-        root = RotationLeft(root);
-        return root;
+        if (root->balanceFactor > 1 && data < root->left->val) {
+            // Left - Left
+            root = RotationRight(root);
+            return root;
+        }
+        else if (root->balanceFactor > 1 && data > root->left->val) {
+            // Left - Right
+            root->left = RotationLeft(root->left);
+            root = RotationRight(root);
+            return root;
+        }
+        else if (root->balanceFactor < -1 && data > root->right->val) {
+            // Right - Right 
+            root = RotationLeft(root);
+            return root;
+        }
+        else if (root->balanceFactor < -1 && data < root->right->val) {
+            // Right - Right
+            root->right = RotationRight(root->right);
+            root = RotationLeft(root);
+            return root;
+        }
     }
 
     return root;  
@@ -141,6 +141,29 @@ Node* AVLTree::RotationRight(Node*& root) {
     return newroot;
 }
 
+void AVLTree::UpdateHeightAndBalanceFactor(Node*& root) {
+    if (root == nullptr) return;
+    UpdateHeightAndBalanceFactor(root->left);
+    UpdateHeightAndBalanceFactor(root->right);
+
+    root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
+    root->balanceFactor = GetHeight(root->left) - GetHeight(root->right);
+
+}
+
+Node* AVLTree::GetNodeRotate() {
+    UpdateHeightAndBalanceFactor(Root);
+    Node* ans = nullptr;
+    int maxdepth = -1;
+    for (Node* node : NodeList) {
+        if (abs(node->balanceFactor) > 1 && node->depth > maxdepth) {
+            ans = node;
+            maxdepth = ans->depth;
+        }
+    }
+    return ans;
+}
+
 void AVLTree::Random() {
     random_device rd;
     mt19937 gen(rd());
@@ -149,6 +172,7 @@ void AVLTree::Random() {
     uniform_int_distribution<int> dist1(1, 200);
     int size = dist(gen);
     cout << size << " ";
+    
     Clear(Root);
     NodeList.clear();
     if (size > 30) {
@@ -161,7 +185,7 @@ void AVLTree::Random() {
     }
     for (int i = 0; i < size; i++) {
         int number_random = dist1(gen1);
-        Insert(Root, number_random, NodeList);
+        Insert(Root, number_random, NodeList, true);
     }
    
     balanceTree();

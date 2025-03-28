@@ -7,10 +7,10 @@ GUI Gui;
 
 TypeDataStructure CurrentStruture = MENU;
 
-
 GUI::GUI()
 	: insertanimationavltree(&tree)
-{}
+{
+}
 
 void GUI::SetActiveMenuAVLTree(ActiveMenuTypeAVLTree newMenu) {
 	if (activemenu_avltree == newMenu) {
@@ -146,27 +146,28 @@ void GUI::DrawAVLTree() {
 
 		if (buttonrandom.IsClick()) {
 			tree.Random();
+			
 			Gui.isClickRandom = true;
 			Gui.isClickLoadFile = false;
 		}
 
 		if (buttonloadfile.IsClick()) {
 			// Clear the existing tree before loading from file
-			tree.Clear(tree.Root);
+
 			Gui.LoadFileAVLTree();
+			Gui.insertanimationavltree.SetTree(&tree);
 			Gui.isClickLoadFile = true;
 			Gui.isClickRandom = false;
 		}
+		
 
 	}
 
-	if (Gui.isClickRandom == true) tree.DrawTree();
-
-	if (Gui.isClickLoadFile == true) tree.DrawTree();
-
 
 	else if (activemenu_avltree == INSERT_AVLTREE) {
+		Gui.isClickRandom = false;
 
+		Gui.isClickLoadFile = false;
 		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, BLACK);
 		int value = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
 		if (value != -1) {
@@ -177,13 +178,13 @@ void GUI::DrawAVLTree() {
 	}
 	if (Gui.isClickInsert == true) {
 		Gui.insertanimationavltree.UpdateStep();
-		tree.DrawTree();
 
 		if (Gui.insertanimationavltree.isFinished() == true) {
 			Gui.isClickInsert = false;
 			Gui.activemenu_avltree = NONE;
 		}
 	}
+	tree.DrawTree();
 
 
 	Gui.DrawBack();
@@ -214,6 +215,8 @@ void GUI::DrawBack() {
 }
 
 bool GUI::LoadFileAVLTree() {
+	tree.Clear(tree.Root);
+	tree.NodeList.clear();
 	const char* path = tinyfd_openFileDialog(
 		"Open AVL File", "", 0, nullptr, nullptr, 0
 	);
@@ -223,12 +226,12 @@ bool GUI::LoadFileAVLTree() {
 
 	if (ifs.is_open() == false) return false;
 
-	tree.Clear(tree.Root);
-	tree.NodeList.clear();
 
 	int x; 
-	while (ifs >> x) tree.Insert(tree.Root, x, tree.NodeList);
-
+	while (ifs >> x) {
+		tree.Insert(tree.Root, x, tree.NodeList, true);
+		tree.balanceTree();
+	}
 	ifs.close();
 	return true;
 
