@@ -1,6 +1,5 @@
 ﻿#include <iostream>
 #include "GUI.hpp"
-
 using namespace std;
 
 GUI Gui;
@@ -79,12 +78,12 @@ void GUI::DrawMainMenu() {
 	//DrawRectangleRec(AVLTREEBUTTON, DARKGRAY);
 	//DrawRectangleRec(GRAPHBUTTON, DARKGRAY);
 
-	DrawRectangleRounded(HASHTABLEBUTTON, 0.3f, 10, {235, 207, 195, 250});
+	DrawRectangleRounded(HASHTABLEBUTTON, 0.3f, 10, { 235, 207, 195, 250 });
 	DrawRectangleRounded(LINKEDLISTBUTTON, 0.3f, 10, { 235, 207, 195, 250 });
 	DrawRectangleRounded(AVLTREEBUTTON, 0.3f, 10, { 235, 207, 195, 250 });
 	DrawRectangleRounded(GRAPHBUTTON, 0.3f, 10, { 235, 207, 195, 250 });
 
-	DrawText("HASHTABLE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, {198, 88, 93, 250});
+	DrawText("HASHTABLE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, { 198, 88, 93, 250 });
 	DrawText("LINKEDLIST", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, { 198, 88, 93, 250 });
 	DrawText("AVLTREE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, { 198, 88, 93, 250 });
 	DrawText("GRAPH", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, { 198, 88, 93, 250 });
@@ -146,7 +145,7 @@ void GUI::DrawAVLTree() {
 
 		if (buttonrandom.IsClick()) {
 			tree.Random();
-			
+
 			Gui.isClickRandom = true;
 			Gui.isClickLoadFile = false;
 		}
@@ -159,7 +158,7 @@ void GUI::DrawAVLTree() {
 			Gui.isClickLoadFile = true;
 			Gui.isClickRandom = false;
 		}
-		
+
 
 	}
 
@@ -171,7 +170,7 @@ void GUI::DrawAVLTree() {
 		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, BLACK);
 		int value = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
 		if (value != -1) {
-			Gui.insertanimationavltree.StartInsert(value);
+			Gui.insertanimationavltree.StartInsertAnimation(value);
 			Gui.isClickInsert = true;
 
 		}
@@ -227,7 +226,7 @@ bool GUI::LoadFileAVLTree() {
 	if (ifs.is_open() == false) return false;
 
 
-	int x; 
+	int x;
 	while (ifs >> x) {
 		tree.Insert(tree.Root, x, tree.NodeList, true);
 		tree.balanceTree();

@@ -1,35 +1,39 @@
-﻿#ifndef  INSERTANIMATIONAVLTREE_HPP
+﻿#ifndef INSERTANIMATIONAVLTREE_HPP
 #define INSERTANIMATIONAVLTREE_HPP
 
 #include "AVLTree.hpp"
+#include <map>
 
 class InsertAnimationAVLTree {
 private :
-	AVLTree* tree; 
+	AVLTree* tree;
 
-	int animationstep; 
-	int insertvalue; 
-	Node* Noderotate;
+	int InsertValue;
+	int Indexpath;
 
-	vector <pair <Node*, bool>> path; 
-	int idexpath;
+	int AnimationStep;
 
-	
-	int frameCounter = 0; 
-	int delayFrames = 30; 
+	vector <Node*> path;
+
+	float AnimationTime;
+	float duration; // thời gian để hoàn thành mỗi bước animation
+
+	Node* newNode;
+
+	map <Node*, Vector2> StartPosition;
+	map <Node*, Vector2> TargetPosition;
+
 
 public :
-	
 	InsertAnimationAVLTree(AVLTree* root);
 
-	void StartInsert(int value); 
-	void UpdateStep(); 
-	bool isFinished() const ;
-	
-	void SetTree(AVLTree* tree);
+	void StartInsertAnimation(int value);
+
+	void UpdateStep();
+
+	void SetTree(AVLTree* root);
+	bool isFinished() const;
 
 };
 
-
-#endif // ! INSERTANIMATIONAVLTREE_HPP
-
+#endif // !INSERTANIMATIONAVLTREE_HPP
