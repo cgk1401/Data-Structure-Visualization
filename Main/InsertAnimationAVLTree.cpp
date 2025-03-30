@@ -6,6 +6,11 @@ InsertAnimationAVLTree::InsertAnimationAVLTree(AVLTree* root) {
 	this->AnimationTime = 0.0f;
 	this->duration = 0.5f;
 	this->newNode = nullptr;
+	this->NodeRotate = nullptr;
+	this->Indexpath = 0;
+	this->RotateSecond = false;
+	this->RotateStartPosition.clear();
+	this->RotateTargetPosition.clear();
 }
 
 void InsertAnimationAVLTree::StartInsertAnimation(int value) {
@@ -58,13 +63,15 @@ void InsertAnimationAVLTree::StartInsertAnimation(int value) {
 	for (Node* node : tree->NodeList) {
 		node->position = StartPosition[node];
 	}
+	tree->DeleteLeafNode(tree->Root, InsertValue);
+	
+	tree->DrawLevelOrder(tree->Root);
 }
 
 
 void InsertAnimationAVLTree::SetTree(AVLTree* root) {
 	this->tree = root;
 }
-
 
 void InsertAnimationAVLTree::UpdateStep() {
 	AnimationTime += GetFrameTime(); 
@@ -105,6 +112,7 @@ void InsertAnimationAVLTree::UpdateStep() {
 		break;
 	case 3 :
 		tree->Insert(tree->Root, InsertValue, tree->NodeList, false);
+		tree->UpdateHeightAndBalanceFactor(tree->Root);
 		for (Node* node : tree->NodeList) {
 			if (node->val == InsertValue) {
 				newNode = node;
@@ -120,7 +128,72 @@ void InsertAnimationAVLTree::UpdateStep() {
 			}
 		}
 		break;
-	case 4 :
+	case 4:
+		RotateStartPosition.clear();
+		RotateTargetPosition.clear();
+
+		NodeRotate = tree->GetNodeRotate();  
+		if (NodeRotate == nullptr) {
+			AnimationStep = 6;  
+			break;
+		}
+
+		else {
+			for (Node* node : tree->NodeList) {
+				RotateStartPosition[node] = node->position;
+			}
+
+			if (NodeRotate->balanceFactor > 1 && (NodeRotate->left && NodeRotate->left->balanceFactor < 0) ||
+				NodeRotate->balanceFactor < -1 && (NodeRotate->right && NodeRotate->right->balanceFactor > 0)) {
+				tree->RebalanceChild(tree->Root);
+				RotateSecond = true;
+				tree->balanceTree();
+				
+				for (Node* node : tree->NodeList) {
+					RotateTargetPosition[node] = node->position;
+					node->position = RotateStartPosition[node];
+				}
+				AnimationStep = 5;
+				AnimationTime = 0.0f;
+			}
+			else {
+				tree->RebalanceParent(tree->Root);
+				tree->balanceTree();
+				for (Node* node : tree->NodeList) {
+					RotateTargetPosition[node] = node->position;
+					node->position = RotateStartPosition[node];
+				}
+				AnimationStep = 5;
+				AnimationTime = 0.0f;
+			}
+		}
+		break;
+
+	case 5:
+		cout << "Case 5" << endl;
+		if (t < 1.0f) {
+			for (Node* node : tree->NodeList) {
+				node->position.x = RotateStartPosition[node].x + (RotateTargetPosition[node].x - RotateStartPosition[node].x) * t;
+				node->position.y = RotateStartPosition[node].y + (RotateTargetPosition[node].y - RotateStartPosition[node].y) * t;
+			}
+		}
+		else {
+			for (Node* node : tree->NodeList) {
+				node->position = RotateTargetPosition[node];
+			}
+			if (RotateSecond == true) {
+				RotateSecond = false;
+				AnimationStep = 7;
+				AnimationTime = 0.0f;
+			}
+			else {
+				AnimationStep = 6;
+				AnimationTime = 0.0f;
+			}
+		}
+
+		break;
+	case 6 :
 		if (t >= 1.0f){
 			for (Node* node : tree->NodeList) {
 				node->isNodeHighLighted = false;
@@ -131,6 +204,28 @@ void InsertAnimationAVLTree::UpdateStep() {
 			AnimationStep = 0;
 			AnimationTime = 0.0f;
 		}
+		break;
+	case 7 :
+		RotateSecond = false;
+		RotateStartPosition.clear();
+
+		for (Node* node : tree->NodeList) {
+			RotateStartPosition[node] = node->position;
+		}
+
+		tree->RebalanceParent(tree->Root);
+
+		tree->balanceTree();
+
+		RotateTargetPosition.clear();
+
+		for (Node* node : tree->NodeList) {
+			RotateTargetPosition[node] = node->position;
+			node->position = RotateStartPosition[node];
+		}
+		AnimationStep = 5;
+		AnimationTime = 0.0f;
+		
 		break;
 	default:
 		break;

@@ -20,6 +20,7 @@ Button::Button(float coordinateX, float coordinateY, float width, float height, 
 bool Button::IsCover() {
 	return GetMouseX() >= this->coordinateX && GetMouseX() <= this->coordinateX + this->width && GetMouseY() >= this->coordinateY && GetMouseY() <= this->coordinateY + this->height;
 }
+
 void Button::DrawButton() {
 	int textWidth = MeasureText(this->s.c_str(), 20);
 	int centerX = this->coordinateX + (this->width - textWidth) / 2;
@@ -41,8 +42,6 @@ void Button::DrawButton() {
 	DrawText(this->s.c_str(), centerX, centerY, 20, WHITE);
 
 }
-
-
 
 bool Button::IsClick() {
 	Vector2 mouse = GetMousePosition();

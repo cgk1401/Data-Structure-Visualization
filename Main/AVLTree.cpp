@@ -207,6 +207,7 @@ void AVLTree::MoveTree(Node* root, bool isLeft) {
     if (root->right != nullptr) MoveTree(root->right, isLeft);
 
 }
+
 void AVLTree::balanceTree() {
     if (Root == nullptr) return;
 
@@ -255,9 +256,6 @@ void AVLTree::balanceTree() {
     }
 }
 
-
-
-
 void AVLTree::DrawTree() {
 	DrawTreeHelper(Root);
 }
@@ -291,6 +289,111 @@ void AVLTree::DrawTreeHelper(Node* node) {
         }
     }
 }
+
+void AVLTree::DrawLevelOrder(Node* root) {
+    vector <vector <int> > ans;
+    if (root == nullptr) return;
+    queue <Node*> q;
+    q.push(root);
+    while (q.empty() == false) {
+        int size = q.size();
+        vector <int> tmp;
+        for (int i = 0; i < size; i++) {
+            Node* top = q.front();
+            q.pop();
+            tmp.push_back(top->val);
+            if (top->left != nullptr) q.push(top->left);
+            if (top->right != nullptr) q.push(top->right);
+        }
+        ans.push_back(tmp);
+    }
+    for (auto it : ans) {
+        for (auto it1 : it) cout << it1 << " ";
+        cout << endl;
+    }
+    cout << endl;
+}
+
+void AVLTree::DeleteLeafNode(Node*& root, int key) {
+    if (!root) return;
+
+    if (key < root->val) {
+        DeleteLeafNode(root->left, key);
+    }
+    else if (key > root->val) {
+        DeleteLeafNode(root->right, key);
+    }
+    else {
+        // Đã tìm thấy node cần xoá
+        if (!root->left && !root->right) {
+            // Là node lá
+            Node* temp = root;
+            root = nullptr;
+            delete temp;
+        }
+        // Nếu không phải node lá thì không xoá gì cả
+    }
+
+    // Sau khi xóa, cập nhật lại balance nếu cần (nếu bạn muốn AVL tự cân bằng lại)
+    if (root) UpdateHeightAndBalanceFactor(root);
+}
+
+int AVLTree::GetBalanceFactor(Node* node) {
+    if (!node) return 0;
+    int leftHeight = node->left ? node->left->height : 0;
+    int rightHeight = node->right ? node->right->height : 0;
+    return leftHeight - rightHeight;
+}
+
+
+bool AVLTree::RebalanceChild(Node*& root) {
+    if (!root) return false;
+
+    if (RebalanceChild(root->left)) return true;
+    if (RebalanceChild(root->right)) return true;
+
+    UpdateHeightAndBalanceFactor(root);
+
+    if (root->balanceFactor > 1) {
+        if (GetBalanceFactor(root->left) < 0) {
+            root->left = RotationLeft(root->left); 
+            UpdateHeightAndBalanceFactor(root->left);
+            return true;
+        }
+    }
+    else if (root->balanceFactor < -1) {
+        if (GetBalanceFactor(root->right) > 0) {
+            root->right = RotationRight(root->right);
+            UpdateHeightAndBalanceFactor(root->right);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool AVLTree::RebalanceParent(Node*& root) {
+    if (!root) return false;
+
+    if (RebalanceParent(root->left)) return true;
+    if (RebalanceParent(root->right)) return true;
+
+    UpdateHeightAndBalanceFactor(root);
+
+    if (root->balanceFactor > 1) {
+        root = RotationRight(root); 
+        UpdateHeightAndBalanceFactor(root);
+        return true;
+    }
+    else if (root->balanceFactor < -1) {
+        root = RotationLeft(root); 
+        UpdateHeightAndBalanceFactor(root);
+        return true;
+    }
+
+    return false;
+}
+
 
 
 

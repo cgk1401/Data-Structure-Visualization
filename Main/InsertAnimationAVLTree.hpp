@@ -19,9 +19,13 @@ private :
 	float duration; // thời gian để hoàn thành mỗi bước animation
 
 	Node* newNode;
-
+	bool RotateSecond;
 	map <Node*, Vector2> StartPosition;
 	map <Node*, Vector2> TargetPosition;
+
+	Node* NodeRotate;
+	map <Node*, Vector2> RotateStartPosition;
+	map <Node*, Vector2> RotateTargetPosition;
 
 
 public :
