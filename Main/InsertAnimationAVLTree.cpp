@@ -37,6 +37,7 @@ void InsertAnimationAVLTree::StartInsertAnimation(int value) {
 	}
 
 	tree->Insert(tree->Root, value, tree->NodeList, false);
+	tree->UpdateHeightAndBalanceFactor(tree->Root);
 	tree->balanceTree();
 	for (Node* node : tree->NodeList) {
 		if (node->val == value) {
@@ -143,9 +144,9 @@ void InsertAnimationAVLTree::UpdateStep() {
 				RotateStartPosition[node] = node->position;
 			}
 
-			if (NodeRotate->balanceFactor > 1 && (NodeRotate->left && NodeRotate->left->balanceFactor < 0) ||
-				NodeRotate->balanceFactor < -1 && (NodeRotate->right && NodeRotate->right->balanceFactor > 0)) {
-				tree->RebalanceChild(tree->Root);
+			if (NodeRotate->balanceFactor > 1 && (NodeRotate->left && NodeRotate->left->balanceFactor < 0) || NodeRotate->balanceFactor < -1 && (NodeRotate->right && NodeRotate->right->balanceFactor > 0)) {
+				tree->RebalanceChild(tree->Root, NodeRotate);
+				tree->UpdateHeightAndBalanceFactor(tree->Root);
 				RotateSecond = true;
 				tree->balanceTree();
 				
@@ -157,7 +158,8 @@ void InsertAnimationAVLTree::UpdateStep() {
 				AnimationTime = 0.0f;
 			}
 			else {
-				tree->RebalanceParent(tree->Root);
+				tree->RebalanceParent(tree->Root, NodeRotate);
+				tree->UpdateHeightAndBalanceFactor(tree->Root);
 				tree->balanceTree();
 				for (Node* node : tree->NodeList) {
 					RotateTargetPosition[node] = node->position;
@@ -213,8 +215,8 @@ void InsertAnimationAVLTree::UpdateStep() {
 			RotateStartPosition[node] = node->position;
 		}
 
-		tree->RebalanceParent(tree->Root);
-
+		tree->RebalanceParent(tree->Root, NodeRotate);
+		tree->UpdateHeightAndBalanceFactor(tree->Root);
 		tree->balanceTree();
 
 		RotateTargetPosition.clear();

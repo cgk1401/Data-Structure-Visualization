@@ -6,15 +6,12 @@ AVLTree::AVLTree() {
 	Root = nullptr;
 	DistanceHorizontal = 60;
 	DistanceVertical = 120;
-
-
 }
 
 void AVLTree::Insert(Node*& root, int data, vector<Node*>& NodeList, bool isNeedRotate) {
     for (Node* node : NodeList) {
         if (data == node->val) return;
     }
-
     InsertHelper(root, data, nullptr, NodeList, isNeedRotate);
 }
 
@@ -76,10 +73,9 @@ Node* AVLTree::RotationLeft(Node*& root) {
 
     if (root == nullptr) return nullptr;
 
-    Node* newroot = root->right; // the right child of root
-    Node* child = newroot->left; // the left child of newroot
+    Node* newroot = root->right; 
+    Node* child = newroot->left; 
 
-    // updata parent
     newroot->parent = root->parent;
 
     newroot->left = root;
@@ -110,10 +106,10 @@ Node* AVLTree::RotationLeft(Node*& root) {
 Node* AVLTree::RotationRight(Node*& root) {
     if (root == nullptr) return nullptr;
 
-    Node* newroot = root->left;// the left child of root
-    Node* child = newroot->right; // the right child of newroot
+    Node* newroot = root->left;
+    Node* child = newroot->right; 
 
-    // updata parent
+
     newroot->parent = root->parent;
 
     newroot->right = root;
@@ -201,8 +197,7 @@ void AVLTree::Clear(Node* &root) {
 
 void AVLTree::MoveTree(Node* root, bool isLeft) {
     if (root == nullptr) return;
-    root->position.x = root->position.x+ ( isLeft ? -DistanceHorizontal : DistanceHorizontal);
-    root->position.y = (root->depth - Root->depth) * DistanceVertical + 200 * 1.0f;
+    root->position.x = root->position.x + (isLeft ? -DistanceHorizontal : DistanceHorizontal);
     if (root->left != nullptr) MoveTree(root->left, isLeft);
     if (root->right != nullptr) MoveTree(root->right, isLeft);
 
@@ -269,8 +264,7 @@ void AVLTree::DrawTreeHelper(Node* node) {
         if (node->right) {
             DrawLineEx(node->position, node->right->position, 3, DARKGRAY);
         }
-        //DrawCircle(node->position.x, node->position.y, 30 , BLACK);
-        // Node mới được chèn
+        
     }
     for (Node* node : NodeList) {
         if (node->isNodeInserted) {
@@ -324,17 +318,13 @@ void AVLTree::DeleteLeafNode(Node*& root, int key) {
         DeleteLeafNode(root->right, key);
     }
     else {
-        // Đã tìm thấy node cần xoá
         if (!root->left && !root->right) {
-            // Là node lá
             Node* temp = root;
             root = nullptr;
             delete temp;
         }
-        // Nếu không phải node lá thì không xoá gì cả
     }
 
-    // Sau khi xóa, cập nhật lại balance nếu cần (nếu bạn muốn AVL tự cân bằng lại)
     if (root) UpdateHeightAndBalanceFactor(root);
 }
 
@@ -346,52 +336,44 @@ int AVLTree::GetBalanceFactor(Node* node) {
 }
 
 
-bool AVLTree::RebalanceChild(Node*& root) {
-    if (!root) return false;
+void AVLTree::RebalanceChild(Node*& root, Node* noderotate) {
+    if (!root) return ;
 
-    if (RebalanceChild(root->left)) return true;
-    if (RebalanceChild(root->right)) return true;
+    UpdateHeightAndBalanceFactor(Root);
 
-    UpdateHeightAndBalanceFactor(root);
-
-    if (root->balanceFactor > 1) {
+    if (root->balanceFactor > 1 && root == noderotate) {
+        
         if (GetBalanceFactor(root->left) < 0) {
             root->left = RotationLeft(root->left); 
-            UpdateHeightAndBalanceFactor(root->left);
-            return true;
+            return ;
         }
     }
-    else if (root->balanceFactor < -1) {
+    else if (root->balanceFactor < -1 && root == noderotate) {
+       
         if (GetBalanceFactor(root->right) > 0) {
             root->right = RotationRight(root->right);
-            UpdateHeightAndBalanceFactor(root->right);
-            return true;
+            return ;
         }
     }
 
-    return false;
+    RebalanceChild(root->left, noderotate);
+    RebalanceChild(root->right, noderotate);
+ 
 }
 
-bool AVLTree::RebalanceParent(Node*& root) {
-    if (!root) return false;
+void AVLTree::RebalanceParent(Node*& root, Node* noderotate) {
+    cout << noderotate->val << endl;
+    if (!root) return ;
 
-    if (RebalanceParent(root->left)) return true;
-    if (RebalanceParent(root->right)) return true;
-
-    UpdateHeightAndBalanceFactor(root);
-
-    if (root->balanceFactor > 1) {
-        root = RotationRight(root); 
-        UpdateHeightAndBalanceFactor(root);
-        return true;
-    }
-    else if (root->balanceFactor < -1) {
-        root = RotationLeft(root); 
-        UpdateHeightAndBalanceFactor(root);
-        return true;
+    if (root == noderotate) {
+        if (root->balanceFactor > 1) root = RotationRight(root);
+        else root = RotationLeft(root);
+        return;
     }
 
-    return false;
+    RebalanceParent(root->left, noderotate);
+    RebalanceParent(root->right, noderotate);
+   
 }
 
 

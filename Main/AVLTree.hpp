@@ -17,6 +17,7 @@ public :
 	float DistanceVertical;
 
 public :
+	
 	void MoveTree(Node* root, bool isLeft);
 	void balanceTree();
 public :
@@ -25,8 +26,8 @@ public :
 	
 	void DrawLevelOrder(Node* root);
 	void DeleteLeafNode(Node*& root, int key);
-	bool RebalanceChild(Node*& root);
-	bool RebalanceParent(Node*& root);
+	void RebalanceChild(Node*& root, Node* noderotate);
+	void RebalanceParent(Node*& root, Node* noderotate);
 	int GetBalanceFactor(Node* node);
 
 
