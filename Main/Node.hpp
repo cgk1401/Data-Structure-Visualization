@@ -8,14 +8,14 @@ using namespace std;
 
 
 class Node {
-public :
-    int val;           
-    int depth;         
-    int height;        
-    int balanceFactor; 
-    int nodeIndex;     
-    bool isLeft;       
-    Vector2 position;  
+public:
+    int val;
+    int depth;
+    int height;
+    int balanceFactor;
+    int nodeIndex;
+    bool isLeft;
+    Vector2 position;
 
 
     bool isNodeInserted; // node is inserted
@@ -24,7 +24,7 @@ public :
     bool isRightEdgeHightLighted; // cạnh phải được hightlight
 
 
-public :
+public:
     Node* left;
     Node* right;
     Node* parent;

@@ -45,17 +45,22 @@ public:
 	GUI();
 
 	void Start();
-	void DrawMainMenu();
+	
 	void DrawHashTable();
 	void DrawLinkedList();
 	void DrawAVLTree();
 	void DrawGraph();
 	void DrawBack();
 
-	void DrawSecondMenu();
-	void DrawListMenu();
-
 	bool LoadFileAVLTree();
+public :
+
+	void DrawMainMenu();
+	void DrawSecondMenu();
+
+public :
+
+	void DrawListMenu();
 
 	int Input(int posX, int posY);   
 };

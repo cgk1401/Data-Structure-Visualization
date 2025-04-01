@@ -162,61 +162,62 @@ void GUI::DrawLinkedList() {
 }
 
 void GUI::DrawAVLTree() {
-	Gui.DrawSecondMenu();
-	// Xử lý nút menu
-	if (buttoninit.IsClick()) Gui.SetActiveMenuAVLTree(INIT_AVLTREE);
-	else if (buttoninsert.IsClick()) Gui.SetActiveMenuAVLTree(INSERT_AVLTREE);
-	else if (buttonsearch.IsClick()) Gui.SetActiveMenuAVLTree(SEARCH_AVLTREE);
-	else if (buttondelete.IsClick()) Gui.SetActiveMenuAVLTree(DELETE_AVLTREE);
+    Gui.DrawSecondMenu();
+    // Xử lý nút menu
+    if (buttoninit.IsClick()) Gui.SetActiveMenuAVLTree(INIT_AVLTREE);
+    else if (buttoninsert.IsClick()) Gui.SetActiveMenuAVLTree(INSERT_AVLTREE);
+    else if (buttonsearch.IsClick()) Gui.SetActiveMenuAVLTree(SEARCH_AVLTREE);
+    else if (buttondelete.IsClick()) Gui.SetActiveMenuAVLTree(DELETE_AVLTREE);
 
 
-	if (activemenu_avltree == INIT_AVLTREE) {
-		buttonrandom.DrawButton();
-		buttonloadfile.DrawButton();
+    if (activemenu_avltree == INIT_AVLTREE) {
+        buttonrandom.DrawButton();
+        buttonloadfile.DrawButton();
 
-		if (buttonrandom.IsClick()) {
-			tree.Random();
-			Gui.isClickRandom = true;
-			Gui.isClickLoadFile = false;
-		}
+        if (buttonrandom.IsClick()) {
+            tree.Random();
 
-		if (buttonloadfile.IsClick()) {
-			// Clear the existing tree before loading from file
-			tree.Clear(tree.Root);
-			Gui.LoadFileAVLTree();
-			Gui.isClickLoadFile = true;
-			Gui.isClickRandom = false;
-		}
+            Gui.isClickRandom = true;
+            Gui.isClickLoadFile = false;
+        }
 
-	}
+        if (buttonloadfile.IsClick()) {
+            // Clear the existing tree before loading from file
 
-	if (Gui.isClickRandom == true) tree.DrawTree();
-
-	if (Gui.isClickLoadFile == true) tree.DrawTree();
+            Gui.LoadFileAVLTree();
+            Gui.insertanimationavltree.SetTree(&tree);
+            Gui.isClickLoadFile = true;
+            Gui.isClickRandom = false;
+        }
 
 
-	else if (activemenu_avltree == INSERT_AVLTREE) {
-
-		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, BLACK);
-		int value = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
-		if (value != -1) {
-			Gui.insertanimationavltree.StartInsert(value);
-			Gui.isClickInsert = true;
-
-		}
-	}
-	if (Gui.isClickInsert == true) {
-		Gui.insertanimationavltree.UpdateStep();
-		tree.DrawTree();
-
-		if (Gui.insertanimationavltree.isFinished() == true) {
-			Gui.isClickInsert = false;
-			Gui.activemenu_avltree = NONE;
-		}
-	}
+    }
 
 
-	Gui.DrawBack();
+    else if (activemenu_avltree == INSERT_AVLTREE) {
+        Gui.isClickRandom = false;
+
+        Gui.isClickLoadFile = false;
+        DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, BLACK);
+        int value = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
+        if (value != -1) {
+            Gui.insertanimationavltree.StartInsertAnimation(value);
+            Gui.isClickInsert = true;
+
+        }
+    }
+    if (Gui.isClickInsert == true) {
+        Gui.insertanimationavltree.UpdateStep();
+
+        if (Gui.insertanimationavltree.isFinished() == true) {
+            Gui.isClickInsert = false;
+            Gui.activemenu_avltree = NONE;
+        }
+    }
+    tree.DrawTree();
+
+
+    Gui.DrawBack();
 }
 
 void GUI::DrawGraph() {
@@ -225,22 +226,25 @@ void GUI::DrawGraph() {
 }
 
 bool GUI::LoadFileAVLTree() {
-	const char* path = tinyfd_openFileDialog("Open AVL File", "", 0, nullptr, nullptr, 0);
+    tree.Clear(tree.Root);
+    tree.NodeList.clear();
+    const char* path = tinyfd_openFileDialog(
+        "Open AVL File", "", 0, nullptr, nullptr, 0
+    );
+    if (path == nullptr) return false;
 
-	if (path == nullptr) return false;
+    ifstream ifs(path);
 
-	ifstream ifs(path);
+    if (ifs.is_open() == false) return false;
 
-	if (ifs.is_open() == false) return false;
 
-	tree.Clear(tree.Root);
-	tree.NodeList.clear();
-
-	int x; 
-	while (ifs >> x) tree.Insert(tree.Root, x, tree.NodeList);
-
-	ifs.close();
-	return true;
+    int x;
+    while (ifs >> x) {
+        tree.Insert(tree.Root, x, tree.NodeList, true);
+        tree.balanceTree();
+    }
+    ifs.close();
+    return true;
 
 }
 

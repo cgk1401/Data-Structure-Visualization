@@ -1,37 +1,43 @@
-﻿#ifndef  INSERTANIMATIONAVLTREE_HPP
+﻿#ifndef INSERTANIMATIONAVLTREE_HPP
 #define INSERTANIMATIONAVLTREE_HPP
 
 #include "AVLTree.hpp"
+#include <map>
 
 class InsertAnimationAVLTree {
-private :
-	AVLTree* tree; // gốc cây để xử lý
+private:
+	AVLTree* tree;
 
-	int animationstep; // các bước hiện độ họa trong quá trình insert
-	int insertvalue; // giá trị muốn insert
+	int InsertValue;
+	int Indexpath;
 
-	vector <pair <Node*, bool>> path; // đường đi từ gốc đến vị trí insert
-	int idexpath;
+	int AnimationStep;
 
-	void HightLightPath(); // hightlight đường đi từ gốc đến vị trí insert , step 1
-	void AnimationInsert(); // hiệu ứng khi insert, step 2
+	vector <Node*> path;
 
-	void Finalize(); // kết thúc quá trình insert, step 3
-	// step 0 kết thúc animation quá trình insert
+	float AnimationTime;
+	float duration; // thời gian để hoàn thành mỗi bước animation
 
-	int frameCounter = 0; // đếm số frame đã qua
-	int delayFrames = 30; // chạy đủ 30 frame mới thực hiện tiế
+	Node* newNode;
+	bool RotateSecond;
+	map <Node*, Vector2> StartPosition;
+	map <Node*, Vector2> TargetPosition;
 
-public :
-	
+	Node* NodeRotate;
+	map <Node*, Vector2> RotateStartPosition;
+	map <Node*, Vector2> RotateTargetPosition;
+
+
+public:
 	InsertAnimationAVLTree(AVLTree* root);
 
-	void StartInsert(int value); // bắt đầu hiệu ứng insert với giá trị cần insert là value;
-	void UpdateStep(); // điều chỉnh các bước trong quá trình insert;
-	bool isFinished() const ;// kiểm tra quá trình insert đã kết thúc chưa
+	void StartInsertAnimation(int value);
+
+	void UpdateStep();
+
+	void SetTree(AVLTree* root);
+	bool isFinished() const;
 
 };
 
-
-#endif // ! INSERTANIMATIONAVLTREE_HPP
-
+#endif // !INSERTANIMATIONAVLTREE_HPP
