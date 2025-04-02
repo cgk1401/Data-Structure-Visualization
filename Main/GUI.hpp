@@ -1,51 +1,75 @@
-
 #ifndef GUI_HPP
 #define GUI_HPP
 
 #include "Config.hpp"
 #include "Button.hpp"
+#include "raylib.h"
+#include "LinkedList.hpp"
+#include "AVLTree.hpp"
 #include "Graph.hpp"
-#include <raylib.h>
+#include "tinyfiledialogs.h"
+#include "InsertAnimationAVLTree.hpp"
+#include "DijkstraAnimationGraph.hpp"
+
+#include <fstream>
 
 
 enum TypeDataStructure { MENU, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
-
-struct GraphInitState {
-	bool waitingForVertex = true;
-	bool waitingForEdge = false;
-	int n_vertex = -1;
-	int n_edge = -1;
-};
+enum ActiveMenuTypeAVLTree {NONE, INIT_AVLTREE, INSERT_AVLTREE, SEARCH_AVLTREE, DELETE_AVLTREE};
 
 class GUI {
 private:
+
+	LinkedList list;
+
+	AVLTree tree;
+	ActiveMenuTypeAVLTree activemenu_avltree = NONE;
+
+	InsertAnimationAVLTree insertanimationavltree;
+
 	Graph graph;
-	GraphInitState gr_init_state;
+	DijkstraAnimationGraph dijkstra_animation;
+	
+public :
+
+	void SetActiveMenuAVLTree(ActiveMenuTypeAVLTree newMenu);
+
+public :
+	bool isClickInit = false;
+	bool isClickRandom = false;
+	bool isClickLoadFile = false;
+	bool isClickInsert = false;
+	bool isClickDelete = false;
+	bool isClickDijkstra = false;
+	string inputstring = "";
+
 
 public:
-	GUI(): graph(false) {}
-
-	string inputstring = "";
-	bool ClickInit = false;
-	bool ClickInsert = false;
-	bool ClickDelete = false;
+	GUI();
 
 	void Start();
 	void DrawMainMenu();
-	void DrawSecondMenu();
 	void DrawHashTable();
 	void DrawLinkedList();
 	void DrawAVLTree();
 	void DrawGraph();
 	void DrawBack();
 
-	int Input(int posX, int posY);
-
+	void DrawSecondMenu();
+	void DrawListMenu();
 	void DrawGraphMenu();
 
+	bool LoadFileAVLTree();
+	bool LoadFileGraph();
+
+	void InitGraph();
+	void InsertGraph();
+	void DeleteGraph();
+	void DijkstraGraph();
+
+	int Input(int posX, int posY);   
 };
 
 extern GUI Gui;
-
 
 #endif // GUI_HPP

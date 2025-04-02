@@ -53,6 +53,28 @@ void Graph::delete_node(int id) {
 	if (active_node1 == id) { active_node1 = -1; }
 }
 
+void Graph::delete_edge(int id1, int id2) {
+	if (nodes.find(id1) == nodes.end() || nodes.find(id2) == nodes.end()) { std::cout << "Cant find node\n"; return; }
+	int i = 0;
+	for (auto& x : nodes[id1].adj) {
+		if (x.first == id2) {
+			nodes[id1].adj.erase(nodes[id1].adj.begin() + i);
+			break;
+		}
+		i++;
+	}
+	if (is_directed == false) {
+		i = 0;
+		for (auto& x : nodes[id2].adj) {
+			if (x.first == id1) {
+				nodes[id2].adj.erase(nodes[id2].adj.begin() + i);
+				break;
+			}
+			i++;
+		}
+	}
+}
+
 void Graph::update() {
 	static int cur_node = -1;
 
@@ -75,19 +97,41 @@ void Graph::update() {
 		for (auto& node : nodes) {
 			if (CheckCollisionPointCircle(mouse, node.second.pos, node_rad)) {
 				if (active_node1 != node.first) {
-					if (active_node1 != -1) { nodes[active_node1].is_highlighted = false; }
 					active_node1 = node.first;
-					node.second.is_highlighted = true;
 				}
 				else {
 					active_node1 = -1;
-					node.second.is_highlighted = false;
 				}
 				miss = false;
 				break;
 			}
 		}
-		if (miss == true) { nodes[active_node1].is_highlighted = false; active_node1 = -1; }
+		if (miss == true) { active_node1 = -1; }
+	}
+
+	// update active_edge (highlight)
+	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+		bool miss = true;
+
+		for (auto& node : nodes) {
+			int from = node.first;
+			for (auto& neighbor : node.second.adj) {
+				int to = neighbor.first;
+				if (CheckCollisionPointLine(mouse, nodes[from].pos, nodes[to].pos, 3.0f) == true) {
+					if (active_edge.first != from || active_edge.second != to) {
+						if (is_directed == false && from > to) { active_edge = { to, from }; }
+						else { active_edge = { from, to }; }
+						//std::cout << "Edge from " << active_edge.first << " to " << active_edge.second << std::endl;
+					}
+					else {
+						active_edge = { -1, -1 };
+					}
+					miss = false;
+					break;
+				}
+			}
+		}
+		if (miss == true) { active_edge = { -1, -1 }; }
 	}
 
 	if (cur_node >= 0) {
@@ -105,6 +149,10 @@ void Graph::clear() {
 
 int Graph::get_active1() {
 	return active_node1;
+}
+
+std::pair<int, int> Graph::get_active2() {
+	return active_edge;
 }
 
 void Graph::rand_graph(int n_vertex, int n_edge) {
@@ -149,16 +197,22 @@ void Graph::input_graph(std::ifstream& fin) {
 	}
 }
 
-void Graph::dijkstra(int id) {
-	if (nodes.find(id) == nodes.end()) { std::cout << "Can not find node\n"; return; }
+void Graph::dijkstra(int start) {
+	if (nodes.find(start) == nodes.end()) { std::cout << "Can not find node\n"; return; }
 
 	int n = nodes.size(); // num of nodes
-	std::vector <int> distance(n, INT_MAX);
-	std::vector <bool> processed(n, false);
-	distance[id] = 0;
+	std::unordered_map<int, int> distance;
+	std::unordered_map<int, bool> processed;
+	std::unordered_map<int, int> previous;
+	for (auto& node : nodes) {
+		distance[node.first] = INT_MAX;
+		processed[node.first] = false;
+		previous[node.first] = -1;
+	}
+	distance[start] = 0;
 
 	std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
-	pq.push({ 0, id });
+	pq.push({ 0, start });
 
 	while (pq.empty() == false) {
 		int a = pq.top().second; pq.pop();
@@ -170,14 +224,82 @@ void Graph::dijkstra(int id) {
 			int w = neighbor.second;
 			if (distance[a] + w < distance[b]) {
 				distance[b] = distance[a] + w;
+				previous[b] = a;
 				pq.push({ distance[b], b });
 			}
 		}
 	}
 
 	for (int i = 0; i < n; i++) {
-		printf("%d to %d: %d\n", id, i, distance[i]);
+		printf("To %d: %d\n", i, distance[i]);
+		int j = i;
+		while (previous[j] != -1) {
+			printf("%d <- ", j);
+			j = previous[j];
+		}
+		printf("%d\n", start);
 	}
+}
+
+std::vector<Graph::GraphStage> Graph::dijkstra_steps(int start) {
+	std::vector<GraphStage> steps;
+	if (nodes.find(start) == nodes.end()) { std::cout << "Can not find node\n"; return steps; }
+
+	int n = nodes.size(); // num of nodes
+	std::unordered_map<int, int> distance;
+	std::unordered_map<int, bool> processed;
+	std::unordered_map<int, int> previous;
+	for (auto& node : nodes) {
+		distance[node.first] = INT_MAX;
+		processed[node.first] = false;
+		previous[node.first] = -1;
+	}
+	distance[start] = 0;
+
+	std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
+	pq.push({ 0, start });
+
+	while (pq.empty() == false) {
+		int a = pq.top().second; pq.pop();
+		if (processed[a] == true) { continue; }
+		processed[a] = true;
+
+		steps.push_back({ distance, processed, previous, a, {-1,-1 } });
+
+		for (const auto& neighbor : nodes[a].adj) {
+			int b = neighbor.first;
+			int w = neighbor.second;
+
+			if (processed[b] == true) { continue; }
+
+			if (distance[a] + w < distance[b]) {
+				distance[b] = distance[a] + w;
+				previous[b] = a;
+				pq.push({ distance[b], b });
+			}
+
+			steps.push_back({ distance, processed, previous, a, {a, b} });
+		}
+	}
+
+	return steps;
+}
+
+void Graph::set_running_dijkstra(bool is_running) {
+	is_running_dijkstra = is_running;
+}
+
+void Graph::set_state(GraphStage state) {
+	active_node1 = state.current_node;
+	active_edge = state.active_edge;
+
+	if (is_directed == false && active_edge.first > active_edge.second) {
+		active_edge = { active_edge.second, active_edge.first };
+	}
+
+	this->distance = state.distance;
+	this->processed = state.processed;
+	this->previous = state.previous;
 }
 
 void Graph::print_nodes() {
@@ -196,13 +318,16 @@ void Graph::draw_node(Node node) {
 	int centerX = node.pos.x;
 	int centerY = node.pos.y;
 
-	if (node.is_highlighted == false) { DrawCircleV(node.pos, node_rad, C[1]); } else { DrawCircleV(node.pos, node_rad, C[5]); }
+	if (node.id != active_node1) { DrawCircleV(node.pos, node_rad, C[1]); }	else { DrawCircleV(node.pos, node_rad, C[5]); }
 	DrawCircleLinesV(node.pos, node_rad, C[3]);
-	DrawText(std::to_string(node.id).c_str(), centerX - node_rad / 8, centerY - node_rad / 5, 20, C[0]);
+	int text_width = MeasureText(std::to_string(node.id).c_str(), 20);
+	DrawText(std::to_string(node.id).c_str(), centerX - text_width / 2, centerY - 10, 20, C[0]);
 	//std::cout << "Drawing node id: " << node.id << std::endl;
 }
 
 void Graph::draw_edge(int from, int to, int weight) {
+	if (from == active_edge.first && to == active_edge.second) 
+		{ DrawLineEx(nodes[from].pos, nodes[to].pos, 5.0f, C[5]); }
 	DrawLineEx(nodes[from].pos, nodes[to].pos, 3.0f, C[3]);
 
 	// display weight
@@ -224,9 +349,26 @@ void Graph::draw() {
 		for (auto& neighbor : node.second.adj) {
 			int to = neighbor.first;
 			int weight = neighbor.second;
-			if (from < to) { draw_edge(from, to, weight); }
+			if (is_directed == false && from < to) { draw_edge(from, to, weight); }
  		}
+	}
 
+
+	Color tmp = Color{
+		(unsigned char)(C[1].r * 0.7f),
+		(unsigned char)(C[1].g * 0.7f),
+		(unsigned char)(C[1].b * 0.7f),
+		C[1].a
+	};
+	for (auto& node : nodes) {
 		draw_node(node.second);
+
+		if (is_running_dijkstra == true) {
+			if (processed[node.first] == true) { DrawCircleLinesV(node.second.pos, node_rad * 1.1, C[5]); }
+			if (distance[node.first] != INT_MAX) {
+				DrawText(std::to_string(distance[node.first]).c_str(), node.second.pos.x + 1.25*node_rad, node.second.pos.y, 20, C[0]);
+			}
+			else { DrawText("INF", node.second.pos.x + 1.25*node_rad, node.second.pos.y, 20, C[0]); }
+		}
 	}
 }

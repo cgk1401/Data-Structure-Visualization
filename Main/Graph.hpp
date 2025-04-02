@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <fstream>
 
+#include "raylib.h"
+
 class Graph {
 private:
 	struct Node {
@@ -14,20 +16,34 @@ private:
 
 		//int coordinateX, coordinateY;
 		Vector2 pos{ -100.0f, -100.0f };
-		//if the node should be highlighted or not
-		bool is_highlighted = false;
 		
-		Node() : id(-1), pos({ -100.0f, -100.0f }), is_highlighted(false) {};
-		Node(int id, float x = 0, float y = 0, bool is_high = false) : id(id), pos({ x,y }), is_highlighted(is_high) {};
+		Node() : id(-1), pos({ -100.0f, -100.0f }) {};
+		Node(int id, float x = 0, float y = 0, bool is_high = false) : id(id), pos({ x,y }) {};
 	};
 	float node_rad = 35.0f;
 	int active_node1 = -1;
+	std::pair<int, int> active_edge = { -1,-1 };
 
 	std::unordered_map <int, Node> nodes;
 	bool is_directed; //directed/undirected graph
 
+	bool is_running_dijkstra = false;
+	std::unordered_map<int, int> distance;
+	std::unordered_map<int, bool> processed;
+	std::unordered_map<int, int> previous;
+
 	void draw_node(Node node);
 	void draw_edge(int from, int to, int weight);
+
+public:
+	struct GraphStage {
+		std::unordered_map<int, int> distance;
+		std::unordered_map<int, bool> processed;
+		std::unordered_map<int, int> previous;
+
+		int current_node = -1;
+		std::pair<int, int> active_edge = { -1,-1 };
+	};
 
 public:
 	Graph(bool dir) : is_directed(dir) {}
@@ -35,15 +51,20 @@ public:
 	void add_node(int id);
 	void add_edge(int id1, int id2, int w);
 	void delete_node(int id);
+	void delete_edge(int id1, int id2);
 
 	void update();
 	void clear();
 	int get_active1();
+	std::pair<int, int> get_active2();
 
 	void rand_graph(int n_vertex, int n_edge);
 	void input_graph(std::ifstream& fin);
 
-	void dijkstra(int id);
+	void dijkstra(int start);
+	std::vector<GraphStage> dijkstra_steps(int start);
+	void set_running_dijkstra(bool is_running);
+	void set_state(GraphStage state);
 
 	void print_nodes();
 
