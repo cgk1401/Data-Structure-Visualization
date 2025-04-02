@@ -48,13 +48,14 @@ public:
 	GUI();
 
 	void Start();
-	void DrawMainMenu();
+	
 	void DrawHashTable();
 	void DrawLinkedList();
 	void DrawAVLTree();
 	void DrawGraph();
 	void DrawBack();
 
+	void DrawMainMenu();
 	void DrawSecondMenu();
 	void DrawListMenu();
 	void DrawGraphMenu();
