@@ -1,10 +1,56 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 #include <cstdlib>
 #include "raylib.h"
 #include "LinkedList.hpp"
 #include "Config.hpp"
+
+// Node display constants
+#define NODE_WIDTH 80.0f
+#define NODE_HEIGHT 60.0f
+#define NODE_RADIUS 30.0f
+#define NODE_SPACING 40.0f
+#define ANIM_SPEED 5.0f
+
+// Static member initialization
+float LinkedList::nodeScale = 1.0f;
+
+void LinkedList::calculate_layout() {
+    // Calculate node count
+    nodeCount = 0;
+    Node* temp = head;
+    while (temp) { nodeCount++; temp = temp->next; }
+
+    // Calculate required and available space
+    float requiredWidth = nodeCount * (NODE_WIDTH + NODE_SPACING);
+    float availableWidth = ScreenWidth * 0.9f; // 90% of screen width
+
+    // Automatic scaling if needed
+    if (requiredWidth > availableWidth) {
+        nodeScale = availableWidth / requiredWidth;
+    }
+    else {
+        nodeScale = 1.0f; // Default scale if fits
+    }
+
+    // Calculate positions with scaling
+    int index = 0;
+    temp = head;
+    float startX = (ScreenWidth - (nodeCount * (NODE_WIDTH + NODE_SPACING) * nodeScale)) / 2;
+
+    while (temp) {
+        float target_x = startX + (NODE_WIDTH + NODE_SPACING) * index * nodeScale;
+        float target_y = ScreenHeight / 2;
+
+        temp->target_pos = { target_x, target_y };
+        if (temp->pos.x < 0) temp->pos = { target_x - 100.0f, target_y };
+        temp->anim_progress = 0.0f;
+        temp = temp->next;
+        index++;
+    }
+}
 
 void LinkedList::add_node(int data) {
     Node* new_node = new Node(data);
@@ -18,36 +64,16 @@ void LinkedList::add_node(int data) {
         }
         current->next = new_node;
     }
-
-    int count = 0;
-    Node* temp = head;
-    while (temp) {
-        float target_x = ScreenWidth / 4 + (ScreenWidth * 7.0f / 40) * count;
-        float target_y = ScreenHeight / 2;
-        temp->target_pos = { target_x, target_y };
-        if (temp->pos.x < 0) temp->pos = { target_x - 100.0f, target_y };
-        temp->anim_progress = 0.0f;
-        temp = temp->next;
-        count++;
-    }
+    nodeCount++;
+    calculate_layout();
 }
 
 void LinkedList::add_node_front(int data) {
     Node* new_node = new Node(data);
     new_node->next = head;
     head = new_node;
-
-    int count = 0;
-    Node* temp = head;
-    while (temp) {
-        float target_x = ScreenWidth / 4 + (ScreenWidth * 7.0f / 40) * count;
-        float target_y = ScreenHeight / 2;
-        temp->target_pos = { target_x, target_y };
-        if (count == 0) temp->pos = { target_x - 100.0f, target_y };
-        temp->anim_progress = 0.0f;
-        temp = temp->next;
-        count++;
-    }
+    nodeCount++;
+    calculate_layout();
 }
 
 void LinkedList::delete_node(int data) {
@@ -58,6 +84,7 @@ void LinkedList::delete_node(int data) {
         head = head->next;
         if (active_node == data) active_node = -1;
         delete temp;
+        nodeCount--;
     }
     else {
         Node* current = head;
@@ -69,22 +96,15 @@ void LinkedList::delete_node(int data) {
             current->next = temp->next;
             if (active_node == data) active_node = -1;
             delete temp;
+            nodeCount--;
         }
     }
-
-    int count = 0;
-    Node* temp = head;
-    while (temp) {
-        temp->target_pos = { ScreenWidth / 4 + (ScreenWidth * 7.0f / 40) * count, ScreenHeight / 2 };
-        temp->anim_progress = 0.0f;
-        temp = temp->next;
-        count++;
-    }
+    calculate_layout();
 }
 
 void LinkedList::update_node_animation(Node* node, float delta_time) {
     if (node->anim_progress < 1.0f) {
-        node->anim_progress += anim_speed * delta_time;
+        node->anim_progress += ANIM_SPEED * delta_time;
         if (node->anim_progress > 1.0f) node->anim_progress = 1.0f;
         float t = node->anim_progress * node->anim_progress; // Quadratic easing
         node->pos.x = node->pos.x + (node->target_pos.x - node->pos.x) * t;
@@ -128,7 +148,7 @@ void LinkedList::update() {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !cur_node) {
         Node* current = head;
         while (current) {
-            if (CheckCollisionPointCircle(mouse, current->pos, node_rad)) {
+            if (CheckCollisionPointCircle(mouse, current->pos, NODE_RADIUS)) {
                 cur_node = current;
                 break;
             }
@@ -140,9 +160,9 @@ void LinkedList::update() {
         bool miss = true;
         Node* current = head;
         while (current) {
-            if (CheckCollisionPointCircle(mouse, current->pos, node_rad)) {
+            if (CheckCollisionPointCircle(mouse, current->pos, NODE_RADIUS)) {
                 if (active_node != current->data) {
-                    if (active_node != -1 && search_state == -1) { // Only reset if not searching
+                    if (active_node != -1 && search_state == -1) {
                         Node* temp = head;
                         while (temp && temp->data != active_node) temp = temp->next;
                         if (temp) temp->is_highlighted = false;
@@ -180,6 +200,7 @@ void LinkedList::clear() {
         head = head->next;
         delete temp;
     }
+    nodeCount = 0;
     active_node = -1;
     search_state = -1;
 }
@@ -217,28 +238,31 @@ void LinkedList::print_list() {
 }
 
 void LinkedList::draw_node(const Node* node) {
-    int width = MeasureText(std::to_string(node->data).c_str(), 20);
-    int centerX = node->pos.x;
-    int centerY = node->pos.y;
+    std::string dataText = std::to_string(node->data);
+    int fontSize = (int)(20 * nodeScale); // Scale font size too
+    int width = MeasureText(dataText.c_str(), fontSize);
 
-    float pulse = node->is_highlighted ? (sin(GetTime() * 4.0f) * 0.2f + 1.0f) : 1.0f;
-    float radius = node_rad * pulse;
+    float pulse = node->is_highlighted ? (sinf(GetTime() * 4.0f) * 0.2f + 1.0f) : 1.0f;
+    float radius = NODE_RADIUS * pulse * nodeScale;
 
-    if (!node->is_highlighted) {
-        DrawCircleV(node->pos, radius, C[1]);
-    }
-    else {
-        DrawCircleV(node->pos, radius, C[5]);
-    }
+    // Draw node
+    Color nodeColor = node->is_highlighted ? C[5] : C[1];
+    DrawCircleV(node->pos, radius, nodeColor);
     DrawCircleLinesV(node->pos, radius, C[3]);
-    DrawText(std::to_string(node->data).c_str(), centerX - node_rad / 8, centerY - node_rad / 5, 20, C[0]);
+
+    // Draw text centered
+    DrawText(dataText.c_str(),
+        node->pos.x - width / 2,
+        node->pos.y - fontSize / 2,
+        fontSize, C[0]);
 }
 
 void LinkedList::draw_link(const Node* from, const Node* to) {
-    DrawLineEx(from->pos, to->pos, 3.0f, C[3]);
+    DrawLineEx(from->pos, to->pos, 3.0f * nodeScale, C[3]);
 }
 
 void LinkedList::draw() {
+    // Draw all nodes centered on screen
     Node* current = head;
     while (current) {
         draw_node(current);
@@ -252,13 +276,13 @@ void LinkedList::draw() {
 bool LinkedList::search_node(int data) {
     Node* current = head;
     while (current) {
-        current->is_highlighted = false; // Reset all highlights
+        current->is_highlighted = false;
         current = current->next;
     }
     active_node = data;
-    search_state = 0; // Start searching
+    search_state = 0;
     search_timer = 0.5f;
-    return true; // Assume success; actual result determined in update
+    return true;
 }
 
 LinkedList::~LinkedList() {

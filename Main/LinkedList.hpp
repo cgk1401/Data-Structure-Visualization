@@ -5,6 +5,8 @@
 #include <vector>
 #include <fstream>
 
+
+
 class LinkedList {
 private:
     struct Node {
@@ -35,6 +37,8 @@ private:
     void draw_link(const Node* from, const Node* to);
     void update_node_animation(Node* node, float delta_time);
 
+    int nodeCount = 0;
+
 public:
     LinkedList() : head(nullptr) {}
 
@@ -52,6 +56,18 @@ public:
 
     bool search_node(int data);
     int get_search_state() const { return search_state; } // New: Public getter
+
+
+
+    static int currentDisplayMode;
+    static float listScrollX;
+    static float nodeScale;
+
+    void calculate_layout();
+
+    static int Max(int a, int b) {
+        return (a > b) ? a : b;
+    }
 
     ~LinkedList();
 };
