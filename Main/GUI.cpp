@@ -84,16 +84,50 @@ void GUI::DrawSecondMenu() {
     buttoninsert.DrawButton();
     buttondelete.DrawButton();
     buttonsearch.DrawButton();
-    buttonclear.DrawButton(); // Added for consistency
+    buttonclear.DrawButton();
 }
 
 void GUI::DrawListMenu() {
-    DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, C[1]);
-    buttoninit.DrawButton();
-    buttoninsert.DrawButton();
-    buttondelete.DrawButton();
-    buttonsearch.DrawButton();
-    buttonclear.DrawButton(); // Keep only these 5 buttons
+    // Menu constants
+    const float MENU_WIDTH = ScreenWidth / 5.0f;
+    const float MENU_HEIGHT = ScreenHeight;
+
+    // Draw menu background
+    DrawRectangleRounded(
+        { 0, 0, MENU_WIDTH, MENU_HEIGHT },
+        0.1f, 10, C[1]
+    );
+
+    // Draw "Linked List" title inside menu
+    const char* titleText = "Linked List";
+    const int TITLE_FONT_SIZE = 28;
+    Vector2 titleSize = MeasureTextEx(GetFontDefault(), titleText, TITLE_FONT_SIZE, 1);
+    float titleX = (MENU_WIDTH - titleSize.x) / 2;
+    float titleY = 20.0f; // Positioned at top of menu
+    DrawText(titleText, titleX, titleY, TITLE_FONT_SIZE, C[0]);
+
+    // Button layout constants
+    const float BUTTON_WIDTH = MENU_WIDTH * 0.85f;
+    const float BUTTON_HEIGHT = 40.0f;
+    const float BUTTON_MARGIN_X = MENU_WIDTH * 0.075f;
+    const float BUTTON_SPACING = 15.0f;
+    const float BUTTON_START_Y = titleY + titleSize.y + 20.0f; // Start below title
+
+    // Button configuration helper
+    auto ConfigureButton = [&](Button& button, int position) {
+        button.coordinateX = BUTTON_MARGIN_X;
+        button.coordinateY = BUTTON_START_Y + position * (BUTTON_HEIGHT + BUTTON_SPACING);
+        button.width = BUTTON_WIDTH;
+        button.height = BUTTON_HEIGHT;
+        button.DrawButton();
+        };
+
+    // Draw all buttons
+    ConfigureButton(buttoninit, 0);
+    ConfigureButton(buttoninsert, 1);
+    ConfigureButton(buttondelete, 2);
+    ConfigureButton(buttonsearch, 3);
+    ConfigureButton(buttonclear, 4);
 }
 
 void GUI::DrawHashTable() {
@@ -112,7 +146,7 @@ void GUI::DrawLinkedList() {
     if (buttoninit.IsClick()) {
         currentInputMode = INIT;
         inputActive = true;
-        inputstring = "";  // Reset input
+        inputstring = "";
     }
     if (buttoninsert.IsClick()) {
         currentInputMode = INSERT;
@@ -138,8 +172,8 @@ void GUI::DrawLinkedList() {
         list.clear();
     }
 
-    // Process input when Enter is pressed
-    int val = Gui.Input(SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + 100);
+    int val = Gui.Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
+
     if (val != -1) {
         switch (currentInputMode) {
         case INIT:
@@ -160,20 +194,29 @@ void GUI::DrawLinkedList() {
         default:
             break;
         }
-        inputActive = false;  // Deactivate input box after processing
+        inputActive = false;
         currentInputMode = NONE;
     }
 
     list.update();
     list.draw();
 
+    BeginScissorMode(SecondMenuWidth, 0, ScreenWidth - SecondMenuWidth, ScreenHeight);
+    {
+        // Apply scroll offset to the list's drawing position
+        list.setDrawOffset(linkedListScrollY);
+        list.update();
+        list.draw();
+    }
+    EndScissorMode();
+
     if (search_result_timer > 0.0f) {
         search_result_timer -= GetFrameTime();
         if (list.get_active() != -1 && list.get_search_state() == 1) {
-            DrawText("Found", ScreenWidth * float(2) / 5, ScreenHeight - 50, 20, GREEN);
+            DrawText("Found", ScreenWidth / 12, ScreenHeight - 50, 20, GREEN);
         }
         else if (list.get_search_state() == 2) {
-            DrawText("Not Found", ScreenWidth * float(2) / 5, ScreenHeight - 50, 20, RED);
+            DrawText("Not Found", ScreenWidth / 12, ScreenHeight - 50, 20, RED);
         }
     }
 }
@@ -189,40 +232,110 @@ void GUI::DrawGraph() {
 }
 
 void GUI::DrawBack() {
-    DrawText("Linked List", ScreenWidth * float(2) / 5, 100, 40, C[0]);
-    Rectangle BackButton = { 50, 50, 150, 50 };
-    DrawRectangleRec(BackButton, RED);
-    DrawText("Back", 100, 65, 30, WHITE);
+    // Back button constants
+    const float BUTTON_WIDTH = 120.0f;
+    const float BUTTON_HEIGHT = 40.0f;
+    const float BUTTON_MARGIN = 20.0f;
+    const float CORNER_RADIUS = 0.3f;
+    const int CORNER_SEGMENTS = 10;
+    const Color HOVER_COLOR = { 200, 50, 50, 255 };
 
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        Vector2 mouse = GetMousePosition();
-        if (CheckCollisionPointRec(mouse, BackButton)) {
-            if (CurrentStruture == LINKEDLIST) {
-                list.clear();
-            }
-            CurrentStruture = MENU;
-            inputActive = false;         // Reset input box state
-            currentInputMode = NONE;     // Reset input mode
-            search_result_timer = 0.0f;  // Reset timer
-        }
+    // Position at bottom of menu
+    Rectangle BackButton = {
+        BUTTON_MARGIN,
+        ScreenHeight - BUTTON_HEIGHT - BUTTON_MARGIN,
+        BUTTON_WIDTH,
+        BUTTON_HEIGHT
+    };
+
+    // Hover effect
+    Vector2 mouse = GetMousePosition();
+    bool isHovered = CheckCollisionPointRec(mouse, BackButton);
+
+    // Set button color
+    Color buttonColor = isHovered ? HOVER_COLOR : RED;
+
+    // Draw button
+    DrawRectangleRounded(BackButton, CORNER_RADIUS, CORNER_SEGMENTS, buttonColor);
+
+    // Center text in button
+    const char* buttonText = "Back";
+    Vector2 textSize = MeasureTextEx(GetFontDefault(), buttonText, 20, 1);
+    DrawText(buttonText,
+        BackButton.x + (BackButton.width - textSize.x) / 2,
+        BackButton.y + (BackButton.height - textSize.y) / 2,
+        20, WHITE);
+
+    // Handle click
+    if (isHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        if (CurrentStruture == LINKEDLIST) list.clear();
+        CurrentStruture = MENU;
+        inputActive = false;
+        currentInputMode = NONE;
+        search_result_timer = 0.0f;
     }
 }
 
 void GUI::DrawInputBox(int posX, int posY) {
     if (!inputActive) return;
 
-    const char* label = "";
+    // Style constants matching other buttons
+    const float MENU_WIDTH = ScreenWidth / 5.0f;
+    const float BUTTON_WIDTH = MENU_WIDTH * 0.85f;
+    const float BUTTON_HEIGHT = 40.0f;
+    const float BUTTON_MARGIN_X = MENU_WIDTH * 0.075f;
+    const float CORNER_RADIUS = 0.3f;
+    const int SEGMENTS = 10;
+    const float EXTRA_SPACING = 30.0f; // Increased spacing below clear button
+
+    // Position input box lower with more spacing
+    Vector2 boxPosition = {
+        buttonclear.coordinateX,
+        buttonclear.coordinateY + buttonclear.height + EXTRA_SPACING
+    };
+
+    // Get appropriate label text
+    const char* labelText = "";
     switch (currentInputMode) {
-    case INIT:    label = "Init Nodes: "; break;
-    case INSERT:  label = "Insert Value: "; break;
-    case DELETE:  label = "Delete Value: "; break;
-    case SEARCH:  label = "Search Value: "; break;
+    case INIT:    labelText = "Init Nodes: "; break;
+    case INSERT:  labelText = "Insert Value: "; break;
+    case DELETE:  labelText = "Delete Value: "; break;
+    case SEARCH:  labelText = "Search Value: "; break;
     default:      return;
     }
 
-    DrawText(label, posX, posY - 20, 20, C[0]);
-    DrawRectangle(posX, posY, 100, 30, C[1]);  // Draw input box background
-    DrawText(inputstring.c_str(), posX + 5, posY + 5, 20, C[0]);  // Draw current input
+    // Draw label
+    DrawText(labelText, boxPosition.x, boxPosition.y - 25, 20, C[0]);
+
+    // Create input box rectangle
+    Rectangle inputBox = {
+        boxPosition.x,
+        boxPosition.y,
+        BUTTON_WIDTH,
+        BUTTON_HEIGHT
+    };
+
+    // Draw main rounded box (no border)
+    DrawRectangleRounded(inputBox, CORNER_RADIUS, SEGMENTS, C[2]);
+
+    // Draw input text (centered vertically)
+    Vector2 textPosition = {
+        boxPosition.x + 10,
+        boxPosition.y + (BUTTON_HEIGHT - 20) / 2
+    };
+    DrawText(inputstring.c_str(), textPosition.x, textPosition.y, 20, C[0]);
+
+    // Draw blinking cursor
+    if ((int)(GetTime() * 2) % 2) { // Blinking effect
+        int textWidth = MeasureText(inputstring.c_str(), 20);
+        DrawRectangle(
+            textPosition.x + 5 + textWidth,
+            textPosition.y,
+            2,
+            20,
+            C[0]
+        );
+    }
 }
 
 int GUI::Input(int posX, int posY) {
