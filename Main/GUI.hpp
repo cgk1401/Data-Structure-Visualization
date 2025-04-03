@@ -14,6 +14,7 @@
 
 enum TypeDataStructure { MENU, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
 enum ActiveMenuTypeAVLTree {NONE, INIT_AVLTREE, INSERT_AVLTREE, SEARCH_AVLTREE, DELETE_AVLTREE};
+enum ActiveMenuInitAVLTree{NONEINITAVLTREE, RANDOM_AVLTREE, LOADFILE_AVLTREE};
 
 
 class GUI {
@@ -23,7 +24,7 @@ private:
 
 	AVLTree tree;
 	ActiveMenuTypeAVLTree activemenu_avltree = NONE;
-
+	ActiveMenuInitAVLTree activemenuinit_avltree = NONEINITAVLTREE;
 	InsertAnimationAVLTree insertanimationavltree;
 
 public:
@@ -32,6 +33,7 @@ public:
 public :
 
 	void SetActiveMenuAVLTree(ActiveMenuTypeAVLTree newMenu);
+	void SetActiveMenuInitAVLTree(ActiveMenuInitAVLTree newMenu);
 
 public :
 	bool isClickInit = false;
@@ -60,6 +62,8 @@ public :
 
 public :
 
+	/*void StepByStep();
+	void MakeImage();*/
 	void DrawListMenu();
 
 	int Input(int posX, int posY);   

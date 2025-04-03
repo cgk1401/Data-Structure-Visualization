@@ -24,6 +24,7 @@ bool Button::IsCover() {
 	return GetMouseX() >= this->coordinateX && GetMouseX() <= this->coordinateX + this->width && GetMouseY() >= this->coordinateY && GetMouseY() <= this->coordinateY + this->height;
 }
 void Button::DrawButton() {
+	Font custom = LoadFont("../../PublicSans-Bold.ttf");
 	int textWidth = MeasureText(this->s.c_str(), 20);
 	int centerX = this->coordinateX + (this->width - textWidth) / 2;
 	int centerY = this->coordinateY + (this->height - 20) / 2;
@@ -39,9 +40,12 @@ void Button::DrawButton() {
 		};
 	}
 	Rectangle rectange = { coordinateX, coordinateY, width, height };
-	DrawRectangleRounded(rectange, 0.3f, 100, drawColor);
-	//DrawRectangle(coordinateX, coordinateY, width, height, drawColor);
-	DrawText(this->s.c_str(), centerX, centerY, 20, C[0]);
+	DrawTextEx(custom, s.c_str(), {centerX * 1.0f, centerY * 1.0f}, 25, 1, C[0]);
+	Vector2 mouse = GetMousePosition();
+	if (CheckCollisionPointRec(mouse, rectange)) {
+		DrawRectangleRoundedLines(rectange, 0.5f, 10, BLACK);
+		DrawLineEx({ coordinateX + 10, coordinateY + 15 }, { coordinateX + 10, coordinateY + height - 15 }, 4.0f, DARKBLUE);
+	}
 
 }
 
@@ -53,4 +57,8 @@ bool Button::IsClick() {
 
 void Button::setColor(Color color) {
 	this->color = color;
+}
+
+void Button::DrawClickEffect(){
+	DrawLineEx({ coordinateX + 10, coordinateY + 15}, { coordinateX + 10, coordinateY + height - 15 }, 4.0f, DARKBLUE);
 }

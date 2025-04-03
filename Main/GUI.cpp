@@ -21,6 +21,15 @@ void GUI::SetActiveMenuAVLTree(ActiveMenuTypeAVLTree newMenu) {
 	}
 }
 
+void GUI::SetActiveMenuInitAVLTree(ActiveMenuInitAVLTree newMenu) {
+    if (activemenuinit_avltree == newMenu) {
+        activemenuinit_avltree = newMenu;
+    }
+    else {
+        activemenuinit_avltree = newMenu;
+    }
+}
+
 void GUI::Start() {
     InitWindow(ScreenWidth, ScreenHeight, "Data Structure Visualization");
 
@@ -60,9 +69,11 @@ void GUI::Start() {
 }
 
 void GUI::DrawMainMenu() {
-	DrawText("Choose Data Structure", ScreenWidth * float(2) / 5, ScreenHeight * float(5) / 6, 40, C[0]);
 
-	Rectangle HASHTABLEBUTTON = { ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
+    Font customfont = LoadFont("../../PublicSans-Bold.ttf");
+    DrawTextEx(customfont, "Choose Data Structure", { ScreenWidth * float(2) / 5, ScreenHeight * float(5) / 6 }, 60, 1, C[0]);
+
+   	Rectangle HASHTABLEBUTTON = { ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
 
 	Rectangle LINKEDLISTBUTTON = { ScreenWidth * float(3) / 5, ScreenHeight * float(1) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
 
@@ -74,11 +85,11 @@ void GUI::DrawMainMenu() {
 	DrawRectangleRounded(LINKEDLISTBUTTON, 0.3f, 10, C[2]);
 	DrawRectangleRounded(AVLTREEBUTTON, 0.3f, 10, C[2]);
 	DrawRectangleRounded(GRAPHBUTTON, 0.3f, 10, C[2]);
-
-    DrawText("HASHTABLE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
-    DrawText("LINKEDLIST", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
-    DrawText("AVLTREE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
-    DrawText("GRAPH", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
+    
+    DrawTextEx(customfont, "HashTable", { ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2 }, 30, 1, C[0]);
+    DrawTextEx(customfont, "AVL", { ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2 }, 30, 1, C[0]);
+    DrawTextEx(customfont, "LINKEDLIST", { ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2 }, 30, 1, C[0]);
+    DrawTextEx(customfont, "GRAPH", { ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2 }, 30, 1, C[0]);
 
 	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         Vector2 mouse = GetMousePosition();
@@ -163,7 +174,6 @@ void GUI::DrawLinkedList() {
 
 void GUI::DrawAVLTree() {
     Gui.DrawSecondMenu();
-    // Xử lý nút menu
     if (buttoninit.IsClick()) Gui.SetActiveMenuAVLTree(INIT_AVLTREE);
     else if (buttoninsert.IsClick()) Gui.SetActiveMenuAVLTree(INSERT_AVLTREE);
     else if (buttonsearch.IsClick()) Gui.SetActiveMenuAVLTree(SEARCH_AVLTREE);
@@ -171,49 +181,52 @@ void GUI::DrawAVLTree() {
 
 
     if (activemenu_avltree == INIT_AVLTREE) {
+        buttoninit.DrawClickEffect();
         buttonrandom.DrawButton();
         buttonloadfile.DrawButton();
 
-        if (buttonrandom.IsClick()) {
+        if (buttonrandom.IsClick())  Gui.SetActiveMenuInitAVLTree(RANDOM_AVLTREE);
+        else if (buttonloadfile.IsClick())  Gui.SetActiveMenuInitAVLTree(LOADFILE_AVLTREE);
+        
+
+        if (activemenuinit_avltree == RANDOM_AVLTREE) {
+            buttonrandom.DrawClickEffect();
             tree.Random();
-
-            Gui.isClickRandom = true;
-            Gui.isClickLoadFile = false;
+            SetActiveMenuInitAVLTree(NONEINITAVLTREE);
         }
-
-        if (buttonloadfile.IsClick()) {
-            // Clear the existing tree before loading from file
-
+        else if (activemenuinit_avltree == LOADFILE_AVLTREE) {
+            buttonloadfile.DrawClickEffect();
             Gui.LoadFileAVLTree();
             Gui.insertanimationavltree.SetTree(&tree);
-            Gui.isClickLoadFile = true;
-            Gui.isClickRandom = false;
+            SetActiveMenuInitAVLTree(NONEINITAVLTREE);
         }
-
-
     }
-
-
     else if (activemenu_avltree == INSERT_AVLTREE) {
-        Gui.isClickRandom = false;
+        buttoninsert.DrawClickEffect();
 
-        Gui.isClickLoadFile = false;
         DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, BLACK);
         int value = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
         if (value != -1) {
             Gui.insertanimationavltree.StartInsertAnimation(value);
-            Gui.isClickInsert = true;
 
         }
-    }
-    if (Gui.isClickInsert == true) {
         Gui.insertanimationavltree.UpdateStep();
-
+        
         if (Gui.insertanimationavltree.isFinished() == true) {
-            Gui.isClickInsert = false;
-            Gui.activemenu_avltree = NONE;
+            //Gui.isClickInsert = false;
+            SetActiveMenuInitAVLTree(NONEINITAVLTREE);
         }
+
     }
+
+    else if (activemenu_avltree == SEARCH_AVLTREE) {
+        buttonsearch.DrawClickEffect();
+    }
+
+    else if (activemenu_avltree == DELETE_AVLTREE) {
+        buttondelete.DrawClickEffect();
+    }
+
     tree.DrawTree();
 
 
@@ -256,6 +269,7 @@ void GUI::DrawSecondMenu() {
     buttonsearch.DrawButton();
 }
 
+
 void GUI::DrawListMenu() {
     DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, C[1]);
     buttoninit.DrawButton();
@@ -266,15 +280,30 @@ void GUI::DrawListMenu() {
 }
 
 void GUI::DrawBack() {
-    DrawText("#Data Structure", ScreenWidth * float(2) / 5, 100, 40, C[0]);
 
-    Rectangle BackButton = { 50, 50, 150, 50 };
-    DrawRectangleRec(BackButton, RED);
-    DrawText("Back", 100, 65, 30, C[0]);
+    Image image = LoadImage("../../Arrow_Back.png");
+    ImageResize(&image, 70, 70);
+    Texture2D texture = LoadTextureFromImage(image);
 
+    Vector2 pos = { 50, 50 };
+    DrawTexture(texture, pos.x, pos.y, WHITE);
+    Rectangle arrowback = {
+        pos.x,
+        pos.y,
+        (float)texture.width,
+        (float)texture.height
+    };
+
+    UnloadImage(image);
+    if (CheckCollisionPointRec(GetMousePosition(), arrowback)) {
+        DrawTexture(texture, pos.x, pos.y, Color{ 200, 200, 255, 255 }); // hơi xanh nhẹ
+    }
+    else {
+        DrawTexture(texture, pos.x, pos.y, WHITE);
+    }
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         Vector2 mouse = GetMousePosition();
-        if (CheckCollisionPointRec(mouse, BackButton)) {
+        if (CheckCollisionPointRec(mouse, arrowback)) {
             if (CurrentStruture == LINKEDLIST) {
                 list.clear();
             }
@@ -284,11 +313,13 @@ void GUI::DrawBack() {
 			}
 
             CurrentStruture = MENU;
-            isClickInit = false;
-            isClickInsert = false;
-            isClickDelete = false;
+
+
+            SetActiveMenuAVLTree(NONE);
+            SetActiveMenuInitAVLTree(NONEINITAVLTREE);
         }
     }
+
 }
 
 int GUI::Input(int posX, int posY) {
@@ -317,3 +348,7 @@ int GUI::Input(int posX, int posY) {
 
     return -1;
 }
+
+//void GUI::StepByStep() {
+//
+//}

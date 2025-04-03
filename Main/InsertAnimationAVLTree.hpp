@@ -16,7 +16,7 @@ private:
 	vector <Node*> path;
 
 	float AnimationTime;
-	float duration; // thời gian để hoàn thành mỗi bước animation
+	float duration;
 
 	Node* newNode;
 	bool RotateSecond;
@@ -26,7 +26,6 @@ private:
 	Node* NodeRotate;
 	map <Node*, Vector2> RotateStartPosition;
 	map <Node*, Vector2> RotateTargetPosition;
-
 
 public:
 	InsertAnimationAVLTree(AVLTree* root);

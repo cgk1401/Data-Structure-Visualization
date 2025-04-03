@@ -24,6 +24,7 @@ public:
 	bool IsCover();
 	bool IsClick();
 	void setColor(Color color);
+	void DrawClickEffect();
 };
 class ButtonInit : public Button {
 public:

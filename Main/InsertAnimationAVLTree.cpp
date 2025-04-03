@@ -80,8 +80,6 @@ void InsertAnimationAVLTree::UpdateStep() {
 
 	switch (AnimationStep) {
 	case 1:
-
-
 		if (Indexpath < path.size()) {
 			if (t >= 1.0) {
 				path[Indexpath]->isNodeHighLighted = true;
@@ -119,7 +117,6 @@ void InsertAnimationAVLTree::UpdateStep() {
 				newNode = node;
 				break;
 			}
-
 		}
 		if (newNode != nullptr) {
 			newNode->isNodeInserted = true;
@@ -237,3 +234,16 @@ void InsertAnimationAVLTree::UpdateStep() {
 bool InsertAnimationAVLTree::isFinished() const {
 	return AnimationStep == 0;
 }
+
+//void InsertAnimationAVLTree::NextStep() {
+//	if (AnimationStep == 0){
+//		if (AnimationStep == 0) {
+//			StartInsertAnimation(InsertValue);
+//		}
+//		else if (AnimationStep < 6) {
+//			AnimationTime = duration;  
+//		}
+//	}
+//
+//}
+
