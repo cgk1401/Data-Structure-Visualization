@@ -579,7 +579,7 @@ void GUI::DrawBack() {
 	static Texture2D texture;
 	static bool isLoaded = false;
 	if (!isLoaded) {
-		Image image = LoadImage("../../Arrow_Back.png");
+		Image image = LoadImage("../../Data-Structure-Visualization/assets/Arrow_Back.png");
 		ImageResize(&image, 50, 50);
 		texture = LoadTextureFromImage(image);
 		UnloadImage(image); 
