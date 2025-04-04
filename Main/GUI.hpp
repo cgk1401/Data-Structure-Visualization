@@ -6,8 +6,10 @@
 #include "raylib.h"
 #include "LinkedList.hpp"
 #include "AVLTree.hpp"
+#include "Graph.hpp"
 #include "tinyfiledialogs.h"
 #include "InsertAnimationAVLTree.hpp"
+#include "DijkstraAnimationGraph.hpp"
 
 #include <fstream>
 
@@ -15,7 +17,6 @@
 enum TypeDataStructure { MENU, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
 enum ActiveMenuTypeAVLTree {NONE, INIT_AVLTREE, INSERT_AVLTREE, SEARCH_AVLTREE, DELETE_AVLTREE};
 enum ActiveMenuInitAVLTree{NONEINITAVLTREE, RANDOM_AVLTREE, LOADFILE_AVLTREE};
-
 
 class GUI {
 private:
@@ -27,8 +28,8 @@ private:
 	ActiveMenuInitAVLTree activemenuinit_avltree = NONEINITAVLTREE;
 	InsertAnimationAVLTree insertanimationavltree;
 
-public:
-	string inputstring = "";
+	Graph graph;
+	DijkstraAnimationGraph dijkstra_animation;
 	
 public :
 
@@ -41,6 +42,8 @@ public :
 	bool isClickLoadFile = false;
 	bool isClickInsert = false;
 	bool isClickDelete = false;
+	bool isClickDijkstra = false;
+	string inputstring = "";
 
 
 public:
@@ -54,17 +57,21 @@ public:
 	void DrawGraph();
 	void DrawBack();
 
-	bool LoadFileAVLTree();
-public :
-
 	void DrawMainMenu();
 	void DrawSecondMenu();
+	void DrawListMenu();
+	void DrawGraphMenu();
 
-public :
+	bool LoadFileAVLTree();
+	bool LoadFileGraph();
 
+	void InitGraph();
+	void InsertGraph();
+	void DeleteGraph();
+	void DijkstraGraph();
 	/*void StepByStep();
 	void MakeImage();*/
-	void DrawListMenu();
+	//void DrawListMenu();
 
 	int Input(int posX, int posY);   
 };

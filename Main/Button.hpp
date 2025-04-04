@@ -63,6 +63,8 @@ extern ButtonSearch buttonsearch;
 extern ButtonRandom buttonrandom;
 extern ButtonLoadFile buttonloadfile;
 extern ButtonClear buttonclear;
-
+extern Button buttonvertex;
+extern Button buttonedge;
+extern Button buttondijkstra;
 
 #endif // BUTTON_HPP
