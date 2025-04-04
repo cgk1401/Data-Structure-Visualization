@@ -110,70 +110,158 @@ void GUI::DrawMainMenu() {
             CurrentStruture = GRAPH;
         }
     }
-
 }
 
+void GUI::DrawSecondMenu() {
+    DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, C[1]);
+    buttoninit.DrawButton();
+    buttoninsert.DrawButton();
+    buttondelete.DrawButton();
+    buttonsearch.DrawButton();
+    buttonclear.DrawButton();
+}
+
+void GUI::DrawListMenu() {
+    // Menu constants
+    const float MENU_WIDTH = ScreenWidth / 5.0f;
+    const float MENU_HEIGHT = ScreenHeight;
+
+    // Draw menu background
+    DrawRectangleRounded(
+        { 0, 0, MENU_WIDTH, MENU_HEIGHT },
+        0.1f, 10, C[1]
+    );
+
+    // Draw "Linked List" title inside menu
+    const char* titleText = "Linked List";
+    const int TITLE_FONT_SIZE = 28;
+    Vector2 titleSize = MeasureTextEx(GetFontDefault(), titleText, TITLE_FONT_SIZE, 1);
+    float titleX = (MENU_WIDTH - titleSize.x) / 2;
+    float titleY = 20.0f; // Positioned at top of menu
+    DrawText(titleText, titleX, titleY, TITLE_FONT_SIZE, C[0]);
+
+    // Button layout constants
+    const float BUTTON_WIDTH = MENU_WIDTH * 0.85f;
+    const float BUTTON_HEIGHT = 40.0f;
+    const float BUTTON_MARGIN_X = MENU_WIDTH * 0.075f;
+    const float BUTTON_SPACING = 15.0f;
+    const float BUTTON_START_Y = titleY + titleSize.y + 20.0f; // Start below title
+
+    // Button configuration helper
+    auto ConfigureButton = [&](Button& button, int position) {
+        button.coordinateX = BUTTON_MARGIN_X;
+        button.coordinateY = BUTTON_START_Y + position * (BUTTON_HEIGHT + BUTTON_SPACING);
+        button.width = BUTTON_WIDTH;
+        button.height = BUTTON_HEIGHT;
+        button.DrawButton();
+        };
+
+    // Draw all buttons
+    ConfigureButton(buttoninit, 0);
+    ConfigureButton(buttoninsert, 1);
+    ConfigureButton(buttondelete, 2);
+    ConfigureButton(buttonsearch, 3);
+    ConfigureButton(buttonclear, 4);
+}
+
+void GUI::DrawGraphMenu() {
+    DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, C[1]);
+    buttoninit.DrawButton();
+    buttoninsert.DrawButton();
+    buttondelete.DrawButton();
+    buttonsearch.DrawButton();
+    buttonclear.DrawButton();
+}
+   
 void GUI::DrawHashTable() {
-	Gui.DrawSecondMenu();
-	Gui.DrawBack();
+    Gui.DrawSecondMenu();
+    Gui.DrawBack();
 }
 
-void GUI::DrawLinkedList() {
+void GUI::DrawLinkedList(){
     Gui.DrawListMenu();
     Gui.DrawBack();
 
+    // Draw the reusable input box at a fixed position
+    Gui.DrawInputBox(SecondMenuWidth* float(1) / 3 + 40, SecondMenuHeight + 100);
+
+    // Handle button clicks to set input mode
     if (buttoninit.IsClick()) {
-        Gui.isClickInit = true;
+        currentInputMode = INIT;
+        inputActive = true;
+        inputstring = "";
     }
-    if (Gui.isClickInit) {
-        DrawText("Nodes : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(0.7) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, C[0]);
-        int tmp = Input(SecondMenuWidth * float(1) / 3 + 140, SecondMenuHeight + SecondMenuHeight * float(0.7) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
-
-        if (tmp != -1) {
-            list.clear();
-            list.rand_list(tmp);
-            list.print_list();
-            Gui.isClickInit = false;
-        }
-    }
-
     if (buttoninsert.IsClick()) {
-        Gui.isClickInsert = true;
+        currentInputMode = INSERT;
+        inputActive = true;
+        inputstring = "";
     }
-    if (Gui.isClickInsert) {
-        DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, C[0]);
-        int val = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
-
-        if (val != -1) {
-            list.add_node(val);
-            Gui.isClickInsert = false;
-        }
-    }
-
     if (buttondelete.IsClick()) {
         if (list.get_active() >= 0) {
             list.delete_node(list.get_active());
         }
         else {
-            Gui.isClickDelete = true;
+            currentInputMode = DELETE;
+            inputActive = true;
+            inputstring = "";
         }
     }
-    if (Gui.isClickDelete) {
-        DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(3) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, C[0]);
-        int val = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(3) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
-
-        if (val != -1) {
-            list.delete_node(val);
-            Gui.isClickDelete = false;
-        }
+    if (buttonsearch.IsClick()) {
+        currentInputMode = SEARCH;
+        inputActive = true;
+        inputstring = "";
     }
-
     if (buttonclear.IsClick()) {
         list.clear();
     }
 
+    int val = Gui.Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
+
+    if (val != -1) {
+        switch (currentInputMode) {
+        case INIT:
+            list.clear();
+            list.rand_list(val);
+            list.print_list();
+            break;
+        case INSERT:
+            list.add_node(val);
+            break;
+        case DELETE:
+            list.delete_node(val);
+            break;
+        case SEARCH:
+            list.search_node(val);
+            search_result_timer = 2.0f;
+            break;
+        default:
+            break;
+        }
+        inputActive = false;
+        currentInputMode = NONE;
+    }
+
     list.update();
     list.draw();
+
+    BeginScissorMode(SecondMenuWidth, 0, ScreenWidth - SecondMenuWidth, ScreenHeight);
+    {
+        // Apply scroll offset to the list's drawing position
+        list.setDrawOffset(linkedListScrollY);
+        list.update();
+        list.draw();
+    }
+    EndScissorMode();
+
+    if (search_result_timer > 0.0f) {
+        search_result_timer -= GetFrameTime();
+        if (list.get_active() != -1 && list.get_search_state() == 1) {
+            DrawText("Found", ScreenWidth / 12, ScreenHeight - 50, 20, GREEN);
+        }
+        else if (list.get_search_state() == 2) {
+            DrawText("Not Found", ScreenWidth / 12, ScreenHeight - 50, 20, RED);
+        }
+    }
 }
 
 void GUI::DrawAVLTree() {
@@ -244,6 +332,8 @@ void GUI::DrawAVLTree() {
 void GUI::DrawGraph() {
 	Gui.DrawGraphMenu();
 	Gui.DrawBack();
+
+    Gui.DrawInputBox(SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + 100);
 
 	if (buttoninit.IsClick() == true) {
 		Gui.isClickInit = true;
@@ -336,20 +426,20 @@ void GUI::InitGraph() {
 		static int n_vertex = -1;
 		static int n_edge = -1;
 		static bool for_vertex = true;
-		static bool for_edge = false;
+        static bool for_edge = false;
 
-		DrawText("Vertex : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(0.7) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, C[0]);
-		DrawText("Edge : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(1.1) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, C[0]);
+        DrawText("Vertex : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(0.7) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, C[0]);
+        DrawText("Edge : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(1.1) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, C[0]);
 
-		if (for_vertex == true) {
-			int tmp = Input(SecondMenuWidth * float(1) / 3 + 140, SecondMenuHeight + SecondMenuHeight * float(0.7) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
+        if (for_vertex == true) {
+            int tmp = Input(SecondMenuWidth * float(1) / 3 + 140, SecondMenuHeight + SecondMenuHeight * float(0.7) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
 
-			if (tmp != -1) {
-				n_vertex = tmp;
-				for_vertex = false;
-				for_edge = true;
-			}
-		}
+            if (tmp != -1) {
+                n_vertex = tmp;
+                for_vertex = false;
+                for_edge = true;
+            }
+        }
 
 		if (for_edge == true) {
 			DrawText(std::to_string(n_vertex).c_str(), SecondMenuWidth * float(1) / 3 + 140, SecondMenuHeight + SecondMenuHeight * float(0.7) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, C[0]);
@@ -548,82 +638,116 @@ void GUI::DijkstraGraph() {
 	}
 }
 
-void GUI::DrawSecondMenu() {
-    DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, C[1]);
-    buttoninit.DrawButton();
-    buttoninsert.DrawButton();
-    buttondelete.DrawButton();
-    buttonsearch.DrawButton();
-}
-
-void GUI::DrawListMenu() {
-    DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, C[1]);
-    buttoninit.DrawButton();
-    buttoninsert.DrawButton();
-    buttondelete.DrawButton();
-    buttonsearch.DrawButton();
-    buttonclear.DrawButton();
-}
-
-void GUI::DrawGraphMenu() {
-	DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, C[1]);
-
-	buttoninit.DrawButton();
-	buttoninsert.DrawButton();
-	buttondelete.DrawButton();
-	buttondijkstra.DrawButton();
-	buttonclear.DrawButton();
-}
-
 void GUI::DrawBack() {
-	static Texture2D texture;
-	static bool isLoaded = false;
-	if (!isLoaded) {
-		Image image = LoadImage("../../Data-Structure-Visualization/assets/Arrow_Back.png");
-		ImageResize(&image, 50, 50);
-		texture = LoadTextureFromImage(image);
-		UnloadImage(image); 
-		isLoaded = true;
-	}
-    Vector2 pos = { 50, 50 };
-    DrawTexture(texture, pos.x, pos.y, WHITE);
-    Rectangle arrowback = {
-        pos.x,
-        pos.y,
-        (float)texture.width * 1.2,
-        (float)texture.height * 1.2,
+    // Back button constants
+    const float BUTTON_WIDTH = 120.0f;
+    const float BUTTON_HEIGHT = 40.0f;
+    const float BUTTON_MARGIN = 20.0f;
+    const float CORNER_RADIUS = 0.3f;
+    const int CORNER_SEGMENTS = 10;
+    const Color HOVER_COLOR = { 200, 50, 50, 255 };
+
+    // Position at bottom of menu
+    Rectangle BackButton = {
+        BUTTON_MARGIN,
+        ScreenHeight - BUTTON_HEIGHT - BUTTON_MARGIN,
+        BUTTON_WIDTH,
+        BUTTON_HEIGHT
     };
-    if (CheckCollisionPointRec(GetMousePosition(), arrowback)) {
-        DrawTexture(texture, pos.x, pos.y, Color{ 200, 200, 255, 255 }); 
+
+    // Hover effect
+    Vector2 mouse = GetMousePosition();
+    bool isHovered = CheckCollisionPointRec(mouse, BackButton);
+
+    // Set button color
+    Color buttonColor = isHovered ? HOVER_COLOR : RED;
+
+    // Draw button
+    DrawRectangleRounded(BackButton, CORNER_RADIUS, CORNER_SEGMENTS, buttonColor);
+
+    // Center text in button
+    const char* buttonText = "Back";
+    Vector2 textSize = MeasureTextEx(GetFontDefault(), buttonText, 20, 1);
+    DrawText(buttonText,
+        BackButton.x + (BackButton.width - textSize.x) / 2,
+        BackButton.y + (BackButton.height - textSize.y) / 2,
+        20, WHITE);
+
+    // Handle click
+    if (isHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        if (CurrentStruture == LINKEDLIST) list.clear();
+        CurrentStruture = MENU;
+        inputActive = false;
+        currentInputMode = NONE;
+        search_result_timer = 0.0f;
     }
-    else {
-        DrawTexture(texture, pos.x, pos.y, WHITE);
+}
+
+void GUI::DrawInputBox(int posX, int posY) {
+    if (!inputActive) return;
+
+    // Style constants matching other buttons
+    const float MENU_WIDTH = ScreenWidth / 5.0f;
+    const float BUTTON_WIDTH = MENU_WIDTH * 0.85f;
+    const float BUTTON_HEIGHT = 40.0f;
+    const float BUTTON_MARGIN_X = MENU_WIDTH * 0.075f;
+    const float CORNER_RADIUS = 0.3f;
+    const int SEGMENTS = 10;
+    const float EXTRA_SPACING = 30.0f; // Increased spacing below clear button
+
+    // Position input box lower with more spacing
+    Vector2 boxPosition = {
+        buttonclear.coordinateX,
+        buttonclear.coordinateY + buttonclear.height + EXTRA_SPACING
+    };
+
+    // Get appropriate label text
+    const char* labelText = "";
+    switch (currentInputMode) {
+    case INIT:    labelText = "Init Nodes: "; break;
+    case INSERT:  labelText = "Insert Value: "; break;
+    case DELETE:  labelText = "Delete Value: "; break;
+    case SEARCH:  labelText = "Search Value: "; break;
+    default:      return;
     }
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        Vector2 mouse = GetMousePosition();
-        if (CheckCollisionPointRec(mouse, arrowback)) {
-            if (CurrentStruture == LINKEDLIST) {
-                list.clear();
-            }
-			if (CurrentStruture == AVLTREE) {
-				tree.Clear(tree.Root);
-				tree.NodeList.clear();
-			}
-			if (CurrentStruture == GRAPH) {
-				graph.clear();
-			}
 
-            CurrentStruture = MENU;
+    // Draw label
+    DrawText(labelText, boxPosition.x, boxPosition.y - 25, 20, C[0]);
 
+    // Create input box rectangle
+    Rectangle inputBox = {
+        boxPosition.x,
+        boxPosition.y,
+        BUTTON_WIDTH,
+        BUTTON_HEIGHT
+    };
 
-            SetActiveMenuAVLTree(NONE);
-            SetActiveMenuInitAVLTree(NONEINITAVLTREE);
-        }
+    // Draw main rounded box (no border)
+    DrawRectangleRounded(inputBox, CORNER_RADIUS, SEGMENTS, C[2]);
+
+    // Draw input text (centered vertically)
+    Vector2 textPosition = {
+        boxPosition.x + 10,
+        boxPosition.y + (BUTTON_HEIGHT - 20) / 2
+    };
+    DrawText(inputstring.c_str(), textPosition.x, textPosition.y, 20, C[0]);
+
+    // Draw blinking cursor
+    if ((int)(GetTime() * 2) % 2) { // Blinking effect
+        int textWidth = MeasureText(inputstring.c_str(), 20);
+        DrawRectangle(
+            textPosition.x + 5 + textWidth,
+            textPosition.y,
+            2,
+            20,
+            C[0]
+        );
     }
-
 }
 
 int GUI::Input(int posX, int posY) {
+    if (!inputActive) return -1;
+
     int key = GetCharPressed();
     while (key > 0) {
         if (key >= '0' && key <= '9') {
@@ -631,21 +755,31 @@ int GUI::Input(int posX, int posY) {
         }
         key = GetCharPressed();
     }
-    DrawText(inputstring.c_str(), posX, posY, 20, C[0]);
 
     if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER)) {
-        if (inputstring == "") { return -1; }
-
-        int val = std::stoi(inputstring);
-        std::cout << "Value: " << val << std::endl;
-
-        inputstring = "";
-        return val;
+        if (inputstring.empty()) return -1;
+        try {
+            int val = std::stoi(inputstring);
+            std::cout << "Value: " << val << std::endl;
+            inputstring = "";
+            return val;
+        }
+        catch (const std::exception& e) {
+            std::cout << "Invalid input: " << e.what() << std::endl;
+            inputstring = "";
+            return -1;
+        }
     }
 
 	if (IsKeyPressed(KEY_BACKSPACE) && !inputstring.empty()) {
 		inputstring.pop_back();
 	}
+
+    if (IsKeyPressed(KEY_ESCAPE) && inputActive) {
+        inputActive = false;
+        currentInputMode = NONE;
+        inputstring = "";
+    }
 
     return -1;
 }

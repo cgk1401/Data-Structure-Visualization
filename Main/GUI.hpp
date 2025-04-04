@@ -12,19 +12,24 @@
 #include "DijkstraAnimationGraph.hpp"
 
 #include <fstream>
+#include <string>
 
 
 enum TypeDataStructure { MENU, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
-enum ActiveMenuTypeAVLTree {NONE, INIT_AVLTREE, INSERT_AVLTREE, SEARCH_AVLTREE, DELETE_AVLTREE};
-enum ActiveMenuInitAVLTree{NONEINITAVLTREE, RANDOM_AVLTREE, LOADFILE_AVLTREE};
+enum ActiveMenuTypeAVLTree { NONE_AVLTREE, INIT_AVLTREE, INSERT_AVLTREE, SEARCH_AVLTREE, DELETE_AVLTREE };
+enum ActiveMenuInitAVLTree { NONEINITAVLTREE, RANDOM_AVLTREE, LOADFILE_AVLTREE };
 
+enum InputMode { NONE, INIT, INSERT, DELETE, SEARCH };
 class GUI {
 private:
 
 	LinkedList list;
+    float linkedListScrollY = 0;
+    float linkedListContentHeight = 0;
+    const float scrollSpeed = 20.0f;
 
 	AVLTree tree;
-	ActiveMenuTypeAVLTree activemenu_avltree = NONE;
+	ActiveMenuTypeAVLTree activemenu_avltree = NONE_AVLTREE;
 	ActiveMenuInitAVLTree activemenuinit_avltree = NONEINITAVLTREE;
 	InsertAnimationAVLTree insertanimationavltree;
 
@@ -43,11 +48,15 @@ public :
 	bool isClickInsert = false;
 	bool isClickDelete = false;
 	bool isClickDijkstra = false;
-	string inputstring = "";
 
 
 public:
 	GUI();
+
+	std::string inputstring = "";
+	InputMode currentInputMode = NONE;
+	bool inputActive = false;
+	float search_result_timer = 0.0f;
 
 	void Start();
 	
@@ -69,11 +78,9 @@ public:
 	void InsertGraph();
 	void DeleteGraph();
 	void DijkstraGraph();
-	/*void StepByStep();
-	void MakeImage();*/
-	//void DrawListMenu();
 
 	int Input(int posX, int posY);   
+    void DrawInputBox(int posX, int posY);
 };
 
 extern GUI Gui;

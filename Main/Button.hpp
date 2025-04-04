@@ -1,12 +1,11 @@
 #ifndef BUTTON_HPP  
 #define BUTTON_HPP  
-using namespace std;
+
 #include <iostream>
 #include <string>
 #include "raylib.h"
 #include "Config.hpp"
-
-
+using namespace std;
 
 class Button {
 
@@ -17,7 +16,6 @@ public:
 	float height;
 	Color color;
 	string s;
-
 
 	Button(float coordinateX, float coordinateY, float width, float height, string s, Color color);
 	void DrawButton();
