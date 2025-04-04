@@ -25,14 +25,12 @@ Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& 
         NodeList.push_back(root);
         return root;
     }
-
     if (data < root->val) {
         root->left = InsertHelper(root->left, data, root, NodeList, isNeedRotate);
     }
     else if (data > root->val) {
         root->right = InsertHelper(root->right, data, root, NodeList, isNeedRotate);
     }
-
     if (isNeedRotate == true) {
         root->balanceFactor = GetHeight(root->left) - GetHeight(root->right);
         root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
@@ -60,8 +58,12 @@ Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& 
             return root;
         }
     }
+<<<<<<< Updated upstream
 
     return root;  
+=======
+    return root;
+>>>>>>> Stashed changes
 }
 
 int AVLTree::GetHeight(Node* root) {
@@ -70,70 +72,74 @@ int AVLTree::GetHeight(Node* root) {
 }
 
 Node* AVLTree::RotationLeft(Node*& root) {
-
     if (root == nullptr) return nullptr;
+<<<<<<< Updated upstream
 
     Node* newroot = root->right; 
     Node* child = newroot->left; 
 
+=======
+    Node* newroot = root->right;
+    Node* child = newroot->left;
+>>>>>>> Stashed changes
     newroot->parent = root->parent;
-
     newroot->left = root;
     root->parent = newroot;
     root->right = child;
-
     if (child != nullptr) {
         child->parent = root;
         child->isLeft = false;
     }
+<<<<<<< Updated upstream
 
     newroot->isLeft = root->isLeft; 
 
     
+=======
+    newroot->isLeft = root->isLeft;
+>>>>>>> Stashed changes
     root->isLeft = true;
-
     root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
     newroot->height = 1 + max(GetHeight(newroot->left), GetHeight(newroot->right));
-
     swap(NodeList[root->nodeIndex], NodeList[newroot->nodeIndex]);
-
     for (int i = 0; i < NodeList.size(); i++) NodeList[i]->nodeIndex = i;
-
     return newroot;
-
 }
 
 Node* AVLTree::RotationRight(Node*& root) {
     if (root == nullptr) return nullptr;
-
     Node* newroot = root->left;
+<<<<<<< Updated upstream
     Node* child = newroot->right; 
 
 
+=======
+    Node* child = newroot->right;
+>>>>>>> Stashed changes
     newroot->parent = root->parent;
-
     newroot->right = root;
     root->parent = newroot;
     root->left = child;
 
+<<<<<<< Updated upstream
     
+=======
+>>>>>>> Stashed changes
     if (child != nullptr) {
         child->parent = root;
         child->isLeft = true;
     }
-
     newroot->isLeft = root->isLeft;
+<<<<<<< Updated upstream
 
     
+=======
+>>>>>>> Stashed changes
     root->isLeft = false;
-
     root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
     newroot->height = 1 + max(GetHeight(newroot->left), GetHeight(newroot->right));
-
     swap(NodeList[root->nodeIndex], NodeList[newroot->nodeIndex]);
     for (int i = 0; i < NodeList.size(); i++) NodeList[i]->nodeIndex = i;
-
-
     return newroot;
 }
 
@@ -141,10 +147,8 @@ void AVLTree::UpdateHeightAndBalanceFactor(Node*& root) {
     if (root == nullptr) return;
     UpdateHeightAndBalanceFactor(root->left);
     UpdateHeightAndBalanceFactor(root->right);
-
     root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
     root->balanceFactor = GetHeight(root->left) - GetHeight(root->right);
-
 }
 
 Node* AVLTree::GetNodeRotate() {
@@ -167,8 +171,11 @@ void AVLTree::Random() {
     uniform_int_distribution<int> dist(2, 40);
     uniform_int_distribution<int> dist1(1, 200);
     int size = dist(gen);
+<<<<<<< Updated upstream
     cout << size << " ";
     
+=======
+>>>>>>> Stashed changes
     Clear(Root);
     NodeList.clear();
     if (size > 30) {
@@ -183,7 +190,10 @@ void AVLTree::Random() {
         int number_random = dist1(gen1);
         Insert(Root, number_random, NodeList, true);
     }
+<<<<<<< Updated upstream
    
+=======
+>>>>>>> Stashed changes
     balanceTree();
 }
 
@@ -200,16 +210,13 @@ void AVLTree::MoveTree(Node* root, bool isLeft) {
     root->position.x = root->position.x + (isLeft ? -DistanceHorizontal : DistanceHorizontal);
     if (root->left != nullptr) MoveTree(root->left, isLeft);
     if (root->right != nullptr) MoveTree(root->right, isLeft);
-
 }
 
 void AVLTree::balanceTree() {
     if (Root == nullptr) return;
-
     vector<Node*> nodeList;
     queue<Node*> q;
     q.push(Root);
-
 
     while (!q.empty()) {
         Node* temp = q.front();
@@ -218,7 +225,6 @@ void AVLTree::balanceTree() {
         if (temp->left) q.push(temp->left);
         if (temp->right) q.push(temp->right);
     }
-
     for (auto& node : nodeList) {
         if (node == Root) {
             node->position = { ScreenWidth * 5 / 8.0f  , 250 * 1.0f };
@@ -256,7 +262,6 @@ void AVLTree::DrawTree() {
 }
 
 void AVLTree::DrawTreeHelper(Node* node) {
-
     for (Node* node : NodeList) {
         if (node->left) {
             DrawLineEx(node->position, node->left->position, 3, DARKGRAY);
@@ -264,7 +269,10 @@ void AVLTree::DrawTreeHelper(Node* node) {
         if (node->right) {
             DrawLineEx(node->position, node->right->position, 3, DARKGRAY);
         }
+<<<<<<< Updated upstream
         
+=======
+>>>>>>> Stashed changes
     }
     for (Node* node : NodeList) {
         if (node->isNodeInserted) {
@@ -337,10 +345,13 @@ int AVLTree::GetBalanceFactor(Node* node) {
 
 
 void AVLTree::RebalanceChild(Node*& root, Node* noderotate) {
+<<<<<<< Updated upstream
     if (!root) return ;
 
+=======
+    if (!root) return;
+>>>>>>> Stashed changes
     UpdateHeightAndBalanceFactor(Root);
-
     if (root->balanceFactor > 1 && root == noderotate) {
         
         if (GetBalanceFactor(root->left) < 0) {
@@ -355,25 +366,100 @@ void AVLTree::RebalanceChild(Node*& root, Node* noderotate) {
             return ;
         }
     }
-
     RebalanceChild(root->left, noderotate);
     RebalanceChild(root->right, noderotate);
+<<<<<<< Updated upstream
  
+=======
+>>>>>>> Stashed changes
 }
 
 void AVLTree::RebalanceParent(Node*& root, Node* noderotate) {
     cout << noderotate->val << endl;
+<<<<<<< Updated upstream
     if (!root) return ;
 
+=======
+    if (!root) return;
+>>>>>>> Stashed changes
     if (root == noderotate) {
         if (root->balanceFactor > 1) root = RotationRight(root);
         else root = RotationLeft(root);
         return;
     }
-
     RebalanceParent(root->left, noderotate);
     RebalanceParent(root->right, noderotate);
+<<<<<<< Updated upstream
    
+=======
+}
+
+void AVLTree::DrawRecursion(Node* root) {
+    if (root == nullptr) return;
+    if (root->left != nullptr) DrawLineV(root->position, root->left->position, BLACK);
+    if (root->right != nullptr) DrawLineV(root->position, root->right->position, BLACK);
+    DrawRecursion(root->left);
+    DrawRecursion(root->right);
+    DrawCircle(root->position.x, root->position.y, 30, BLACK);
+    DrawText(TextFormat("%d", root->val), root->position.x - 10, root->position.y - 10, 20, WHITE);
+}
+
+void AVLTree::DeleteHelper(Node*& root, int key) {
+    
+}
+
+Node* AVLTree::DeleteNode(Node* root, int key) {
+    if (root == nullptr) return nullptr;
+    else if (root->val > key) root->left = DeleteNode(root->left, key);
+    else if (root->val < key) root->right = DeleteNode(root->right, key);
+    else {
+        Node* nodedelete = root;
+        if (root->left == nullptr) {
+            root = root->right;
+            if (root != nullptr) {
+                root->parent = nodedelete->parent;
+                if (nodedelete->isLeft == true) {
+                    nodedelete->parent->left = root;
+                    root->isLeft = true;
+                }
+                else {
+                    nodedelete->parent->right = root;
+                    root->isLeft = false;
+                }
+            }
+            auto it = find(NodeList.begin(), NodeList.end(), nodedelete);
+            if (it != NodeList.end()) {
+                NodeList.erase(it);
+                delete nodedelete;
+            }
+        }
+        else if (root->right == nullptr) {
+            root = root->left;
+            root->parent = nodedelete->parent;
+            if (nodedelete->isLeft == true) {
+                nodedelete->parent->left = root;
+                root->isLeft = true;
+            }
+            else {
+                nodedelete->parent->right = root;
+                root->isLeft = false;
+            }
+            auto it = find(NodeList.begin(), NodeList.end(), nodedelete);
+            if (it != NodeList.end()) {
+                NodeList.erase(it);
+                delete nodedelete;
+            }
+        }
+        else if (root->left != nullptr && root->right != nullptr) {
+            Node* tmp = root->left;
+            if (root != nullptr) root->parent = nodedelete->parent;
+            while (tmp->right != nullptr) tmp = tmp->right;
+            root->val = tmp->val;
+            root->left = DeleteNode(root->left, tmp->val);
+        }
+    }
+    return root;
+>>>>>>> Stashed changes
 }
 
 

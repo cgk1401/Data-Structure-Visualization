@@ -143,7 +143,6 @@ void InsertAnimationAVLTree::UpdateStep() {
 			for (Node* node : tree->NodeList) {
 				RotateStartPosition[node] = node->position;
 			}
-
 			if (NodeRotate->balanceFactor > 1 && (NodeRotate->left && NodeRotate->left->balanceFactor < 0) || NodeRotate->balanceFactor < -1 && (NodeRotate->right && NodeRotate->right->balanceFactor > 0)) {
 				tree->RebalanceChild(tree->Root, NodeRotate);
 				tree->UpdateHeightAndBalanceFactor(tree->Root);
@@ -170,7 +169,6 @@ void InsertAnimationAVLTree::UpdateStep() {
 			}
 		}
 		break;
-
 	case 5:
 		cout << "Case 5" << endl;
 		if (t < 1.0f) {
@@ -193,7 +191,6 @@ void InsertAnimationAVLTree::UpdateStep() {
 				AnimationTime = 0.0f;
 			}
 		}
-
 		break;
 	case 6 :
 		if (t >= 1.0f){
