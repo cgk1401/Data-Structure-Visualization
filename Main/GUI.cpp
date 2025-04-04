@@ -220,11 +220,15 @@ void GUI::DrawAVLTree() {
     }
 
     else if (activemenu_avltree == SEARCH_AVLTREE) {
-        buttonsearch.DrawClickEffect();
     }
 
     else if (activemenu_avltree == DELETE_AVLTREE) {
         buttondelete.DrawClickEffect();
+        DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, BLACK);
+        int value = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
+        tree.Root = tree.DeleteNode(tree.Root, value);
+        tree.UpdateHeightAndBalanceFactor(tree.Root);
+        tree.balanceTree();
     }
 
     tree.DrawTree();

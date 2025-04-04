@@ -333,7 +333,6 @@ int AVLTree::GetBalanceFactor(Node* node) {
     return leftHeight - rightHeight;
 }
 
-
 void AVLTree::RebalanceChild(Node*& root, Node* noderotate) {
     if (!root) return;
 
@@ -374,6 +373,78 @@ void AVLTree::RebalanceParent(Node*& root, Node* noderotate) {
 
 }
 
+void AVLTree::DrawRecursion(Node* root) {
+    if (root == nullptr) return;
+    if (root->left != nullptr) DrawLineV(root->position, root->left->position, BLACK);
+    if (root->right != nullptr) DrawLineV(root->position, root->right->position, BLACK);
+
+    DrawRecursion(root->left);
+    DrawRecursion(root->right);
+
+    DrawCircle(root->position.x, root->position.y, 30, BLACK);
+    DrawText(TextFormat("%d", root->val), root->position.x - 10, root->position.y - 10, 20, WHITE);
+
+
+
+}
+
+void AVLTree::DeleteHelper(Node*& root, int key) {
+    
+}
+
+Node* AVLTree::DeleteNode(Node* root, int key) {
+    if (root == nullptr) return nullptr;
+    else if (root->val > key) root->left = DeleteNode(root->left, key);
+    else if (root->val < key) root->right = DeleteNode(root->right, key);
+    else {
+        Node* nodedelete = root;
+        if (root->left == nullptr) {
+            root = root->right;
+            if (root != nullptr) {
+                root->parent = nodedelete->parent;
+                if (nodedelete->isLeft == true) {
+                    nodedelete->parent->left = root;
+                    root->isLeft = true;
+                }
+                else {
+                    nodedelete->parent->right = root;
+                    root->isLeft = false;
+                }
+            }
+            auto it = find(NodeList.begin(), NodeList.end(), nodedelete);
+            if (it != NodeList.end()) {
+                NodeList.erase(it);
+                delete nodedelete;
+            }
+
+        }
+        else if (root->right == nullptr) {
+            root = root->left;
+            root->parent = nodedelete->parent;
+            if (nodedelete->isLeft == true) {
+                nodedelete->parent->left = root;
+                root->isLeft = true;
+            }
+            else {
+                nodedelete->parent->right = root;
+                root->isLeft = false;
+            }
+            auto it = find(NodeList.begin(), NodeList.end(), nodedelete);
+            if (it != NodeList.end()) {
+                NodeList.erase(it);
+                delete nodedelete;
+            }
+        }
+        else if (root->left != nullptr && root->right != nullptr) {
+            Node* tmp = root->left;
+            if (root != nullptr) root->parent = nodedelete->parent;
+            while (tmp->right != nullptr) tmp = tmp->right;
+            root->val = tmp->val;
+            root->left = DeleteNode(root->left, tmp->val);
+        }
+    }
+    return root;
+}
 
 
 

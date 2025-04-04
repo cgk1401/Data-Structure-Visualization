@@ -30,6 +30,9 @@ public:
 	void RebalanceParent(Node*& root, Node* noderotate);
 	int GetBalanceFactor(Node* node);
 
+	void DrawRecursion(Node* root);
+	void DeleteHelper(Node*& root, int key);
+	Node* DeleteNode(Node* root, int key);
 
 public:
 	void Insert(Node*& root, int data, vector <Node*>& NodeList, bool isNeedRotate);
