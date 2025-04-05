@@ -35,7 +35,6 @@ void InsertAnimationAVLTree::StartInsertAnimation(int value) {
 		else if (value > curr->val) curr = curr->right;
 		else break;
 	}
-
 	tree->Insert(tree->Root, value, tree->NodeList, false);
 	tree->UpdateHeightAndBalanceFactor(tree->Root);
 	tree->balanceTree();
@@ -65,8 +64,6 @@ void InsertAnimationAVLTree::StartInsertAnimation(int value) {
 		node->position = StartPosition[node];
 	}
 	tree->DeleteLeafNode(tree->Root, InsertValue);
-
-	tree->DrawLevelOrder(tree->Root);
 }
 
 
@@ -88,10 +85,8 @@ void InsertAnimationAVLTree::UpdateStep() {
 			}
 		}
 		else if (t >= 1.0f) {
-
 			AnimationStep = 2;
 			AnimationTime = 0.0f;
-
 		}
 		break;
 	case 2:
@@ -129,18 +124,15 @@ void InsertAnimationAVLTree::UpdateStep() {
 	case 4:
 		RotateStartPosition.clear();
 		RotateTargetPosition.clear();
-
 		NodeRotate = tree->GetNodeRotate();
 		if (NodeRotate == nullptr) {
 			AnimationStep = 6;
 			break;
 		}
-
 		else {
 			for (Node* node : tree->NodeList) {
 				RotateStartPosition[node] = node->position;
 			}
-
 			if (NodeRotate->balanceFactor > 1 && (NodeRotate->left && NodeRotate->left->balanceFactor < 0) || NodeRotate->balanceFactor < -1 && (NodeRotate->right && NodeRotate->right->balanceFactor > 0)) {
 				tree->RebalanceChild(tree->Root, NodeRotate);
 				tree->UpdateHeightAndBalanceFactor(tree->Root);
@@ -167,7 +159,6 @@ void InsertAnimationAVLTree::UpdateStep() {
 			}
 		}
 		break;
-
 	case 5:
 		cout << "Case 5" << endl;
 		if (t < 1.0f) {
@@ -190,7 +181,6 @@ void InsertAnimationAVLTree::UpdateStep() {
 				AnimationTime = 0.0f;
 			}
 		}
-
 		break;
 	case 6:
 		if (t >= 1.0f) {
@@ -207,24 +197,19 @@ void InsertAnimationAVLTree::UpdateStep() {
 	case 7:
 		RotateSecond = false;
 		RotateStartPosition.clear();
-
 		for (Node* node : tree->NodeList) {
 			RotateStartPosition[node] = node->position;
 		}
-
 		tree->RebalanceParent(tree->Root, NodeRotate);
 		tree->UpdateHeightAndBalanceFactor(tree->Root);
 		tree->balanceTree();
-
 		RotateTargetPosition.clear();
-
 		for (Node* node : tree->NodeList) {
 			RotateTargetPosition[node] = node->position;
 			node->position = RotateStartPosition[node];
 		}
 		AnimationStep = 5;
 		AnimationTime = 0.0f;
-
 		break;
 	default:
 		break;
