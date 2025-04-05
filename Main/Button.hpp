@@ -23,6 +23,7 @@ public:
 	bool IsClick();
 	void setColor(Color color);
 	void DrawClickEffect();
+	void ConfigureButton(int position);
 };
 class ButtonInit : public Button {
 public:

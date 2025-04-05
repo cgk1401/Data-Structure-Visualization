@@ -74,8 +74,9 @@ void GUI::Start() {
 
 void GUI::DrawMainMenu() {
 
-    Font customfont = LoadFont("../../PublicSans-Bold.ttf");
-    DrawTextEx(customfont, "Choose Data Structure", { ScreenWidth * float(2) / 5, ScreenHeight * float(5) / 6 }, 60, 1, C[0]);
+    //Font custom = LoadFont("../../Data-Structure-Visualization/assets/PublicSans-Bold.ttf");
+    //DrawTextEx(customfont, "Choose Data Structure", { ScreenWidth * float(2) / 5, ScreenHeight * float(5) / 6 }, 60, 1, C[0]);
+    DrawText("Choose Data Structure", ScreenWidth * float(2) / 5, ScreenHeight * float(5) / 6, 40, C[0]);
 
    	Rectangle HASHTABLEBUTTON = { ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
 
@@ -89,11 +90,17 @@ void GUI::DrawMainMenu() {
 	DrawRectangleRounded(LINKEDLISTBUTTON, 0.3f, 10, C[2]);
 	DrawRectangleRounded(AVLTREEBUTTON, 0.3f, 10, C[2]);
 	DrawRectangleRounded(GRAPHBUTTON, 0.3f, 10, C[2]);
-    
+
+    /*
     DrawTextEx(customfont, "HashTable", { ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2 }, 30, 1, C[0]);
     DrawTextEx(customfont, "AVL", { ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2 }, 30, 1, C[0]);
     DrawTextEx(customfont, "LINKEDLIST", { ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2 }, 30, 1, C[0]);
     DrawTextEx(customfont, "GRAPH", { ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2 }, 30, 1, C[0]);
+    */
+    DrawText("HASHTABLE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
+    DrawText("LINKEDLIST", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
+    DrawText("AVLTREE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
+    DrawText("GRAPH", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
 
 	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         Vector2 mouse = GetMousePosition();
@@ -113,12 +120,53 @@ void GUI::DrawMainMenu() {
 }
 
 void GUI::DrawSecondMenu() {
-    DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, C[1]);
-    buttoninit.DrawButton();
-    buttoninsert.DrawButton();
-    buttondelete.DrawButton();
-    buttonsearch.DrawButton();
-    buttonclear.DrawButton();
+    // Menu constants
+    const float MENU_WIDTH = ScreenWidth / 5.0f;
+    const float MENU_HEIGHT = ScreenHeight;
+
+    // Draw menu background
+    DrawRectangleRounded(
+        { 0, 0, MENU_WIDTH, MENU_HEIGHT },
+        0.1f, 10, C[1]
+    );
+
+    // Draw title inside menu
+    const char* titleText;
+    if (CurrentStruture == HASHTABLE) { titleText = "Hash Table"; }
+    else if (CurrentStruture == LINKEDLIST) { titleText = "Linked List"; }
+    else if (CurrentStruture == AVLTREE) { titleText = "AVL Tree"; }
+	else if (CurrentStruture == GRAPH) { titleText = "Graph"; }
+	else { titleText = "Data Structure"; }
+
+    const int TITLE_FONT_SIZE = 28;
+    Vector2 titleSize = MeasureTextEx(GetFontDefault(), titleText, TITLE_FONT_SIZE, 1);
+    float titleX = (MENU_WIDTH - titleSize.x) / 2;
+    float titleY = 20.0f; // Positioned at top of menu
+    DrawText(titleText, titleX, titleY, TITLE_FONT_SIZE, C[0]);
+
+    // Draw all buttons
+    if (CurrentStruture == LINKEDLIST) {
+        buttoninit.ConfigureButton(0);
+        buttoninsert.ConfigureButton(1);
+        buttondelete.ConfigureButton(2);
+        buttonsearch.ConfigureButton(3);
+        buttonclear.ConfigureButton(4);
+    }
+	else if (CurrentStruture == AVLTREE) {
+        buttoninit.ConfigureButton(0);
+        buttoninsert.ConfigureButton(1);
+        buttondelete.ConfigureButton(2);
+        buttonsearch.ConfigureButton(3);
+        buttonclear.ConfigureButton(4);
+	}
+    else if (CurrentStruture == GRAPH) {
+        buttoninit.ConfigureButton(0);
+        buttoninsert.ConfigureButton(1);
+        buttondelete.ConfigureButton(2);
+        buttondijkstra.ConfigureButton(3);
+        buttonclear.ConfigureButton(4);
+    }
+
 }
 
 void GUI::DrawListMenu() {
@@ -179,7 +227,7 @@ void GUI::DrawHashTable() {
 }
 
 void GUI::DrawLinkedList(){
-    Gui.DrawListMenu();
+    Gui.DrawSecondMenu();
     Gui.DrawBack();
 
     // Draw the reusable input box at a fixed position
@@ -266,11 +314,56 @@ void GUI::DrawLinkedList(){
 
 void GUI::DrawAVLTree() {
     Gui.DrawSecondMenu();
-    if (buttoninit.IsClick()) Gui.SetActiveMenuAVLTree(INIT_AVLTREE);
-    else if (buttoninsert.IsClick()) Gui.SetActiveMenuAVLTree(INSERT_AVLTREE);
-    else if (buttonsearch.IsClick()) Gui.SetActiveMenuAVLTree(SEARCH_AVLTREE);
-    else if (buttondelete.IsClick()) Gui.SetActiveMenuAVLTree(DELETE_AVLTREE);
 
+    Gui.DrawInputBox(SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + 100);
+    
+    if (buttoninit.IsClick()) { 
+		Gui.SetActiveMenuAVLTree(INIT_AVLTREE); 
+        inputActive = true;
+    }
+    else if (buttoninsert.IsClick()) { 
+        Gui.SetActiveMenuAVLTree(INSERT_AVLTREE); currentInputMode = INSERT; 
+        inputActive = true;
+    }
+    else if (buttonsearch.IsClick()) { 
+        Gui.SetActiveMenuAVLTree(SEARCH_AVLTREE); currentInputMode = SEARCH; 
+        inputActive = true;
+    }
+    else if (buttondelete.IsClick()) { 
+        Gui.SetActiveMenuAVLTree(DELETE_AVLTREE); currentInputMode = DELETE; 
+        inputActive = true;
+    }
+    else if (buttonclear.IsClick()) {
+		tree.Clear(tree.Root);
+		tree.NodeList.clear();
+    }
+
+    int val = Gui.Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
+
+    if (val != -1) {
+        switch (currentInputMode) {
+        case INSERT: {
+            Gui.insertanimationavltree.StartInsertAnimation(val);
+
+            break;
+        }
+        case DELETE: {
+            buttondelete.DrawClickEffect();
+           
+            tree.Root = tree.DeleteNode(tree.Root, val);
+            tree.UpdateHeightAndBalanceFactor(tree.Root);
+            tree.balanceTree();
+
+            break;
+        }
+        case SEARCH:
+            break;
+        default:
+            break;
+        }
+        inputActive = false;
+        currentInputMode = NONE;
+    }
 
     if (activemenu_avltree == INIT_AVLTREE) {
         buttoninit.DrawClickEffect();
@@ -279,7 +372,7 @@ void GUI::DrawAVLTree() {
 
         if (buttonrandom.IsClick())  Gui.SetActiveMenuInitAVLTree(RANDOM_AVLTREE);
         else if (buttonloadfile.IsClick())  Gui.SetActiveMenuInitAVLTree(LOADFILE_AVLTREE);
-        
+
 
         if (activemenuinit_avltree == RANDOM_AVLTREE) {
             buttonrandom.DrawClickEffect();
@@ -293,35 +386,16 @@ void GUI::DrawAVLTree() {
             SetActiveMenuInitAVLTree(NONEINITAVLTREE);
         }
     }
-    else if (activemenu_avltree == INSERT_AVLTREE) {
-        buttoninsert.DrawClickEffect();
-
-        DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, BLACK);
-        int value = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
-        if (value != -1) {
-            Gui.insertanimationavltree.StartInsertAnimation(value);
-
-        }
+	if (activemenu_avltree == INSERT_AVLTREE) {
+		buttoninsert.DrawClickEffect();
+	    
         Gui.insertanimationavltree.UpdateStep();
-        
+
         if (Gui.insertanimationavltree.isFinished() == true) {
             //Gui.isClickInsert = false;
             SetActiveMenuInitAVLTree(NONEINITAVLTREE);
         }
-
-    }
-
-    else if (activemenu_avltree == SEARCH_AVLTREE) {
-    }
-
-    else if (activemenu_avltree == DELETE_AVLTREE) {
-        buttondelete.DrawClickEffect();
-        DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, BLACK);
-        int value = Gui.Input(SecondMenuWidth * float(1) / 3 + 120, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + (SecondMenuHeight * float(1) / 6) * float(1) / 2);
-        tree.Root = tree.DeleteNode(tree.Root, value);
-        tree.UpdateHeightAndBalanceFactor(tree.Root);
-        tree.balanceTree();
-    }
+	}
 
     tree.DrawTree();
 
@@ -330,11 +404,42 @@ void GUI::DrawAVLTree() {
 }
 
 void GUI::DrawGraph() {
-	Gui.DrawGraphMenu();
+	Gui.DrawSecondMenu();
 	Gui.DrawBack();
 
     Gui.DrawInputBox(SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + 100);
 
+    if (buttoninit.IsClick()) {
+        currentInputMode = INIT;
+        inputActive = true;
+        inputstring = "";
+    }
+    if (buttoninsert.IsClick()) {
+        currentInputMode = INSERT;
+        inputActive = true;
+        inputstring = "";
+    }
+    if (buttondelete.IsClick()) {
+        if (graph.get_active1() >= 0) { graph.delete_node(graph.get_active1()); }
+        else if (graph.get_active2().first >= 0 && graph.get_active2().second >= 0) { graph.delete_edge(graph.get_active2().first, graph.get_active2().second); }
+        else {
+            currentInputMode = DELETE;
+            inputActive = true;
+            inputstring = "";
+        }
+    }
+    if (buttondijkstra.IsClick()) {
+        currentInputMode = DIJKSTRA;
+        inputActive = true;
+        inputstring = "";
+    }
+    if (buttonclear.IsClick()) {
+        graph.clear();
+    }
+
+    int val = Gui.Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
+
+    /*
 	if (buttoninit.IsClick() == true) {
 		Gui.isClickInit = true;
 	}
@@ -369,6 +474,29 @@ void GUI::DrawGraph() {
 	if (buttonclear.IsClick() == true) {
 		graph.clear();
 	}
+    */
+
+    if (val != -1) {
+        switch (currentInputMode) {
+        case INIT: {
+            break;
+        }
+        case INSERT: {
+            break;
+        }
+        case DELETE: {
+            break;
+        }
+        case SEARCH: {
+            break;
+        }
+        default: {
+            break;
+        }
+        }
+        inputActive = false;
+        currentInputMode = NONE;
+    }
 
 	graph.update();
 	graph.draw();
@@ -703,12 +831,31 @@ void GUI::DrawInputBox(int posX, int posY) {
 
     // Get appropriate label text
     const char* labelText = "";
-    switch (currentInputMode) {
-    case INIT:    labelText = "Init Nodes: "; break;
-    case INSERT:  labelText = "Insert Value: "; break;
-    case DELETE:  labelText = "Delete Value: "; break;
-    case SEARCH:  labelText = "Search Value: "; break;
-    default:      return;
+    if (CurrentStruture == LINKEDLIST) {
+        switch (currentInputMode) {
+        case INIT:    labelText = "Init Nodes: "; break;
+        case INSERT:  labelText = "Insert Value: "; break;
+        case DELETE:  labelText = "Delete Value: "; break;
+        case SEARCH:  labelText = "Search Value: "; break;
+        default:      return;
+        }
+    }
+	if (CurrentStruture == AVLTREE) {
+		switch (currentInputMode) {
+		case INSERT:  labelText = "Insert Value: "; break;
+		case DELETE:  labelText = "Delete Value: "; break;
+		case SEARCH:  labelText = "Search Value: "; break;
+		default:      return;
+		}
+	}
+    if (CurrentStruture == GRAPH) {
+        switch (currentInputMode) {
+        case INIT:    labelText = "Init Nodes: "; break;
+        case INSERT:  labelText = "Insert Value: "; break;
+        case DELETE:  labelText = "Delete Value: "; break;
+        case SEARCH:  labelText = "Search Value: "; break;
+        default:      return;
+        }
     }
 
     // Draw label
