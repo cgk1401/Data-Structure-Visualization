@@ -367,8 +367,8 @@ void GUI::DrawAVLTree() {
 
     if (activemenu_avltree == INIT_AVLTREE) {
         buttoninit.DrawClickEffect();
-        buttonrandom.DrawButton();
-        buttonloadfile.DrawButton();
+        /*buttonrandom.DrawButton();
+        buttonloadfile.DrawButton();*/
 
         if (buttonrandom.IsClick())  Gui.SetActiveMenuInitAVLTree(RANDOM_AVLTREE);
         else if (buttonloadfile.IsClick())  Gui.SetActiveMenuInitAVLTree(LOADFILE_AVLTREE);
@@ -398,8 +398,6 @@ void GUI::DrawAVLTree() {
 	}
 
     tree.DrawTree();
-
-
     Gui.DrawBack();
 }
 

@@ -8,16 +8,17 @@
 
 class AVLTree {
 public:
-
-	AVLTree();
 	Node* Root;
 	vector <Node*> NodeList;
 
 	float DistanceHorizontal;
 	float DistanceVertical;
 
-public:
+	// Construction/destruction
+	AVLTree();
+	~AVLTree();
 
+public:
 	void MoveTree(Node* root, bool isLeft);
 	void balanceTree();
 public:
