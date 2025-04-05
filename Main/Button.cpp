@@ -23,6 +23,8 @@ Button::Button(float coordinateX, float coordinateY, float width, float height, 
 	this->height = height;
 	this->s = s;
 	this->color = color;
+
+	//Font customFont = LoadFont("../../Data-Structure-Visualization/assets/PublicSans-Bold.ttf");
 }
 
 bool Button::IsCover() {
@@ -30,7 +32,7 @@ bool Button::IsCover() {
 }
 
 void Button::DrawButton() {
-	Font custom = LoadFont("../../PublicSans-Bold.ttf");
+	//Font custom = LoadFont("../../Data-Structure-Visualization/assets/PublicSans-Bold.ttf");
 	int textWidth = MeasureText(this->s.c_str(), 20);
 	int centerX = this->coordinateX + (this->width - textWidth) / 2;
 	int centerY = this->coordinateY + (this->height - 20) / 2;
@@ -46,13 +48,8 @@ void Button::DrawButton() {
 		};
 	}
 	Rectangle rectange = { coordinateX, coordinateY, width, height };
-	DrawTextEx(custom, s.c_str(), {centerX * 1.0f, centerY * 1.0f}, 25, 1, C[0]);
-	Vector2 mouse = GetMousePosition();
-	if (CheckCollisionPointRec(mouse, rectange)) {
-		DrawRectangleRoundedLines(rectange, 0.5f, 10, BLACK);
-		DrawLineEx({ coordinateX + 10, coordinateY + 15 }, { coordinateX + 10, coordinateY + height - 15 }, 4.0f, DARKBLUE);
-	}
-
+	DrawRectangleRounded(rectange, 0.3f, 100, drawColor);
+	DrawText(this->s.c_str(), centerX, centerY, 20, C[0]);
 }
 
 bool Button::IsClick() {
@@ -60,10 +57,28 @@ bool Button::IsClick() {
 	Rectangle rectange = { coordinateX, coordinateY, width, height };
 	return (CheckCollisionPointRec(mouse, rectange) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON));
 }
+
 void Button::setColor(Color color) {
 	this->color = color;
 }
 
 void Button::DrawClickEffect(){
 	DrawLineEx({ coordinateX + 10, coordinateY + 15}, { coordinateX + 10, coordinateY + height - 15 }, 4.0f, DARKBLUE);
+}
+
+void Button::ConfigureButton(int position) {
+	const float MENU_WIDTH = ScreenWidth / 5.0f;
+	const float MENU_HEIGHT = ScreenHeight;
+
+	const float BUTTON_WIDTH = MENU_WIDTH * 0.85f;
+	const float BUTTON_HEIGHT = 40.0f;
+	const float BUTTON_MARGIN_X = MENU_WIDTH * 0.075f;
+	const float BUTTON_SPACING = 15.0f;
+	const float BUTTON_START_Y = MENU_HEIGHT / 8;
+
+	this->coordinateX = BUTTON_MARGIN_X;
+	this->coordinateY = BUTTON_START_Y + position * (BUTTON_HEIGHT + BUTTON_SPACING);
+	this->width = BUTTON_WIDTH;
+	this->height = BUTTON_HEIGHT;
+	this->DrawButton(); 
 }
