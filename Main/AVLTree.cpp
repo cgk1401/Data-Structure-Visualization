@@ -3,9 +3,9 @@ using namespace std;
 
 
 AVLTree::AVLTree() {
-	Root = nullptr;
-	DistanceHorizontal = 60;
-	DistanceVertical = 120;
+    Root = nullptr;
+    DistanceHorizontal = 60;
+    DistanceVertical = 120;
 }
 
 void AVLTree::Insert(Node*& root, int data, vector<Node*>& NodeList, bool isNeedRotate) {
@@ -25,12 +25,14 @@ Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& 
         NodeList.push_back(root);
         return root;
     }
+
     if (data < root->val) {
         root->left = InsertHelper(root->left, data, root, NodeList, isNeedRotate);
     }
     else if (data > root->val) {
         root->right = InsertHelper(root->right, data, root, NodeList, isNeedRotate);
     }
+
     if (isNeedRotate == true) {
         root->balanceFactor = GetHeight(root->left) - GetHeight(root->right);
         root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
@@ -58,12 +60,8 @@ Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& 
             return root;
         }
     }
-<<<<<<< Updated upstream
 
-    return root;  
-=======
     return root;
->>>>>>> Stashed changes
 }
 
 int AVLTree::GetHeight(Node* root) {
@@ -75,13 +73,9 @@ Node* AVLTree::RotationLeft(Node*& root) {
     if (root == nullptr) return nullptr;
 <<<<<<< Updated upstream
 
-    Node* newroot = root->right; 
-    Node* child = newroot->left; 
-
-=======
     Node* newroot = root->right;
     Node* child = newroot->left;
->>>>>>> Stashed changes
+
     newroot->parent = root->parent;
     newroot->left = root;
     root->parent = newroot;
@@ -92,12 +86,9 @@ Node* AVLTree::RotationLeft(Node*& root) {
     }
 <<<<<<< Updated upstream
 
-    newroot->isLeft = root->isLeft; 
-
-    
-=======
     newroot->isLeft = root->isLeft;
->>>>>>> Stashed changes
+
+
     root->isLeft = true;
     root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
     newroot->height = 1 + max(GetHeight(newroot->left), GetHeight(newroot->right));
@@ -112,19 +103,16 @@ Node* AVLTree::RotationRight(Node*& root) {
 <<<<<<< Updated upstream
     Node* child = newroot->right; 
 
-
-=======
+    Node* newroot = root->left;
     Node* child = newroot->right;
->>>>>>> Stashed changes
+
+
     newroot->parent = root->parent;
     newroot->right = root;
     root->parent = newroot;
     root->left = child;
 
-<<<<<<< Updated upstream
-    
-=======
->>>>>>> Stashed changes
+
     if (child != nullptr) {
         child->parent = root;
         child->isLeft = true;
@@ -132,9 +120,7 @@ Node* AVLTree::RotationRight(Node*& root) {
     newroot->isLeft = root->isLeft;
 <<<<<<< Updated upstream
 
-    
-=======
->>>>>>> Stashed changes
+
     root->isLeft = false;
     root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
     newroot->height = 1 + max(GetHeight(newroot->left), GetHeight(newroot->right));
@@ -164,6 +150,29 @@ Node* AVLTree::GetNodeRotate() {
     return ans;
 }
 
+void AVLTree::UpdateHeightAndBalanceFactor(Node*& root) {
+    if (root == nullptr) return;
+    UpdateHeightAndBalanceFactor(root->left);
+    UpdateHeightAndBalanceFactor(root->right);
+
+    root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
+    root->balanceFactor = GetHeight(root->left) - GetHeight(root->right);
+
+}
+
+Node* AVLTree::GetNodeRotate() {
+    UpdateHeightAndBalanceFactor(Root);
+    Node* ans = nullptr;
+    int maxdepth = -1;
+    for (Node* node : NodeList) {
+        if (abs(node->balanceFactor) > 1 && node->depth > maxdepth) {
+            ans = node;
+            maxdepth = ans->depth;
+        }
+    }
+    return ans;
+}
+
 void AVLTree::Random() {
     random_device rd;
     mt19937 gen(rd());
@@ -173,9 +182,7 @@ void AVLTree::Random() {
     int size = dist(gen);
 <<<<<<< Updated upstream
     cout << size << " ";
-    
-=======
->>>>>>> Stashed changes
+
     Clear(Root);
     NodeList.clear();
     if (size > 30) {
@@ -190,14 +197,11 @@ void AVLTree::Random() {
         int number_random = dist1(gen1);
         Insert(Root, number_random, NodeList, true);
     }
-<<<<<<< Updated upstream
-   
-=======
->>>>>>> Stashed changes
+
     balanceTree();
 }
 
-void AVLTree::Clear(Node* &root) {
+void AVLTree::Clear(Node*& root) {
     if (root == nullptr) return;
     Clear(root->left);
     Clear(root->right);
@@ -210,6 +214,8 @@ void AVLTree::MoveTree(Node* root, bool isLeft) {
     root->position.x = root->position.x + (isLeft ? -DistanceHorizontal : DistanceHorizontal);
     if (root->left != nullptr) MoveTree(root->left, isLeft);
     if (root->right != nullptr) MoveTree(root->right, isLeft);
+}
+
 }
 
 void AVLTree::balanceTree() {
@@ -258,7 +264,7 @@ void AVLTree::balanceTree() {
 }
 
 void AVLTree::DrawTree() {
-	DrawTreeHelper(Root);
+    DrawTreeHelper(Root);
 }
 
 void AVLTree::DrawTreeHelper(Node* node) {
@@ -269,22 +275,17 @@ void AVLTree::DrawTreeHelper(Node* node) {
         if (node->right) {
             DrawLineEx(node->position, node->right->position, 3, DARKGRAY);
         }
-<<<<<<< Updated upstream
-        
-=======
->>>>>>> Stashed changes
+
     }
     for (Node* node : NodeList) {
         if (node->isNodeInserted) {
             DrawCircle(node->position.x, node->position.y, 35, BLUE);
             DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, WHITE);
         }
-        // Node đang được highlight khi duyệt insert
         else if (node->isNodeHighLighted) {
             DrawCircle(node->position.x, node->position.y, 30, ORANGE);
             DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, WHITE);
         }
-        // Node bình thường
         else {
             DrawCircle(node->position.x, node->position.y, 30, BLACK);
             DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, WHITE);
@@ -314,6 +315,146 @@ void AVLTree::DrawLevelOrder(Node* root) {
         cout << endl;
     }
     cout << endl;
+}
+
+void AVLTree::DeleteLeafNode(Node*& root, int key) {
+    if (!root) return;
+
+    if (key < root->val) {
+        DeleteLeafNode(root->left, key);
+    }
+    else if (key > root->val) {
+        DeleteLeafNode(root->right, key);
+    }
+    else {
+        if (!root->left && !root->right) {
+            Node* temp = root;
+            root = nullptr;
+            delete temp;
+        }
+    }
+
+    if (root) UpdateHeightAndBalanceFactor(root);
+}
+
+int AVLTree::GetBalanceFactor(Node* node) {
+    if (!node) return 0;
+    int leftHeight = node->left ? node->left->height : 0;
+    int rightHeight = node->right ? node->right->height : 0;
+    return leftHeight - rightHeight;
+}
+
+void AVLTree::RebalanceChild(Node*& root, Node* noderotate) {
+    if (!root) return;
+
+    UpdateHeightAndBalanceFactor(Root);
+
+    if (root->balanceFactor > 1 && root == noderotate) {
+
+        if (GetBalanceFactor(root->left) < 0) {
+            root->left = RotationLeft(root->left);
+            return;
+        }
+    }
+    else if (root->balanceFactor < -1 && root == noderotate) {
+
+        if (GetBalanceFactor(root->right) > 0) {
+            root->right = RotationRight(root->right);
+            return;
+        }
+    }
+
+    RebalanceChild(root->left, noderotate);
+    RebalanceChild(root->right, noderotate);
+
+}
+
+void AVLTree::RebalanceParent(Node*& root, Node* noderotate) {
+    cout << noderotate->val << endl;
+    if (!root) return;
+
+    if (root == noderotate) {
+        if (root->balanceFactor > 1) root = RotationRight(root);
+        else root = RotationLeft(root);
+        return;
+    }
+
+    RebalanceParent(root->left, noderotate);
+    RebalanceParent(root->right, noderotate);
+
+}
+
+void AVLTree::DrawRecursion(Node* root) {
+    if (root == nullptr) return;
+    if (root->left != nullptr) DrawLineV(root->position, root->left->position, BLACK);
+    if (root->right != nullptr) DrawLineV(root->position, root->right->position, BLACK);
+
+    DrawRecursion(root->left);
+    DrawRecursion(root->right);
+
+    DrawCircle(root->position.x, root->position.y, 30, BLACK);
+    DrawText(TextFormat("%d", root->val), root->position.x - 10, root->position.y - 10, 20, WHITE);
+
+
+
+}
+
+void AVLTree::DeleteHelper(Node*& root, int key) {
+    
+}
+
+Node* AVLTree::DeleteNode(Node* root, int key) {
+    if (root == nullptr) return nullptr;
+    else if (root->val > key) root->left = DeleteNode(root->left, key);
+    else if (root->val < key) root->right = DeleteNode(root->right, key);
+    else {
+        Node* nodedelete = root;
+        if (root->left == nullptr) {
+            root = root->right;
+            if (root != nullptr) {
+                root->parent = nodedelete->parent;
+                if (nodedelete->isLeft == true) {
+                    nodedelete->parent->left = root;
+                    root->isLeft = true;
+                }
+                else {
+                    nodedelete->parent->right = root;
+                    root->isLeft = false;
+                }
+            }
+            auto it = find(NodeList.begin(), NodeList.end(), nodedelete);
+            if (it != NodeList.end()) {
+                NodeList.erase(it);
+                delete nodedelete;
+            }
+
+        }
+        else if (root->right == nullptr) {
+            root = root->left;
+            root->parent = nodedelete->parent;
+            if (nodedelete->isLeft == true) {
+                nodedelete->parent->left = root;
+                root->isLeft = true;
+            }
+            else {
+                nodedelete->parent->right = root;
+                root->isLeft = false;
+            }
+            auto it = find(NodeList.begin(), NodeList.end(), nodedelete);
+            if (it != NodeList.end()) {
+                NodeList.erase(it);
+                delete nodedelete;
+            }
+        }
+        else if (root->left != nullptr && root->right != nullptr) {
+            Node* tmp = root->left;
+            if (root != nullptr) root->parent = nodedelete->parent;
+            while (tmp->right != nullptr) tmp = tmp->right;
+            root->val = tmp->val;
+            root->left = DeleteNode(root->left, tmp->val);
+        }
+    }
+    return root;
 }
 
 void AVLTree::DeleteLeafNode(Node*& root, int key) {

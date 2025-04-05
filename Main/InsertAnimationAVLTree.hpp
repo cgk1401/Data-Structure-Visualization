@@ -5,7 +5,7 @@
 #include <map>
 
 class InsertAnimationAVLTree {
-private :
+private:
 	AVLTree* tree;
 
 	int InsertValue;
@@ -16,7 +16,7 @@ private :
 	vector <Node*> path;
 
 	float AnimationTime;
-	float duration; // thời gian để hoàn thành mỗi bước animation
+	float duration;
 
 	Node* newNode;
 	bool RotateSecond;
@@ -27,8 +27,7 @@ private :
 	map <Node*, Vector2> RotateStartPosition;
 	map <Node*, Vector2> RotateTargetPosition;
 
-
-public :
+public:
 	InsertAnimationAVLTree(AVLTree* root);
 
 	void StartInsertAnimation(int value);

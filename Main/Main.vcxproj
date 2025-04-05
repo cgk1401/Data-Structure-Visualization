@@ -104,12 +104,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\Project\CS163\Data-Structure-Visualization\Main;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\raylib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>c:\raylib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>raylib.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,8 +131,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AVLTree.cpp" />
+    <ClCompile Include="DijkstraAnimationGraph.cpp" />
+    <ClCompile Include="LinkedList.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Config.cpp" />
+    <ClCompile Include="Graph.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="InsertAnimationAVLTree.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -141,8 +145,11 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\tinyfiledialogs\tinyfiledialogs.h" />
     <ClInclude Include="AVLTree.hpp" />
+    <ClInclude Include="DijkstraAnimationGraph.hpp" />
+    <ClInclude Include="LinkedList.hpp" />
     <ClInclude Include="Button.hpp" />
     <ClInclude Include="Config.hpp" />
+    <ClInclude Include="Graph.hpp" />
     <ClInclude Include="GUI.hpp" />
     <ClInclude Include="InsertAnimationAVLTree.hpp" />
     <ClInclude Include="Node.hpp" />
