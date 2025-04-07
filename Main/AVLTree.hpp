@@ -46,6 +46,7 @@ public:
 	Node* GetNodeRotate();
 
 	void Random();
+	void InitAVLTree(int val);
 	void Clear(Node*& root);
 
 

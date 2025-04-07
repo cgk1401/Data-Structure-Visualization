@@ -19,6 +19,7 @@ private:
 	float duration;
 
 	Node* newNode;
+	bool exist = false;
 	bool RotateSecond;
 	map <Node*, Vector2> StartPosition;
 	map <Node*, Vector2> TargetPosition;

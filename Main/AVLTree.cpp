@@ -192,6 +192,28 @@ void AVLTree::Random() {
     balanceTree();
 }
 
+void AVLTree::InitAVLTree(int val) {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> dist(1, 200);
+    int size = val;
+    Clear(Root);
+    NodeList.clear();
+    if (size > 30) {
+        DistanceHorizontal = 40;
+        DistanceVertical = 80;
+    }
+    if (size > 35) {
+        DistanceHorizontal = 35;
+        DistanceVertical = 90;
+    }
+    for (int i = 0; i < size; i++) {
+        int number_random = dist(gen);
+        Insert(Root, number_random, NodeList, true);
+    }
+    balanceTree();
+}
+
 void AVLTree::Clear(Node*& root) {
     if (root == nullptr) return;
     Clear(root->left);
