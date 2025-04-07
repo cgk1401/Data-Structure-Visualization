@@ -65,8 +65,6 @@ void InsertAnimationAVLTree::StartInsertAnimation(int value) {
 		node->position = StartPosition[node];
 	}
 	tree->DeleteLeafNode(tree->Root, InsertValue);
-
-	tree->DrawLevelOrder(tree->Root);
 }
 
 

@@ -1,34 +1,27 @@
 #include "Button.hpp"
 
-//SecondMenuHeight * 1 / 6
-ButtonInit buttoninit(20, SecondMenuHeight + SecondMenuHeight * float(1) / 6, SecondMenuWidth* float(1) / 3, SecondMenuHeight * 1 / 6, "Init", C[2]);
-ButtonInsert buttoninsert(20, SecondMenuHeight + SecondMenuHeight * float(2) / 6, SecondMenuWidth* float(1) / 3, SecondMenuHeight * 1 / 6, "Insert", C[2]);
-ButtonDelete buttondelete(20, SecondMenuHeight + SecondMenuHeight * float(3) / 6, SecondMenuWidth* float(1) / 3, SecondMenuHeight * 1 / 6, "Delete", C[2]);
-ButtonSearch buttonsearch(20, SecondMenuHeight + SecondMenuHeight * float(4) / 6, SecondMenuWidth* float(1) / 3, SecondMenuHeight * 1 / 6, "Search", C[2]);
-ButtonClear buttonclear(20, SecondMenuHeight + SecondMenuHeight * float(5) / 6, SecondMenuWidth* float(1) / 3, SecondMenuHeight * 1 / 6, "Clear", C[2]);
-
-ButtonRandom buttonrandom(20 + SecondMenuWidth * float(1) / 3 + 50, SecondMenuHeight + SecondMenuHeight * float(1) / 6 + 50, SecondMenuWidth* float(1) / 3, 80, "Random", C[2]);
-ButtonLoadFile buttonloadfile(20 + SecondMenuWidth * float(1) / 3 + 50, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + 50, SecondMenuWidth* float(1) / 3, 80, "LoadFile", C[2]);
-
-Button buttonvertex(20 + SecondMenuWidth * float(1) / 3 + 50, SecondMenuHeight + SecondMenuHeight * float(1) / 6 + 50, SecondMenuWidth* float(1) / 3, 80, "Vertex", C[2]);
-Button buttonedge(20 + SecondMenuWidth * float(1) / 3 + 50, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + 50, SecondMenuWidth* float(1) / 3, 80, "Edge", C[2]);
-
-Button buttondijkstra(20, SecondMenuHeight + SecondMenuHeight * float(4) / 6, SecondMenuWidth* float(1) / 3, SecondMenuHeight * 1 / 6, "Dijkstra", C[2]);
-//20, SecondMenuHeight + SecondMenuHeight * float(3) / 6, SecondMenuWidth* float(1) / 3, 90,
-
-Button::Button(float coordinateX, float coordinateY, float width, float height, string s, Color color) {
-	this->coordinateX = coordinateX;
-	this->coordinateY = coordinateY;
-	this->width = width;
-	this->height = height;
-	this->s = s;
-	this->color = color;
-
-	//Font customFont = LoadFont("../../Data-Structure-Visualization/assets/PublicSans-Bold.ttf");
-}
+ButtonInit buttoninit("Init", C[2]);
+ButtonInsert buttoninsert("Insert", C[2]);
+ButtonDelete buttondelete("Delete", C[2]);
+ButtonSearch buttonsearch("Search", C[2]);
+ButtonClear buttonclear("Clear", C[2]);
+ButtonRandom buttonrandom("Random", WHITE);
+ButtonLoadFile buttonloadfile("LoadFile", WHITE);
+Button buttonvertex("Vertex", C[2]);
+Button buttonedge("Edge", C[2]);
+Button buttondijkstra("Dijkstra", C[2]);
 
 bool Button::IsCover() {
 	return GetMouseX() >= this->coordinateX && GetMouseX() <= this->coordinateX + this->width && GetMouseY() >= this->coordinateY && GetMouseY() <= this->coordinateY + this->height;
+}
+
+Button::Button(string s, Color color) {
+	this->coordinateX = 0;
+	this->coordinateY = 0;
+	this->height = 0;
+	this->width = 0;
+	this->color = color;
+	this->s = s;
 }
 
 void Button::DrawButton() {
@@ -62,11 +55,11 @@ void Button::setColor(Color color) {
 	this->color = color;
 }
 
-void Button::DrawClickEffect(){
-	DrawLineEx({ coordinateX + 10, coordinateY + 15}, { coordinateX + 10, coordinateY + height - 15 }, 4.0f, DARKBLUE);
+void Button::DrawClickEffect() {
+	DrawLineEx({ coordinateX + 10, coordinateY + 15 }, { coordinateX + 10, coordinateY + height - 15 }, 4.0f, DARKBLUE);
 }
 
-void Button::ConfigureButton(int position) {
+void Button::ConfigureButton(float position) {
 	const float MENU_WIDTH = ScreenWidth / 5.0f;
 	const float MENU_HEIGHT = ScreenHeight;
 
@@ -80,5 +73,5 @@ void Button::ConfigureButton(int position) {
 	this->coordinateY = BUTTON_START_Y + position * (BUTTON_HEIGHT + BUTTON_SPACING);
 	this->width = BUTTON_WIDTH;
 	this->height = BUTTON_HEIGHT;
-	this->DrawButton(); 
+	this->DrawButton();
 }

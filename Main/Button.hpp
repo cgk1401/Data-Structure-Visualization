@@ -8,7 +8,6 @@
 using namespace std;
 
 class Button {
-
 public:
 	float coordinateX;
 	float coordinateY;
@@ -17,42 +16,47 @@ public:
 	Color color;
 	string s;
 
-	Button(float coordinateX, float coordinateY, float width, float height, string s, Color color);
+	Button(string s, Color color);
 	void DrawButton();
 	bool IsCover();
 	bool IsClick();
 	void setColor(Color color);
 	void DrawClickEffect();
-	void ConfigureButton(int position);
+	void ConfigureButton(float position);
 };
 class ButtonInit : public Button {
 public:
-	ButtonInit(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
+	ButtonInit(string s, Color color) : Button(s, color) {};
 };
+
 class ButtonInsert : public Button {
 public:
-	ButtonInsert(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
+	ButtonInsert(string s, Color color) : Button(s, color) {};
 };
 
 class ButtonDelete : public Button {
 public:
-	ButtonDelete(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
+	ButtonDelete(string s, Color color) : Button(s, color) {};
 };
+
 class ButtonSearch : public Button {
 public:
-	ButtonSearch(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
+	ButtonSearch(string s, Color color) : Button(s, color) {};
 };
+
 class ButtonRandom : public Button {
 public:
-	ButtonRandom(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
+	ButtonRandom(string s, Color color) : Button(s, color) {};
 };
+
 class ButtonLoadFile : public Button {
 public:
-	ButtonLoadFile(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
+	ButtonLoadFile(string s, Color color) : Button(s, color) {};
 };
+
 class ButtonClear : public Button {
 public:
-	ButtonClear(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
+	ButtonClear(string s, Color color) : Button(s, color) {};
 };
 
 extern ButtonInit buttoninit;

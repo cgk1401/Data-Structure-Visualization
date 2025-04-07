@@ -8,6 +8,11 @@ AVLTree::AVLTree() {
     DistanceVertical = 120;
 }
 
+AVLTree::~AVLTree() {
+    Clear(Root);
+    NodeList.clear();
+}
+
 void AVLTree::Insert(Node*& root, int data, vector<Node*>& NodeList, bool isNeedRotate) {
     for (Node* node : NodeList) {
         if (data == node->val) return;

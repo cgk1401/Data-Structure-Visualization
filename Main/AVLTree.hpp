@@ -10,6 +10,7 @@ class AVLTree {
 public:
 
 	AVLTree();
+	~AVLTree();
 	Node* Root;
 	vector <Node*> NodeList;
 
