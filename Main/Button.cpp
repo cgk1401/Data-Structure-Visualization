@@ -5,8 +5,8 @@ ButtonInsert buttoninsert("Insert", C[2]);
 ButtonDelete buttondelete("Delete", C[2]);
 ButtonSearch buttonsearch("Search", C[2]);
 ButtonClear buttonclear("Clear", C[2]);
-ButtonRandom buttonrandom("Random", C[2]);
-ButtonLoadFile buttonloadfile("LoadFile", C[2]);
+ButtonRandom buttonrandom("Random", WHITE);
+ButtonLoadFile buttonloadfile("LoadFile", WHITE);
 Button buttonvertex("Vertex", C[2]);
 Button buttonedge("Edge", C[2]);
 Button buttondijkstra("Dijkstra", C[2]);
@@ -21,7 +21,7 @@ Button::Button(string s, Color color) {
 	this->height = 0;
 	this->width = 0;
 	this->color = color;
-	this->s = s; 
+	this->s = s;
 }
 
 void Button::DrawButton() {
@@ -55,11 +55,11 @@ void Button::setColor(Color color) {
 	this->color = color;
 }
 
-void Button::DrawClickEffect(){
-	DrawLineEx({ coordinateX + 10, coordinateY + 15}, { coordinateX + 10, coordinateY + height - 15 }, 4.0f, DARKBLUE);
+void Button::DrawClickEffect() {
+	DrawLineEx({ coordinateX + 10, coordinateY + 15 }, { coordinateX + 10, coordinateY + height - 15 }, 4.0f, DARKBLUE);
 }
 
-void Button::ConfigureButton(int position) {
+void Button::ConfigureButton(float position) {
 	const float MENU_WIDTH = ScreenWidth / 5.0f;
 	const float MENU_HEIGHT = ScreenHeight;
 
@@ -73,5 +73,5 @@ void Button::ConfigureButton(int position) {
 	this->coordinateY = BUTTON_START_Y + position * (BUTTON_HEIGHT + BUTTON_SPACING);
 	this->width = BUTTON_WIDTH;
 	this->height = BUTTON_HEIGHT;
-	this->DrawButton(); 
+	this->DrawButton();
 }

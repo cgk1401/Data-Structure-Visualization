@@ -314,44 +314,48 @@ void GUI::DrawLinkedList(){
 
 void GUI::DrawAVLTree() {
     Gui.DrawSecondMenu();
-    Gui.DrawBack();
 
     Gui.DrawInputBox(SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + 100);
-    if (buttoninit.IsClick() == true) {
-        currentInputMode = INIT;
+
+    if (buttoninit.IsClick()) {
+        Gui.SetActiveMenuAVLTree(INIT_AVLTREE);
         inputActive = true;
-        inputstring = "";
     }
-    else if (buttoninsert.IsClick() == true) {
-        currentInputMode = INSERT;
+    else if (buttoninsert.IsClick()) {
+        Gui.SetActiveMenuAVLTree(INSERT_AVLTREE); currentInputMode = INSERT;
         inputActive = true;
-        inputstring = "";
     }
-    else if (buttonsearch.IsClick() == true) {
-        currentInputMode = SEARCH;
+    else if (buttonsearch.IsClick()) {
+        Gui.SetActiveMenuAVLTree(SEARCH_AVLTREE); currentInputMode = SEARCH;
         inputActive = true;
-        inputstring = "";
     }
-    else if (buttondelete.IsClick() == true) {
-        currentInputMode = DELETE;
+    else if (buttondelete.IsClick()) {
+        Gui.SetActiveMenuAVLTree(DELETE_AVLTREE); currentInputMode = DELETE;
         inputActive = true;
-        inputstring = "";
     }
     else if (buttonclear.IsClick()) {
         tree.Clear(tree.Root);
         tree.NodeList.clear();
     }
+
     int val = Gui.Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
 
     if (val != -1) {
         switch (currentInputMode) {
-        case INIT:
-            break;
-        case INSERT:
+        case INSERT: {
             Gui.insertanimationavltree.StartInsertAnimation(val);
+
             break;
-        case DELETE:
+        }
+        case DELETE: {
+            buttondelete.DrawClickEffect();
+
+            tree.Root = tree.DeleteNode(tree.Root, val);
+            tree.UpdateHeightAndBalanceFactor(tree.Root);
+            tree.balanceTree();
+
             break;
+        }
         case SEARCH:
             break;
         default:
@@ -360,9 +364,42 @@ void GUI::DrawAVLTree() {
         inputActive = false;
         currentInputMode = NONE;
     }
-    Gui.insertanimationavltree.UpdateStep();
+
+    if (activemenu_avltree == INIT_AVLTREE) {
+        buttoninit.DrawClickEffect();
+        buttonrandom.DrawButton();
+        buttonloadfile.DrawButton();
+
+        if (buttonrandom.IsClick())  Gui.SetActiveMenuInitAVLTree(RANDOM_AVLTREE);
+        else if (buttonloadfile.IsClick())  Gui.SetActiveMenuInitAVLTree(LOADFILE_AVLTREE);
+
+
+        if (activemenuinit_avltree == RANDOM_AVLTREE) {
+            buttonrandom.DrawClickEffect();
+            tree.Random();
+            SetActiveMenuInitAVLTree(NONEINITAVLTREE);
+        }
+        else if (activemenuinit_avltree == LOADFILE_AVLTREE) {
+            buttonloadfile.DrawClickEffect();
+            Gui.LoadFileAVLTree();
+            Gui.insertanimationavltree.SetTree(&tree);
+            SetActiveMenuInitAVLTree(NONEINITAVLTREE);
+        }
+    }
+    if (activemenu_avltree == INSERT_AVLTREE) {
+        buttoninsert.DrawClickEffect();
+
+        Gui.insertanimationavltree.UpdateStep();
+
+        if (Gui.insertanimationavltree.isFinished() == true) {
+            //Gui.isClickInsert = false;
+            SetActiveMenuInitAVLTree(NONEINITAVLTREE);
+        }
+    }
 
     tree.DrawTree();
+
+
     Gui.DrawBack();
 }
 
