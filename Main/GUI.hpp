@@ -16,9 +16,11 @@
 
 
 enum TypeDataStructure { MENU, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
+
 enum ActiveMenuTypeAVLTree { NONE_AVLTREE, INIT_AVLTREE, INSERT_AVLTREE, SEARCH_AVLTREE, DELETE_AVLTREE };
 enum ActiveMenuInitAVLTree { NONEINITAVLTREE, RANDOM_AVLTREE, LOADFILE_AVLTREE };
-enum InputMode { NONE, INIT, INSERT, DELETE, SEARCH, DIJKSTRA };
+
+enum InputMode { NONE, INIT, INSERT, INSERT_V, INSERT_E, DELETE, DELETE_V, DELETE_E,SEARCH, DIJKSTRA, RANDOM };
 
 class GUI {
 private:
@@ -34,6 +36,8 @@ private:
 	InsertAnimationAVLTree insertanimationavltree;
 
 	Graph graph;
+	int GraphRandomStep = 0;
+	int GraphVertexStep = 0;
 	DijkstraAnimationGraph dijkstra_animation;
 	
 public :
@@ -73,11 +77,6 @@ public:
 
 	bool LoadFileAVLTree();
 	bool LoadFileGraph();
-
-	void InitGraph();
-	void InsertGraph();
-	void DeleteGraph();
-	void DijkstraGraph();
 
 	int Input(int posX, int posY);   
     void DrawInputBox(int posX, int posY);

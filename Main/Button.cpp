@@ -80,5 +80,6 @@ void Button::ConfigureButton(int position) {
 	this->coordinateY = BUTTON_START_Y + position * (BUTTON_HEIGHT + BUTTON_SPACING);
 	this->width = BUTTON_WIDTH;
 	this->height = BUTTON_HEIGHT;
+	this->color = C[2];
 	this->DrawButton(); 
 }
