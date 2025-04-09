@@ -27,6 +27,9 @@ public :
 	bool isClickDelete = false;
 	bool isClickInit = false;
 	bool isClickSearch = false;
+	bool isClickClear = false;
+	bool isClickCreate = false;
+
 public:
 	GUI();
 

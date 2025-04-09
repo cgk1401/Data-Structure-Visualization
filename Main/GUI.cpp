@@ -109,78 +109,146 @@ void GUI::DrawSecondMenu() {
 }
 
 void GUI::DrawHashTable() {
-	Gui.DrawSecondMenu();
-	Gui.DrawBack();
-	
-	// Xử lý Insert
-	if (buttoninsert.IsClick()) {
-		Gui.isClickInsert = true;
-	}
-	if (Gui.isClickInsert) {
-		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40,
-			SecondMenuHeight + SecondMenuHeight * float(2) / 6 +
-			(SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-		int val = Gui.Input(SecondMenuWidth * 1 / 3 + 120,
-			SecondMenuHeight + SecondMenuHeight * 1 / 6 +
-			(SecondMenuHeight * 1 / 6) * 1 / 2);
-		if (val != -1) {
-			table.insert(val);
-			Gui.isClickInsert = false;
-		}
-	}
+    static bool isInitClicked = false;  // Trạng thái nút Init
+    static bool isCreating = false;     // Trạng thái nhập liệu cho Create
+    static std::string createInput = ""; // Chuỗi nhập liệu cho Create
 
-	// Xử lý Init
-	if (buttoninit.IsClick()) {
-		Gui.isClickInit = true;
-	}
-	if (Gui.isClickInit) {
-		DrawText("Size : ", SecondMenuWidth * float(1) / 3 + 40,
-			SecondMenuHeight + SecondMenuHeight * float(1) / 6 +
-			(SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-		int val=Gui.Input(SecondMenuWidth * 1 / 3 + 120,
-			SecondMenuHeight + SecondMenuHeight * 1 / 6 +
-			(SecondMenuHeight * 1 / 6) * 1 / 2);
-		if (val != -1) {
-			table.init(val);
-			Gui.isClickInit = false;
-		}
-	}
-	//Xử lý Delete
-	if (buttondelete.IsClick() == true) {
-		Gui.isClickDelete = true;
-	}
-	if (Gui.isClickDelete) {
-		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40,
-			SecondMenuHeight + SecondMenuHeight * float(3) / 6 +
-			(SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-		int val = Gui.Input(SecondMenuWidth * float(1) / 3 + 120,
-			SecondMenuHeight + SecondMenuHeight * float(3) / 6 +
-			(SecondMenuHeight * float(1) / 6) * 1 / 2);
-		if (val != -1) {
-			table.remove(val);
-			Gui.isClickDelete = false;
-		}
-		
-	}
+    Gui.DrawSecondMenu();
+    Gui.DrawBack();
 
-	//Xử lý Search
-	if (buttonsearch.IsClick()) {
-		Gui.isClickSearch = true;
-	}
-	if (Gui.isClickSearch) {
-		DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40,
-			SecondMenuHeight + SecondMenuHeight * float(4) / 6 +
-			(SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, WHITE);
-		int val =Gui.Input(SecondMenuWidth * float(1) / 3 + 120,
-			SecondMenuHeight + SecondMenuHeight * float(3) / 6 +
-			(SecondMenuHeight * float(1) / 6) * 1 / 2);
-		if (val != -1) {
-			table.search(val);
-			Gui.isClickSearch = false;
-		}
-	}
-	
-	table.drawHashTable();
+    // Xử lý Init
+    if (buttoninit.IsClick() && !isInitClicked) {
+        Gui.isClickInit = true;
+        Gui.isClickInsert = Gui.isClickDelete = Gui.isClickSearch = false;
+        table.startInitAnimation();
+        isInitClicked = true;
+        std::cout << "✅ Init Button is clicked\n";
+    }
+
+    if (Gui.isClickInit) {
+        if (table.isInitAnimationRunning()) {
+            table.drawInitAnimation(buttoninit.coordinateX, buttoninit.coordinateY);
+        }
+        else {
+            table.drawInitAnimation(buttoninit.coordinateX, buttoninit.coordinateY); // Tiếp tục vẽ nút
+            if (Gui.isClickCreate) {
+                isCreating = true;
+                Gui.isClickCreate = false;
+            }
+            if (Gui.isClickRandom) {
+                table.handleRandomButton();
+                Gui.isClickRandom = false; // Reset để nhấn Random liên tục
+                // Không reset isInitClicked hay isClickInit để giữ nút hiển thị
+            }
+        }
+    }
+
+    // Xử lý nhập liệu cho Create
+    if (isCreating) {
+        DrawText("Enter number of buckets: ", 100, 200, 20, PINK);
+        int key = GetCharPressed();
+        while (key > 0) {
+            if (key >= '0' && key <= '9') {
+                createInput += char(key);
+            }
+            key = GetCharPressed();
+        }
+        DrawText(createInput.c_str(), 300, 200, 20, BLACK);
+
+        if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER)) {
+            if (!createInput.empty()) {
+                int newSize = std::stoi(createInput);
+                table.init(newSize);
+                std::cout << "✅ Hash Table created with " << newSize << " buckets!\n";
+                isCreating = false;
+                createInput = "";
+                // Không reset isInitClicked hay gọi setButtonsVisible(false)
+            }
+            else {
+                std::cout << "❌ Please enter a valid number!\n";
+                isCreating = false;
+                createInput = "";
+            }
+        }
+        if (IsKeyPressed(KEY_BACKSPACE) && !createInput.empty()) {
+            createInput.pop_back();
+        }
+        if (IsKeyPressed(KEY_ESCAPE)) {
+            isCreating = false;
+            createInput = "";
+        }
+    }
+
+    // Xử lý Insert
+    if (buttoninsert.IsClick()) {
+        Gui.isClickInsert = true;
+        Gui.isClickInit = Gui.isClickDelete = Gui.isClickSearch = false;
+        if (isInitClicked) {
+            isInitClicked = false;
+            table.setButtonsVisible(false); // Ẩn nút khi chuyển sang Insert
+            std::cout << "✅ Switched to Insert, hiding Create/Random buttons\n";
+        }
+    }
+    if (Gui.isClickInsert) {
+        DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40,
+            SecondMenuHeight + SecondMenuHeight * float(2) / 6 +
+            (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, PINK);
+        int val = Gui.Input(SecondMenuWidth * 1 / 3 + 120,
+            SecondMenuHeight + SecondMenuHeight * float(2) / 6 +
+            (SecondMenuHeight * 1 / 6) * 1 / 2);
+        if (val != -1) {
+            table.insert(val);
+            Gui.isClickInsert = false;
+        }
+    }
+
+    // Xử lý Delete
+    if (buttondelete.IsClick()) {
+        Gui.isClickDelete = true;
+        Gui.isClickInsert = Gui.isClickInit = Gui.isClickSearch = false;
+        if (isInitClicked) {
+            isInitClicked = false;
+            table.setButtonsVisible(false); // Ẩn nút khi chuyển sang Delete
+            std::cout << "✅ Switched to Delete, hiding Create/Random buttons\n";
+        }
+    }
+    if (Gui.isClickDelete) {
+        DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40,
+            SecondMenuHeight + SecondMenuHeight * float(3) / 6 +
+            (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, PINK);
+        int val = Gui.Input(SecondMenuWidth * float(1) / 3 + 120,
+            SecondMenuHeight + SecondMenuHeight * float(3) / 6 +
+            (SecondMenuHeight * float(1) / 6) * 1 / 2);
+        if (val != -1) {
+            table.remove(val);
+            Gui.isClickDelete = false;
+        }
+    }
+
+    // Xử lý Search
+    if (buttonsearch.IsClick()) {
+        Gui.isClickSearch = true;
+        Gui.isClickInsert = Gui.isClickInit = Gui.isClickDelete = false;
+        if (isInitClicked) {
+            isInitClicked = false;
+            table.setButtonsVisible(false); // Ẩn nút khi chuyển sang Search
+            std::cout << "✅ Switched to Search, hiding Create/Random buttons\n";
+        }
+    }
+    if (Gui.isClickSearch) {
+        DrawText("Value : ", SecondMenuWidth * float(1) / 3 + 40,
+            SecondMenuHeight + SecondMenuHeight * float(4) / 6 +
+            (SecondMenuHeight * float(1) / 6) * float(1) / 2, 20, PINK);
+        int val = Gui.Input(SecondMenuWidth * float(1) / 3 + 120,
+            SecondMenuHeight + SecondMenuHeight * float(4) / 6 +
+            (SecondMenuHeight * float(1) / 6) * 1 / 2);
+        if (val != -1) {
+            table.search(val);
+            Gui.isClickSearch = false;
+        }
+    }
+
+    table.drawHashTable();
 }
 
 void GUI::DrawLinkedList() {
