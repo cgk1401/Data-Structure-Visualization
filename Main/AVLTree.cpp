@@ -30,12 +30,14 @@ Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& 
         NodeList.push_back(root);
         return root;
     }
+
     if (data < root->val) {
         root->left = InsertHelper(root->left, data, root, NodeList, isNeedRotate);
     }
     else if (data > root->val) {
         root->right = InsertHelper(root->right, data, root, NodeList, isNeedRotate);
     }
+
     if (isNeedRotate == true) {
         root->balanceFactor = GetHeight(root->left) - GetHeight(root->right);
         root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
@@ -63,6 +65,7 @@ Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& 
             return root;
         }
     }
+
     return root;
 }
 
@@ -72,44 +75,70 @@ int AVLTree::GetHeight(Node* root) {
 }
 
 Node* AVLTree::RotationLeft(Node*& root) {
+
     if (root == nullptr) return nullptr;
+
     Node* newroot = root->right;
     Node* child = newroot->left;
+
     newroot->parent = root->parent;
+
     newroot->left = root;
     root->parent = newroot;
     root->right = child;
+
     if (child != nullptr) {
         child->parent = root;
         child->isLeft = false;
     }
+
     newroot->isLeft = root->isLeft;
+
+
     root->isLeft = true;
+
     root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
     newroot->height = 1 + max(GetHeight(newroot->left), GetHeight(newroot->right));
+
     swap(NodeList[root->nodeIndex], NodeList[newroot->nodeIndex]);
+
     for (int i = 0; i < NodeList.size(); i++) NodeList[i]->nodeIndex = i;
+
     return newroot;
+
 }
 
 Node* AVLTree::RotationRight(Node*& root) {
     if (root == nullptr) return nullptr;
+
     Node* newroot = root->left;
     Node* child = newroot->right;
+
+
     newroot->parent = root->parent;
+
     newroot->right = root;
     root->parent = newroot;
     root->left = child;
+
+
     if (child != nullptr) {
         child->parent = root;
         child->isLeft = true;
     }
+
     newroot->isLeft = root->isLeft;
+
+
     root->isLeft = false;
+
     root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
     newroot->height = 1 + max(GetHeight(newroot->left), GetHeight(newroot->right));
+
     swap(NodeList[root->nodeIndex], NodeList[newroot->nodeIndex]);
     for (int i = 0; i < NodeList.size(); i++) NodeList[i]->nodeIndex = i;
+
+
     return newroot;
 }
 
@@ -117,8 +146,10 @@ void AVLTree::UpdateHeightAndBalanceFactor(Node*& root) {
     if (root == nullptr) return;
     UpdateHeightAndBalanceFactor(root->left);
     UpdateHeightAndBalanceFactor(root->right);
+
     root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
     root->balanceFactor = GetHeight(root->left) - GetHeight(root->right);
+
 }
 
 Node* AVLTree::GetNodeRotate() {
@@ -142,6 +173,7 @@ void AVLTree::Random() {
     uniform_int_distribution<int> dist1(1, 200);
     int size = dist(gen);
     cout << size << " ";
+
     Clear(Root);
     NodeList.clear();
     if (size > 30) {
@@ -154,6 +186,29 @@ void AVLTree::Random() {
     }
     for (int i = 0; i < size; i++) {
         int number_random = dist1(gen1);
+        Insert(Root, number_random, NodeList, true);
+    }
+
+    balanceTree();
+}
+
+void AVLTree::InitAVLTree(int val) {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> dist(1, 200);
+    int size = val;
+    Clear(Root);
+    NodeList.clear();
+    if (size > 30) {
+        DistanceHorizontal = 40;
+        DistanceVertical = 80;
+    }
+    if (size > 35) {
+        DistanceHorizontal = 35;
+        DistanceVertical = 90;
+    }
+    for (int i = 0; i < size; i++) {
+        int number_random = dist(gen);
         Insert(Root, number_random, NodeList, true);
     }
     balanceTree();
@@ -172,13 +227,17 @@ void AVLTree::MoveTree(Node* root, bool isLeft) {
     root->position.x = root->position.x + (isLeft ? -DistanceHorizontal : DistanceHorizontal);
     if (root->left != nullptr) MoveTree(root->left, isLeft);
     if (root->right != nullptr) MoveTree(root->right, isLeft);
+
 }
 
 void AVLTree::balanceTree() {
     if (Root == nullptr) return;
+
     vector<Node*> nodeList;
     queue<Node*> q;
     q.push(Root);
+
+
     while (!q.empty()) {
         Node* temp = q.front();
         q.pop();
@@ -186,6 +245,7 @@ void AVLTree::balanceTree() {
         if (temp->left) q.push(temp->left);
         if (temp->right) q.push(temp->right);
     }
+
     for (auto& node : nodeList) {
         if (node == Root) {
             node->position = { ScreenWidth * 5 / 8.0f  , 250 * 1.0f };
@@ -223,6 +283,7 @@ void AVLTree::DrawTree() {
 }
 
 void AVLTree::DrawTreeHelper(Node* node) {
+
     for (Node* node : NodeList) {
         if (node->left) {
             DrawLineEx(node->position, node->left->position, 3, DARKGRAY);
@@ -230,6 +291,7 @@ void AVLTree::DrawTreeHelper(Node* node) {
         if (node->right) {
             DrawLineEx(node->position, node->right->position, 3, DARKGRAY);
         }
+
     }
     for (Node* node : NodeList) {
         if (node->isNodeInserted) {
@@ -273,6 +335,7 @@ void AVLTree::DrawLevelOrder(Node* root) {
 
 void AVLTree::DeleteLeafNode(Node*& root, int key) {
     if (!root) return;
+
     if (key < root->val) {
         DeleteLeafNode(root->left, key);
     }
@@ -286,7 +349,55 @@ void AVLTree::DeleteLeafNode(Node*& root, int key) {
             delete temp;
         }
     }
+
     if (root) UpdateHeightAndBalanceFactor(root);
+}
+
+int AVLTree::GetBalanceFactor(Node* node) {
+    if (!node) return 0;
+    int leftHeight = node->left ? node->left->height : 0;
+    int rightHeight = node->right ? node->right->height : 0;
+    return leftHeight - rightHeight;
+}
+
+void AVLTree::RebalanceChild(Node*& root, Node* noderotate) {
+    if (!root) return;
+
+    UpdateHeightAndBalanceFactor(Root);
+
+    if (root->balanceFactor > 1 && root == noderotate) {
+
+        if (GetBalanceFactor(root->left) < 0) {
+            root->left = RotationLeft(root->left);
+            return;
+        }
+    }
+    else if (root->balanceFactor < -1 && root == noderotate) {
+
+        if (GetBalanceFactor(root->right) > 0) {
+            root->right = RotationRight(root->right);
+            return;
+        }
+    }
+
+    RebalanceChild(root->left, noderotate);
+    RebalanceChild(root->right, noderotate);
+
+}
+
+void AVLTree::RebalanceParent(Node*& root, Node* noderotate) {
+    cout << noderotate->val << endl;
+    if (!root) return;
+
+    if (root == noderotate) {
+        if (root->balanceFactor > 1) root = RotationRight(root);
+        else root = RotationLeft(root);
+        return;
+    }
+
+    RebalanceParent(root->left, noderotate);
+    RebalanceParent(root->right, noderotate);
+
 }
 
 void AVLTree::DrawRecursion(Node* root) {
@@ -299,43 +410,13 @@ void AVLTree::DrawRecursion(Node* root) {
 
     DrawCircle(root->position.x, root->position.y, 30, BLACK);
     DrawText(TextFormat("%d", root->val), root->position.x - 10, root->position.y - 10, 20, WHITE);
+
+
+
 }
 
-int AVLTree::GetBalanceFactor(Node* node) {
-    if (!node) return 0;
-    int leftHeight = node->left ? node->left->height : 0;
-    int rightHeight = node->right ? node->right->height : 0;
-    return leftHeight - rightHeight;
-}
+void AVLTree::DeleteHelper(Node*& root, int key) {
 
-void AVLTree::RebalanceChild(Node*& root, Node* noderotate) {
-    if (!root) return;
-    UpdateHeightAndBalanceFactor(Root);
-    if (root->balanceFactor > 1 && root == noderotate) {
-        if (GetBalanceFactor(root->left) < 0) {
-            root->left = RotationLeft(root->left); 
-            return;
-        }
-    }
-    else if (root->balanceFactor < -1 && root == noderotate) {
-        if (GetBalanceFactor(root->right) > 0) {
-            root->right = RotationRight(root->right);
-            return ;
-        }
-    }
-    RebalanceChild(root->left, noderotate);
-    RebalanceChild(root->right, noderotate);
-}
-
-void AVLTree::RebalanceParent(Node*& root, Node* noderotate) {
-    cout << noderotate->val << endl;
-    if (root == noderotate) {
-        if (root->balanceFactor > 1) root = RotationRight(root);
-        else root = RotationLeft(root);
-        return;
-    }
-    RebalanceParent(root->left, noderotate);
-    RebalanceParent(root->right, noderotate);
 }
 
 Node* AVLTree::DeleteNode(Node* root, int key) {
@@ -362,6 +443,7 @@ Node* AVLTree::DeleteNode(Node* root, int key) {
                 NodeList.erase(it);
                 delete nodedelete;
             }
+
         }
         else if (root->right == nullptr) {
             root = root->left;
@@ -390,7 +472,6 @@ Node* AVLTree::DeleteNode(Node* root, int key) {
     }
     return root;
 }
-
 
 
 

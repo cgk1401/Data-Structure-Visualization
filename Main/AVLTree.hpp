@@ -18,6 +18,7 @@ public:
 	float DistanceVertical;
 
 public:
+
 	void MoveTree(Node* root, bool isLeft);
 	void balanceTree();
 public:
@@ -45,6 +46,7 @@ public:
 	Node* GetNodeRotate();
 
 	void Random();
+	void InitAVLTree(int val);
 	void Clear(Node*& root);
 
 

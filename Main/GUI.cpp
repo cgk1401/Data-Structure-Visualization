@@ -314,24 +314,27 @@ void GUI::DrawLinkedList(){
 
 void GUI::DrawAVLTree() {
     Gui.DrawSecondMenu();
+    Gui.DrawBack();
 
     Gui.DrawInputBox(SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + 100);
 
     if (buttoninit.IsClick()) {
         Gui.SetActiveMenuAVLTree(INIT_AVLTREE);
+        currentInputMode = INIT;
         inputActive = true;
     }
     else if (buttoninsert.IsClick()) {
-        Gui.SetActiveMenuAVLTree(INSERT_AVLTREE); currentInputMode = INSERT;
+        Gui.SetActiveMenuAVLTree(INSERT_AVLTREE);
+        currentInputMode = INSERT;
         inputActive = true;
     }
     else if (buttonsearch.IsClick()) {
-        Gui.SetActiveMenuAVLTree(SEARCH_AVLTREE); currentInputMode = SEARCH;
+        Gui.SetActiveMenuAVLTree(SEARCH_AVLTREE);
+        currentInputMode = SEARCH;
         inputActive = true;
     }
     else if (buttondelete.IsClick()) {
-        Gui.SetActiveMenuAVLTree(DELETE_AVLTREE); currentInputMode = DELETE;
-        inputActive = true;
+
     }
     else if (buttonclear.IsClick()) {
         tree.Clear(tree.Root);
@@ -340,67 +343,45 @@ void GUI::DrawAVLTree() {
 
     int val = Gui.Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
 
-    if (val != -1) {
-        switch (currentInputMode) {
-        case INSERT: {
-            Gui.insertanimationavltree.StartInsertAnimation(val);
-
-            break;
-        }
-        case DELETE: {
-            buttondelete.DrawClickEffect();
-
-            tree.Root = tree.DeleteNode(tree.Root, val);
-            tree.UpdateHeightAndBalanceFactor(tree.Root);
-            tree.balanceTree();
-
-            break;
-        }
-        case SEARCH:
-            break;
-        default:
-            break;
-        }
-        inputActive = false;
-        currentInputMode = NONE;
-    }
 
     if (activemenu_avltree == INIT_AVLTREE) {
-        buttoninit.DrawClickEffect();
-        buttonrandom.DrawButton();
-        buttonloadfile.DrawButton();
+        buttonrandom.ConfigureButton(6.3);
+        buttonloadfile.ConfigureButton(7.3);
 
         if (buttonrandom.IsClick())  Gui.SetActiveMenuInitAVLTree(RANDOM_AVLTREE);
         else if (buttonloadfile.IsClick())  Gui.SetActiveMenuInitAVLTree(LOADFILE_AVLTREE);
 
-
+        if (val != -1) {
+            tree.InitAVLTree(val);
+            Gui.insertanimationavltree.SetTree(&tree);
+            SetActiveMenuInitAVLTree(NONEINITAVLTREE);
+            SetActiveMenuAVLTree(NONE_AVLTREE);
+            inputActive = false;
+        }
         if (activemenuinit_avltree == RANDOM_AVLTREE) {
-            buttonrandom.DrawClickEffect();
             tree.Random();
             SetActiveMenuInitAVLTree(NONEINITAVLTREE);
+            SetActiveMenuAVLTree(NONE_AVLTREE);
+            inputActive = false;
         }
         else if (activemenuinit_avltree == LOADFILE_AVLTREE) {
-            buttonloadfile.DrawClickEffect();
             Gui.LoadFileAVLTree();
             Gui.insertanimationavltree.SetTree(&tree);
             SetActiveMenuInitAVLTree(NONEINITAVLTREE);
+            SetActiveMenuAVLTree(NONE_AVLTREE);
+            inputActive = false;
         }
     }
     if (activemenu_avltree == INSERT_AVLTREE) {
-        buttoninsert.DrawClickEffect();
-
-        Gui.insertanimationavltree.UpdateStep();
-
-        if (Gui.insertanimationavltree.isFinished() == true) {
-            //Gui.isClickInsert = false;
-            SetActiveMenuInitAVLTree(NONEINITAVLTREE);
+        cout << val << " ";
+        if (val != -1) {
+            Gui.insertanimationavltree.StartInsertAnimation(val);
+            inputActive = false;
         }
+        Gui.insertanimationavltree.UpdateStep();
     }
 
     tree.DrawTree();
-
-
-    Gui.DrawBack();
 }
 
 void GUI::DrawGraph() {
@@ -842,6 +823,7 @@ void GUI::DrawInputBox(int posX, int posY) {
     }
 	if (CurrentStruture == AVLTREE) {
 		switch (currentInputMode) {
+        case INIT:    labelText = "Init Value: "; break;
 		case INSERT:  labelText = "Insert Value: "; break;
 		case DELETE:  labelText = "Delete Value: "; break;
 		case SEARCH:  labelText = "Search Value: "; break;

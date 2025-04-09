@@ -23,6 +23,7 @@ void InsertAnimationAVLTree::StartInsertAnimation(int value) {
 	this->TargetPosition.clear();
 	this->path.clear();
 	this->newNode = nullptr;
+	this->exist = false;
 
 	for (Node* node : tree->NodeList) {
 		StartPosition[node] = node->position;
@@ -33,6 +34,10 @@ void InsertAnimationAVLTree::StartInsertAnimation(int value) {
 		path.push_back(curr);
 		if (value < curr->val) curr = curr->left;
 		else if (value > curr->val) curr = curr->right;
+		else if (value == curr->val) {
+			exist = true;
+			return;
+		}
 		else break;
 	}
 	tree->Insert(tree->Root, value, tree->NodeList, false);
@@ -72,6 +77,7 @@ void InsertAnimationAVLTree::SetTree(AVLTree* root) {
 }
 
 void InsertAnimationAVLTree::UpdateStep() {
+	if (exist == true) return;
 	AnimationTime += GetFrameTime();
 	float t = AnimationTime / duration;
 
