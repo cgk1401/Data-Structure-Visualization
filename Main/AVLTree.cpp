@@ -412,10 +412,6 @@ void AVLTree::DrawRecursion(Node* root) {
     DrawText(TextFormat("%d", root->val), root->position.x - 10, root->position.y - 10, 20, WHITE);
 }
 
-void AVLTree::DeleteHelper(Node*& root, int key) {
-    
-}
-
 Node* AVLTree::DeleteNode(Node* root, int key) {
     if (root == nullptr) return nullptr;
     else if (root->val > key) root->left = DeleteNode(root->left, key);

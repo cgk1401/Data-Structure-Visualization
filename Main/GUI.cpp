@@ -389,6 +389,7 @@ void GUI::DrawAVLTree() {
         Gui.insertanimationavltree.UpdateStepDelete();
 
     }
+    Gui.insertanimationavltree.SetTree(&tree);
     tree.DrawTree();
 }
 

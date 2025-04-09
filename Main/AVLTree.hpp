@@ -31,7 +31,6 @@ public:
 	int GetBalanceFactor(Node* node);
 
 	void DrawRecursion(Node* root);
-	void DeleteHelper(Node*& root, int key);
 	Node* DeleteNode(Node* root, int key);
 
 public:
