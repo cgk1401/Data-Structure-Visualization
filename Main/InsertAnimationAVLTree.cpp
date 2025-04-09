@@ -258,6 +258,10 @@ void InsertAnimationAVLTree::UpdateStepDelete() {
 				AnimationStep = 8;
 				AnimationTime = 0.0f;
 			}
+			else if (NodeRotate != nullptr) {
+				AnimationStep = 5;
+				AnimationTime = 0.0f;
+			}
 			else {
 				AnimationStep = 7;
 				AnimationTime = 0.0f;
@@ -293,8 +297,12 @@ void InsertAnimationAVLTree::UpdateStepDelete() {
 			RotateTargetPosition[node] = node->position;
 			node->position = RotateStartPosition[node];
 		}
+
+		NodeRotate = tree->GetNodeRotate();
+
 		AnimationStep = 6;
 		AnimationTime = 0.0f;
+
 		break;
 	}
 }
