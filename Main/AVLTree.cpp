@@ -410,9 +410,6 @@ void AVLTree::DrawRecursion(Node* root) {
 
     DrawCircle(root->position.x, root->position.y, 30, BLACK);
     DrawText(TextFormat("%d", root->val), root->position.x - 10, root->position.y - 10, 20, WHITE);
-
-
-
 }
 
 void AVLTree::DeleteHelper(Node*& root, int key) {

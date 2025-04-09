@@ -334,7 +334,9 @@ void GUI::DrawAVLTree() {
         inputActive = true;
     }
     else if (buttondelete.IsClick()) {
-
+        Gui.SetActiveMenuAVLTree(DELETE_AVLTREE);
+        currentInputMode = DELETE;
+        inputActive = true;
     }
     else if (buttonclear.IsClick()) {
         tree.Clear(tree.Root);
@@ -342,7 +344,6 @@ void GUI::DrawAVLTree() {
     }
 
     int val = Gui.Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
-
 
     if (activemenu_avltree == INIT_AVLTREE) {
         buttonrandom.ConfigureButton(6.3);
@@ -372,7 +373,7 @@ void GUI::DrawAVLTree() {
             inputActive = false;
         }
     }
-    if (activemenu_avltree == INSERT_AVLTREE) {
+    else if (activemenu_avltree == INSERT_AVLTREE) {
         cout << val << " ";
         if (val != -1) {
             Gui.insertanimationavltree.StartInsertAnimation(val);
@@ -380,7 +381,14 @@ void GUI::DrawAVLTree() {
         }
         Gui.insertanimationavltree.UpdateStep();
     }
+    else if (activemenu_avltree == DELETE_AVLTREE) {
+        if (val != -1) {
+            Gui.insertanimationavltree.DeleteAnimation(val);
+            inputActive = false;
+        }
+        Gui.insertanimationavltree.UpdateStepDelete();
 
+    }
     tree.DrawTree();
 }
 
