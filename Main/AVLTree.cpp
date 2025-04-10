@@ -184,11 +184,12 @@ void AVLTree::Random() {
         DistanceHorizontal = 35;
         DistanceVertical = 90;
     }
-    for (int i = 0; i < size; i++) {
+    set <int> se;
+    while (se.size() < size) {
         int number_random = dist1(gen1);
-        Insert(Root, number_random, NodeList, true);
+        se.insert(number_random);
     }
-
+    for (auto it : se) Insert(Root, it, NodeList, true);
     balanceTree();
 }
 
@@ -207,10 +208,12 @@ void AVLTree::InitAVLTree(int val) {
         DistanceHorizontal = 35;
         DistanceVertical = 90;
     }
-    for (int i = 0; i < size; i++) {
+    set <int> se;
+    while (se.size() < size) {
         int number_random = dist(gen);
-        Insert(Root, number_random, NodeList, true);
+        se.insert(number_random);
     }
+    for (auto it : se) Insert(Root, it, NodeList, true);
     balanceTree();
 }
 
@@ -410,13 +413,6 @@ void AVLTree::DrawRecursion(Node* root) {
 
     DrawCircle(root->position.x, root->position.y, 30, BLACK);
     DrawText(TextFormat("%d", root->val), root->position.x - 10, root->position.y - 10, 20, WHITE);
-
-
-
-}
-
-void AVLTree::DeleteHelper(Node*& root, int key) {
-
 }
 
 Node* AVLTree::DeleteNode(Node* root, int key) {

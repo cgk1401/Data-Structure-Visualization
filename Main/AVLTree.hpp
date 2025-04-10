@@ -5,7 +5,7 @@
 #include "Config.hpp"
 #include <random>
 #include <queue>
-
+#include <set>
 class AVLTree {
 public:
 
@@ -18,7 +18,6 @@ public:
 	float DistanceVertical;
 
 public:
-
 	void MoveTree(Node* root, bool isLeft);
 	void balanceTree();
 public:
@@ -32,7 +31,6 @@ public:
 	int GetBalanceFactor(Node* node);
 
 	void DrawRecursion(Node* root);
-	void DeleteHelper(Node*& root, int key);
 	Node* DeleteNode(Node* root, int key);
 
 public:
@@ -48,9 +46,6 @@ public:
 	void Random();
 	void InitAVLTree(int val);
 	void Clear(Node*& root);
-
-
-
 };
 
 #endif // !AVLTree_HPP
