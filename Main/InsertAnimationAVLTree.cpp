@@ -149,11 +149,16 @@ void InsertAnimationAVLTree::UpdateStepDelete() {
 			if (t < 1.0f) {
 				GhostNode->position.x = GhostStartPosition.x + (NodeDelete->position.x - GhostStartPosition.x)* t;
 				GhostNode->position.y = GhostStartPosition.y + (NodeDelete->position.y - GhostStartPosition.y) * t;
+				int fontSize = 20;
+				string text = to_string(GhostNode->val);
+				if (text.size() > 2) fontSize = 19;
+				if (text.size() > 4) fontSize = 16;
+				int textWidth = MeasureText(text.c_str(), fontSize);
+				int textHeight = fontSize;
 				DrawCircle(GhostNode->position.x, GhostNode->position.y, 30, BLUE);
-				DrawText(TextFormat("%d", GhostNode->val), GhostNode->position.x, GhostNode->position.y, 20, WHITE);
+				DrawText(text.c_str(), GhostNode->position.x - textWidth / 2, GhostNode->position.y - textHeight / 2, fontSize, WHITE);
 			}
 			else {
-				NodeDelete->val = NodeReplace->val;
 				NodeDelete->isNodeInserted = true;
 				delete GhostNode;
 				GhostNode = nullptr;
@@ -171,16 +176,25 @@ void InsertAnimationAVLTree::UpdateStepDelete() {
 		TargetPosition.clear();
 
 		for (Node* node : tree->NodeList) {
+			cout << node->val << " ";
 			StartPosition[node] = node->position;
 		}
-
+		cout << endl;
+		for (auto it : path) cout << it->val << " ";
+		cout << endl;
+		
 		tree->DeleteNode(tree->Root, NodeDelete->val);
 		tree->UpdateHeightAndBalanceFactor(tree->Root);
 		tree->balanceTree();
 
 		for (Node* node : tree->NodeList) {
+			cout << node->val << " ";
 			TargetPosition[node] = node->position;
 		}
+		cout << endl;
+		for (auto it : path) cout << it->val << " ";
+		cout << endl;
+
 
 		for (Node* node : tree->NodeList) {
 			node->position = StartPosition[node];
@@ -273,9 +287,11 @@ void InsertAnimationAVLTree::UpdateStepDelete() {
 				node->isNodeInserted = false;
 				node->isNodeHighLighted = false;
 			}
-			path.clear();
+			this->path.clear();
 			AnimationStep = 0;
 			AnimationTime = 0.0f;
+			RotateStartPosition.clear();
+			RotateTargetPosition.clear();
 		}
 		break;
 	case 8 :
@@ -303,8 +319,11 @@ void InsertAnimationAVLTree::UpdateStepDelete() {
 		AnimationTime = 0.0f;
 
 		break;
+	default :
+		break;
 	}
 }
+
 void InsertAnimationAVLTree::UpdateStep() {
 	if (exist == true) return;
 	AnimationTime += GetFrameTime();
@@ -395,7 +414,6 @@ void InsertAnimationAVLTree::UpdateStep() {
 		}
 		break;
 	case 5:
-		cout << "Case 5" << endl;
 		if (t < 1.0f) {
 			for (Node* node : tree->NodeList) {
 				node->position.x = RotateStartPosition[node].x + (RotateTargetPosition[node].x - RotateStartPosition[node].x) * t;

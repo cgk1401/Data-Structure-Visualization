@@ -6,6 +6,7 @@
 #include <random>
 #include <queue>
 #include <set>
+#include <string>
 class AVLTree {
 public:
 
