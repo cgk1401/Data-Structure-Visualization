@@ -14,6 +14,8 @@ private:
 	int AnimationStep;
 
 	vector <Node*> path;
+	vector <Node*> reversepath;
+	int ReverseIndexpath;
 
 	float AnimationTime;
 	float duration;

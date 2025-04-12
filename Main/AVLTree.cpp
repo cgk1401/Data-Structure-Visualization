@@ -395,12 +395,17 @@ Node* AVLTree::DeleteNode(Node* root, int key) {
             root = root->right;
             if (root != nullptr) {
                 root->parent = nodedelete->parent;
-                if (nodedelete->isLeft == true) {
-                    nodedelete->parent->left = root;
-                    root->isLeft = true;
+                if (nodedelete->parent != nullptr) { 
+                    if (nodedelete->isLeft == true) {
+                        nodedelete->parent->left = root;
+                        root->isLeft = true;
+                    }
+                    else {
+                        nodedelete->parent->right = root;
+                        root->isLeft = false;
+                    }
                 }
                 else {
-                    nodedelete->parent->right = root;
                     root->isLeft = false;
                 }
             }
@@ -409,16 +414,22 @@ Node* AVLTree::DeleteNode(Node* root, int key) {
             root = root->left;
             if (root != nullptr) {
                 root->parent = nodedelete->parent;
-                if (nodedelete->isLeft == true) {
-                    nodedelete->parent->left = root;
-                    root->isLeft = true;
+                if (nodedelete->parent != nullptr) { 
+                    if (nodedelete->isLeft == true) {
+                        nodedelete->parent->left = root;
+                        root->isLeft = true;
+                    }
+                    else {
+                        nodedelete->parent->right = root;
+                        root->isLeft = false;
+                    }
                 }
                 else {
-                    nodedelete->parent->right = root;
                     root->isLeft = false;
                 }
             }
         }
+
         else {
             Node* pre = root->left;
             while (pre->right != nullptr) {
