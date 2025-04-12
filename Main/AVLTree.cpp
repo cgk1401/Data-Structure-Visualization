@@ -283,30 +283,6 @@ void AVLTree::DrawTreeHelper(Node* node) {
     }
 }
 
-void AVLTree::DrawLevelOrder(Node* root) {
-    vector <vector <int> > ans;
-    if (root == nullptr) return;
-    queue <Node*> q;
-    q.push(root);
-    while (q.empty() == false) {
-        int size = q.size();
-        vector <int> tmp;
-        for (int i = 0; i < size; i++) {
-            Node* top = q.front();
-            q.pop();
-            tmp.push_back(top->val);
-            if (top->left != nullptr) q.push(top->left);
-            if (top->right != nullptr) q.push(top->right);
-        }
-        ans.push_back(tmp);
-    }
-    for (auto it : ans) {
-        for (auto it1 : it) cout << it1 << " ";
-        cout << endl;
-    }
-    cout << endl;
-}
-
 void AVLTree::DeleteLeafNode(Node*& root, int key) {
     if (!root) return;
 
@@ -361,28 +337,13 @@ void AVLTree::RebalanceChild(Node*& root, Node* noderotate) {
 
 void AVLTree::RebalanceParent(Node*& root, Node* noderotate) {
     if (!root) return;
-
     if (root == noderotate) {
         if (root->balanceFactor > 1) root = RotationRight(root);
         else root = RotationLeft(root);
         return;
     }
-
     RebalanceParent(root->left, noderotate);
     RebalanceParent(root->right, noderotate);
-
-}
-
-void AVLTree::DrawRecursion(Node* root) {
-    if (root == nullptr) return;
-    if (root->left != nullptr) DrawLineV(root->position, root->left->position, BLACK);
-    if (root->right != nullptr) DrawLineV(root->position, root->right->position, BLACK);
-
-    DrawRecursion(root->left);
-    DrawRecursion(root->right);
-
-    DrawCircle(root->position.x, root->position.y, 30, BLACK);
-    DrawText(TextFormat("%d", root->val), root->position.x - 10, root->position.y - 10, 20, WHITE);
 }
 
 Node* AVLTree::DeleteNode(Node* root, int key) {
@@ -429,7 +390,6 @@ Node* AVLTree::DeleteNode(Node* root, int key) {
                 }
             }
         }
-
         else {
             Node* pre = root->left;
             while (pre->right != nullptr) {

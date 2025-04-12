@@ -12,40 +12,41 @@ private:
 	int Indexpath;
 
 	int AnimationStep;
-
-	vector <Node*> path;
-	vector <Node*> reversepath;
-	int ReverseIndexpath;
-
 	float AnimationTime;
 	float duration;
-
-	Node* newNode;
-	bool exist = false;
+	int ReverseIndexpath;
 	bool RotateSecond;
-	map <Node*, Vector2> StartPosition;
-	map <Node*, Vector2> TargetPosition;
+	bool isDuplicate = false;
 
 	Node* NodeRotate;
 	Node* NodeDelete;
 	Node* NodeReplace;
 	Node* GhostNode;
+	Node* NodeSearch;
+	Node* newNode;
+
+	vector <Node*> path;
+	vector <Node*> reversepath;
+
+	map <Node*, Vector2> StartPosition;
+	map <Node*, Vector2> TargetPosition;
+
 	Vector2 GhostStartPosition;
 	map <Node*, Vector2> RotateStartPosition;
 	map <Node*, Vector2> RotateTargetPosition;
-
 public:
 	InsertAnimationAVLTree(AVLTree* root);
 
 	void StartInsertAnimation(int value);
-	void DeleteAnimation(int value);
+	void StartDeleteAnimation(int value);
+	void StartSearchAnimation(int value);
 
-	void UpdateStep();
+	void UpdateStepInsert();
 	void UpdateStepDelete();
+	void UpdateStepSearch(int value);
 		
 	void SetTree(AVLTree* root);
 	bool isFinished() const;
-
 };
 
 #endif // !INSERTANIMATIONAVLTREE_HPP

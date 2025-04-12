@@ -5,19 +5,19 @@ InsertAnimationAVLTree::InsertAnimationAVLTree(AVLTree* root) {
 	this->InsertValue = -1;
 	this->Indexpath = 0;
 	this->AnimationStep = 0;
-	this->ReverseIndexpath = 0;
-	this->path.clear();
-	this->reversepath.clear();
 	this->AnimationTime = 0.0f;
 	this->duration = 0.5f;
+	this->ReverseIndexpath = 0;
+	this->RotateSecond = false;
+	this->path.clear();
+	this->reversepath.clear();
+	this->NodeSearch = nullptr;
 	this->newNode = nullptr;
 	this->NodeRotate = nullptr;
 	this->NodeDelete = nullptr;
 	this->NodeReplace = nullptr;
-	this->RotateSecond = false;
 	this->GhostNode = nullptr;
 	this->GhostStartPosition = {0,0};
-	this->exist = false;
 	this->RotateStartPosition.clear();
 	this->RotateTargetPosition.clear();
 }
@@ -26,17 +26,17 @@ void InsertAnimationAVLTree::StartInsertAnimation(int value) {
 	this->InsertValue = value;
 	this->Indexpath = 0;
 	this->ReverseIndexpath = 0;
-	this->reversepath.clear();
 	this->AnimationStep = 1;
 	this->AnimationTime = 0.0f;
 	this->duration = 0.5f;
+	this->isDuplicate = false;
+	this->newNode = nullptr;
+	this->NodeReplace = nullptr;
+	this->NodeSearch = nullptr;
+	this->reversepath.clear();
 	this->StartPosition.clear();
 	this->TargetPosition.clear();
 	this->path.clear();
-	this->newNode = nullptr;
-	this->exist = false;
-	this->NodeReplace = nullptr;
-
 	for (Node* node : tree->NodeList) {
 		StartPosition[node] = node->position;
 	}
@@ -47,7 +47,8 @@ void InsertAnimationAVLTree::StartInsertAnimation(int value) {
 		if (value < curr->val) curr = curr->left;
 		else if (value > curr->val) curr = curr->right;
 		else if (value == curr->val) {
-			exist = true;
+			NodeSearch = curr;
+			isDuplicate = true;
 			return;
 		}
 		else break;
@@ -67,7 +68,6 @@ void InsertAnimationAVLTree::StartInsertAnimation(int value) {
 	for (Node* node : tree->NodeList) {
 		TargetPosition[node] = node->position;
 	}
-
 	if (newNode != nullptr) {
 		if (newNode->parent != nullptr) {
 			if (newNode->parent->left == newNode) newNode->parent->left = nullptr;
@@ -84,25 +84,23 @@ void InsertAnimationAVLTree::StartInsertAnimation(int value) {
 		node->position = StartPosition[node];
 	}
 	tree->DeleteLeafNode(tree->Root, InsertValue);
-
 }
 
-void InsertAnimationAVLTree::DeleteAnimation(int value) {
+void InsertAnimationAVLTree::StartDeleteAnimation(int value) {
 	this->InsertValue = value;
 	this->Indexpath = 0;
 	this->AnimationStep = 1;
 	this->AnimationTime = 0.0f;
 	this->duration = 0.5f;
+	this->ReverseIndexpath = 0;
+	this->newNode = nullptr;
+	this->NodeDelete = nullptr;
+	this->NodeReplace = nullptr;
+	this->GhostNode = nullptr;
 	this->StartPosition.clear();
 	this->TargetPosition.clear();
 	this->path.clear();
 	this->reversepath.clear();
-	this->ReverseIndexpath = 0;
-	this->newNode = nullptr;
-	this->exist = false;
-	this->NodeDelete = nullptr;
-	this->NodeReplace = nullptr;
-	this->GhostNode = nullptr;
 	this->GhostStartPosition = { 0,0 };
 
 	Node* curr = tree->Root;
@@ -130,6 +128,20 @@ void InsertAnimationAVLTree::DeleteAnimation(int value) {
 	if (NodeReplace != nullptr) {
 		GhostNode = new Node(NodeReplace->val, 0, 0, 0, -1, false, NodeReplace->position, nullptr, nullptr, nullptr, false, false, false, false);
 		GhostStartPosition = GhostNode->position;
+	}
+}
+
+void InsertAnimationAVLTree::StartSearchAnimation(int value) {
+	AnimationTime = 0.0f;
+	duration = 0.5f;
+	Node* curr = tree->Root;
+	while (curr != nullptr) {
+		if (curr->val < value) curr = curr->right;
+		else if (curr->val > value) curr = curr->left;
+		else if (curr->val == value) {
+			NodeSearch = curr;
+			break;
+		}
 	}
 }
 
@@ -207,7 +219,6 @@ void InsertAnimationAVLTree::UpdateStepDelete() {
 				if (curr->val > deletevalue) curr = curr->left;
 				else if (curr->val < deletevalue) curr = curr->right;
 				else if (curr->val == deletevalue) {
-					//reversepath.push_back(curr);
 					break;
 				}
 			}
@@ -222,13 +233,10 @@ void InsertAnimationAVLTree::UpdateStepDelete() {
 		for (Node* node : tree->NodeList) {
 			node->position = StartPosition[node];
 		}
-
-
 		AnimationStep = 4;
 		AnimationTime = 0.0f;
 		break;
 	}
-
 	case 4 :
 		if (t < 1.0f) {
 			for (Node* node : tree->NodeList) {
@@ -246,35 +254,35 @@ void InsertAnimationAVLTree::UpdateStepDelete() {
 		}
 		break;
 	case 5 :
-			RotateStartPosition.clear();
-			RotateTargetPosition.clear();
-			for (Node* node : tree->NodeList) {
-				RotateStartPosition[node] = node->position;
-			}
-			if (NodeRotate->balanceFactor > 1 && (NodeRotate->left && NodeRotate->left->balanceFactor < 0) || NodeRotate->balanceFactor < -1 && (NodeRotate->right && NodeRotate->right->balanceFactor > 0)) {
-				tree->RebalanceChild(tree->Root, NodeRotate);
-				tree->UpdateHeightAndBalanceFactor(tree->Root);
-				RotateSecond = true;
-				tree->balanceTree();
+		RotateStartPosition.clear();
+		RotateTargetPosition.clear();
+		for (Node* node : tree->NodeList) {
+			RotateStartPosition[node] = node->position;
+		}
+		if (NodeRotate->balanceFactor > 1 && (NodeRotate->left && NodeRotate->left->balanceFactor < 0) || NodeRotate->balanceFactor < -1 && (NodeRotate->right && NodeRotate->right->balanceFactor > 0)) {
+			tree->RebalanceChild(tree->Root, NodeRotate);
+			tree->UpdateHeightAndBalanceFactor(tree->Root);
+			RotateSecond = true;
+			tree->balanceTree();
 
-				for (Node* node : tree->NodeList) {
-					RotateTargetPosition[node] = node->position;
-					node->position = RotateStartPosition[node];
-				}
-				AnimationStep = 6;
-				AnimationTime = 0.0f;
+			for (Node* node : tree->NodeList) {
+				RotateTargetPosition[node] = node->position;
+				node->position = RotateStartPosition[node];
 			}
-			else {
-				tree->RebalanceParent(tree->Root, NodeRotate);
-				tree->UpdateHeightAndBalanceFactor(tree->Root);
-				tree->balanceTree();
-				for (Node* node : tree->NodeList) {
-					RotateTargetPosition[node] = node->position;
-					node->position = RotateStartPosition[node];
-				}
-				AnimationStep = 6;
-				AnimationTime = 0.0f;
+			AnimationStep = 6;
+			AnimationTime = 0.0f;
+		}
+		else {
+			tree->RebalanceParent(tree->Root, NodeRotate);
+			tree->UpdateHeightAndBalanceFactor(tree->Root);
+			tree->balanceTree();
+			for (Node* node : tree->NodeList) {
+				RotateTargetPosition[node] = node->position;
+				node->position = RotateStartPosition[node];
 			}
+			AnimationStep = 6;
+			AnimationTime = 0.0f;
+		}
 		break;
 	case 6 :
 		if (t < 1.0f) {
@@ -332,12 +340,11 @@ void InsertAnimationAVLTree::UpdateStepDelete() {
 
 		AnimationStep = 6;
 		AnimationTime = 0.0f;
-
 		break;
 	case 9:
 		if (ReverseIndexpath < reversepath.size()) {
 			if (t >= 1.0f) {
-				if (reversepath[ReverseIndexpath] != nullptr) { // 💥 thêm check này
+				if (reversepath[ReverseIndexpath] != nullptr) {
 					reversepath[ReverseIndexpath]->isNodeHighLighted = false;
 					if (abs(reversepath[ReverseIndexpath]->balanceFactor) > 1) {
 						NodeRotate = reversepath[ReverseIndexpath];
@@ -355,12 +362,17 @@ void InsertAnimationAVLTree::UpdateStepDelete() {
 					AnimationTime = 0.0f;
 				}
 			}
-
 		}
 		else {
-			cout << "a";
-			AnimationStep = 7;
-			AnimationTime = 0.0f;
+			NodeRotate = tree->GetNodeRotate();
+			if (NodeRotate != nullptr) {
+				AnimationStep = 5;
+				AnimationTime = 0.0f;
+			}
+			else {
+				AnimationStep = 7;
+				AnimationTime = 0.0f;
+			}
 		}
 		break;
 	default :
@@ -368,8 +380,28 @@ void InsertAnimationAVLTree::UpdateStepDelete() {
 	}
 }
 
-void InsertAnimationAVLTree::UpdateStep() {
-	if (exist == true) return;
+void InsertAnimationAVLTree::UpdateStepInsert() {
+	if (NodeSearch != nullptr && isDuplicate == true) {
+		AnimationTime += GetFrameTime();
+		float t = AnimationTime / duration;
+
+		if (t >= 1.0) {
+			NodeSearch = nullptr;
+			isDuplicate = false;
+			AnimationStep = 0; 
+			AnimationTime = 0.0f;
+			return;
+		}
+
+		float radius = 30.0f + (10.0f * sin(t * PI));
+		DrawCircle(NodeSearch->position.x, NodeSearch->position.y, radius, YELLOW);
+		int fontSize = 20;
+		string text = to_string(NodeSearch->val);
+		int textWidth = MeasureText(text.c_str(), fontSize);
+		DrawText(text.c_str(), NodeSearch->position.x - textWidth / 2, NodeSearch->position.y - fontSize / 2, fontSize, WHITE);
+		return;
+	}
+
 	AnimationTime += GetFrameTime();
 	float t = AnimationTime / duration;
 
@@ -413,12 +445,6 @@ void InsertAnimationAVLTree::UpdateStep() {
 		}
 		if (newNode != nullptr) {
 			newNode->isNodeInserted = true;
-			/*Node* curr = newNode;
-			while (curr != nullptr) {
-				reversepath.push_back(curr);
-				curr = curr->parent;
-			}
-			ReverseIndexpath = 0;*/
 			if (t >= 1.0f) {
 				AnimationStep = 8;
 				AnimationTime = 0.0f;
@@ -428,12 +454,6 @@ void InsertAnimationAVLTree::UpdateStep() {
 	case 4:
 		RotateStartPosition.clear();
 		RotateTargetPosition.clear();
-		//NodeRotate = tree->GetNodeRotate();
-		/*if (NodeRotate == nullptr) {
-			AnimationStep = 6;
-			break;
-		}*/
-		//else {
 		for (Node* node : tree->NodeList) {
 			RotateStartPosition[node] = node->position;
 		}
@@ -461,7 +481,6 @@ void InsertAnimationAVLTree::UpdateStep() {
 			AnimationStep = 5;
 			AnimationTime = 0.0f;
 		}
-		//}
 		break;
 	case 5:
 		if (t < 1.0f) {
@@ -486,7 +505,6 @@ void InsertAnimationAVLTree::UpdateStep() {
 		}
 		break;
 	case 6:
-		for (auto it : tree->NodeList) cout << it->val << " ";
 		if (t >= 1.0f){
 			for (Node* node : tree->NodeList) {
 				node->isNodeHighLighted = false;
@@ -534,7 +552,6 @@ void InsertAnimationAVLTree::UpdateStep() {
 			}
 		}
 		else  {
-			cout << "a";
 			AnimationStep = 6;
 			AnimationTime = 0.0f;
 		}
@@ -544,11 +561,27 @@ void InsertAnimationAVLTree::UpdateStep() {
 	}
 }
 
-bool InsertAnimationAVLTree::isFinished() const {
-	return AnimationStep == 0;
+void InsertAnimationAVLTree::UpdateStepSearch(int value) {
+	if (NodeSearch == nullptr) return;
+	AnimationTime += GetFrameTime();
+	float t = AnimationTime / duration;
+
+	if (t >= 1.0) {
+		NodeSearch = nullptr;
+		AnimationTime = 0.0f;
+		t = 1.0f;
+		return;
+	}
+	float radius = 30.0f + (10.0f * sin(t * PI)); 
+
+	DrawCircle(NodeSearch->position.x, NodeSearch->position.y, radius, YELLOW);
+
+	int fontSize = 20;
+	string text = to_string(NodeSearch->val);
+	int textWidth = MeasureText(text.c_str(), fontSize);
+	DrawText(text.c_str(), NodeSearch->position.x - textWidth / 2, NodeSearch->position.y - fontSize / 2, fontSize, WHITE);
 }
 
-void InsertAnimationAVLTree::SetTree(AVLTree* root) {
-	this->tree = root;
-}
+bool InsertAnimationAVLTree::isFinished() const { return AnimationStep == 0;}
 
+void InsertAnimationAVLTree::SetTree(AVLTree* root) {this->tree = root;}

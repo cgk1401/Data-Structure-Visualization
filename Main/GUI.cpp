@@ -378,21 +378,29 @@ void GUI::DrawAVLTree() {
             Gui.insertanimationavltree.StartInsertAnimation(val);
             inputActive = false;
         }
-        Gui.insertanimationavltree.UpdateStep();
+        Gui.insertanimationavltree.UpdateStepInsert();
     }
     else if (activemenu_avltree == DELETE_AVLTREE) {
         if (val != -1) {
             if (!Gui.insertanimationavltree.isFinished()) {
                 Gui.insertanimationavltree = InsertAnimationAVLTree(&tree);
             }
-            Gui.insertanimationavltree.DeleteAnimation(val);
+            Gui.insertanimationavltree.StartDeleteAnimation(val);
             inputActive = false;
         }
         if (!Gui.insertanimationavltree.isFinished()) {
             Gui.insertanimationavltree.UpdateStepDelete();
         }
-
     }
+    else if (activemenu_avltree == SEARCH_AVLTREE) {
+        cout << val << " ";
+        if (val != -1) {
+            Gui.insertanimationavltree.StartSearchAnimation(val); 
+            inputActive = false;
+        }
+        Gui.insertanimationavltree.UpdateStepSearch(val);
+    }
+
     Gui.insertanimationavltree.SetTree(&tree);
     tree.DrawTree();
 }
