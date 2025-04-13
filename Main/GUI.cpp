@@ -34,7 +34,7 @@ void GUI::SetActiveMenuInitAVLTree(ActiveMenuInitAVLTree newMenu) {
 void GUI::Start() {
     InitWindow(ScreenWidth, ScreenHeight, "Data Structure Visualization");
 
-    for (int i = 0; i < 6; i++) { C[i] = ColorPalette[2][i]; }
+    for (int i = 0; i < 6; i++) { C[i] = ColorPalette[1][i]; }
 
     SetTargetFPS(60);
 
@@ -159,6 +159,19 @@ void GUI::DrawSecondMenu() {
 
 }
 
+void GUI::ResetMenuState() {
+	activemenu_avltree = NONE_AVLTREE;
+	activemenuinit_avltree = NONEINITAVLTREE;
+
+	activemenu_graph = DEFAULT;
+	GraphRandomStep = 0;
+	GraphVertexStep = 0;
+	graph.set_running_dijkstra(false);
+
+	inputActive = false;
+	currentInputMode = NONE;
+}
+
 void GUI::DrawListMenu() {
     // Menu constants
     const float MENU_WIDTH = ScreenWidth / 5.0f;
@@ -201,15 +214,6 @@ void GUI::DrawListMenu() {
     ConfigureButton(buttonsearch, 3);
     ConfigureButton(buttonclear, 4);
 }
-
-void GUI::DrawGraphMenu() {
-    DrawRectangle(0, ScreenHeight / 2, ScreenWidth / 5, ScreenHeight / 2, C[1]);
-    buttoninit.DrawButton();
-    buttoninsert.DrawButton();
-    buttondelete.DrawButton();
-    buttonsearch.DrawButton();
-    buttonclear.DrawButton();
-}
    
 void GUI::DrawHashTable() {
     Gui.DrawSecondMenu();
@@ -221,7 +225,7 @@ void GUI::DrawLinkedList(){
     Gui.DrawBack();
 
     // Draw the reusable input box at a fixed position
-    Gui.DrawInputBox(SecondMenuWidth* float(1) / 3 + 40, SecondMenuHeight + 100);
+    Gui.DrawInputBox();
 
     // Handle button clicks to set input mode
     if (buttoninit.IsClick()) {
@@ -305,7 +309,7 @@ void GUI::DrawLinkedList(){
 void GUI::DrawAVLTree() {
     Gui.DrawSecondMenu();
 
-    Gui.DrawInputBox(SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + 100);
+    Gui.DrawInputBox();
     
     if (buttoninit.IsClick()) { 
 		Gui.SetActiveMenuAVLTree(INIT_AVLTREE); 
@@ -397,14 +401,16 @@ void GUI::DrawGraph() {
 	Gui.DrawSecondMenu();
 	Gui.DrawBack();
 
-    Gui.DrawInputBox(SecondMenuWidth * float(1) / 3 + 40, SecondMenuHeight + 100);
+    Gui.DrawInputBox();
 
     if (buttoninit.IsClick()) {
+		ResetMenuState();
         currentInputMode = INIT;
         inputActive = true;
         inputstring = "";
     }
     if (buttoninsert.IsClick()) {
+        ResetMenuState();
         currentInputMode = INSERT;
         inputActive = true;
         inputstring = "";
@@ -413,17 +419,20 @@ void GUI::DrawGraph() {
         if (graph.get_active1() >= 0) { graph.delete_node(graph.get_active1()); }
         else if (graph.get_active2().first >= 0 && graph.get_active2().second >= 0) { graph.delete_edge(graph.get_active2().first, graph.get_active2().second); }
         else {
+            ResetMenuState();
             currentInputMode = DELETE;
             inputActive = true;
             inputstring = "";
         }
     }
     if (buttondijkstra.IsClick()) {
+        ResetMenuState();
         currentInputMode = DIJKSTRA;
         inputActive = true;
         inputstring = "";
     }
     if (buttonclear.IsClick()) {
+        ResetMenuState();
         graph.clear();
 		currentInputMode = NONE;
     }
@@ -450,11 +459,11 @@ void GUI::DrawGraph() {
         break;
     }
     case RANDOM: {
-		static int n_vertex = -1;
-		static int n_edge = -1;
+        static int n_vertex = -1;
+        static int n_edge = -1;
 
         if (GraphRandomStep == 0) { GraphRandomStep = 1; }
-        
+
         if (GraphRandomStep < 3) { DrawText("Generating Random Graph", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
         else { DrawText("Generated Random Graph", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
         if (GraphRandomStep > 1) {
@@ -467,18 +476,19 @@ void GUI::DrawGraph() {
         }
 
         if (val != -1) {
-			if (GraphRandomStep == 1) {
-				n_vertex = val;
+            if (GraphRandomStep == 1) {
+                n_vertex = val;
                 GraphRandomStep = 2;
-			} else
-			if (GraphRandomStep == 2) {
-				n_edge = val;
+            }
+            else
+                if (GraphRandomStep == 2) {
+                    n_edge = val;
 
-                graph.clear();
-				graph.rand_graph(n_vertex, n_edge);
+                    graph.clear();
+                    graph.rand_graph(n_vertex, n_edge);
 
-                GraphRandomStep = 3;
-			}
+                    GraphRandomStep = 3;
+                }
         }
         if (GraphRandomStep == 3) {
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
@@ -494,180 +504,239 @@ void GUI::DrawGraph() {
         break;
     }
     case INSERT: {
-        DrawLineEx({ 0, (float)ScreenHeight / 2.36f }, { ScreenWidth / 5, (float)ScreenHeight / 2.36f }, 2.0f, C[0]);
-        buttonvertex.ConfigureButton(5);
-        buttonedge.ConfigureButton(6);
+        switch (activemenu_graph) {
+        case DEFAULT: {
+            DrawLineEx({ 0, (float)ScreenHeight / 2.36f }, { ScreenWidth / 5, (float)ScreenHeight / 2.36f }, 2.0f, C[0]);
+            buttonvertex.ConfigureButton(5);
+            buttonedge.ConfigureButton(6);
 
-		if (buttonvertex.IsClick()) {
-			currentInputMode = INSERT_V;
-		}
-        if (buttonedge.IsClick()) {
-            GraphVertexStep = 0;
-            currentInputMode = INSERT_E;
-        }
-        break;
-    }
-    case INSERT_V: {
-		if (val != -1) {
-			graph.add_node(val);
-
-			inputActive = false;
-			currentInputMode = NONE;
-		}
-
-        break;
-    }
-    case INSERT_E: {
-		static int vertex1 = -1;
-		static int vertex2 = -1;
-		static int weight = -1;
-
-		if (GraphVertexStep == 0) { GraphVertexStep = 1; }
-
-		if (GraphVertexStep < 4) { DrawText("Drawing Edge", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
-		else { DrawText("Drawn Edge", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
-        if (GraphVertexStep > 1) {
-            string text1 = "From Vertex " + to_string(vertex1);
-            DrawText(text1.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 150.0f, 20, C[0]);
-			if (GraphVertexStep > 2) {
-				string text2 = "To Vertex " + to_string(vertex2);
-				DrawText(text2.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 175.0f, 20, C[0]);
-				if (GraphVertexStep > 3) {
-					string text3 = "Weight: " + to_string(weight);
-					DrawText(text3.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 200.0f, 20, C[0]);
-				}
-			}
-        }
-
-        if (val != -1) {
-			if (GraphVertexStep == 1) {
-				vertex1 = val;
-				GraphVertexStep = 2;
-			}
-            else if (GraphVertexStep == 2) {
-                vertex2 = val;
-                GraphVertexStep = 3;
-			}
-            else if (GraphVertexStep == 3) {
-                weight = val;
-                graph.add_edge(vertex1, vertex2, weight);
-
-                GraphVertexStep = 4;
-
+            if (buttonvertex.IsClick()) {
+                activemenu_graph = INSERT_V;
             }
-        }
-		if (GraphVertexStep == 4) {
-			if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-				vertex1 = -1;
-				vertex2 = -1;
-				weight = -1;
+            if (buttonedge.IsClick()) {
+                GraphVertexStep = 0;
+                activemenu_graph = INSERT_E;
+            }
 
-				GraphVertexStep = 0;
-				inputActive = false;
-				currentInputMode = NONE;
-			}
-		}
+            break;
+        }
+        case INSERT_V: {
+            if (val != -1) {
+                graph.add_node(val);
+
+                activemenu_graph = DEFAULT;
+                inputActive = false;
+                currentInputMode = NONE;
+            }
+
+            break;
+        }
+        case INSERT_E: {
+            static int vertex1 = -1;
+            static int vertex2 = -1;
+            static int weight = -1;
+
+            if (GraphVertexStep == 0) { GraphVertexStep = 1; }
+
+            if (GraphVertexStep < 4) { DrawText("Drawing Edge", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
+            else { DrawText("Drawn Edge", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
+            if (GraphVertexStep > 1) {
+                string text1 = "From Vertex " + to_string(vertex1);
+                DrawText(text1.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 150.0f, 20, C[0]);
+                if (GraphVertexStep > 2) {
+                    string text2 = "To Vertex " + to_string(vertex2);
+                    DrawText(text2.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 175.0f, 20, C[0]);
+                    if (GraphVertexStep > 3) {
+                        string text3 = "Weight: " + to_string(weight);
+                        DrawText(text3.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 200.0f, 20, C[0]);
+                    }
+                }
+            }
+
+            if (val != -1) {
+                if (GraphVertexStep == 1) {
+                    vertex1 = val;
+                    GraphVertexStep = 2;
+                }
+                else if (GraphVertexStep == 2) {
+                    vertex2 = val;
+                    GraphVertexStep = 3;
+                }
+                else if (GraphVertexStep == 3) {
+                    weight = val;
+                    graph.add_edge(vertex1, vertex2, weight);
+
+                    GraphVertexStep = 4;
+
+                }
+            }
+            if (GraphVertexStep == 4) {
+                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                    vertex1 = -1;
+                    vertex2 = -1;
+                    weight = -1;
+
+                    GraphVertexStep = 0;
+                    activemenu_graph = DEFAULT;
+                    inputActive = false;
+                    currentInputMode = NONE;
+                }
+            }
+
+            break;
+        }
+        default: break;
+        }
 
         break;
     }
     case DELETE: {
-        DrawLineEx({ 0, (float)ScreenHeight / 2.36f }, { ScreenWidth / 5, (float)ScreenHeight / 2.36f }, 2.0f, C[0]);
-        buttonvertex.ConfigureButton(5);
-        buttonedge.ConfigureButton(6);
-
-        if (buttonvertex.IsClick()) {
-            currentInputMode = DELETE_V;
-        }
-        if (buttonedge.IsClick()) {
-            GraphVertexStep = 0;
-            currentInputMode = DELETE_E;
-        }
-
-        break;
-    }
-    case DELETE_V: {
-        if (val != -1) {
-            graph.delete_node(val);
-
-            inputActive = false;
-            currentInputMode = NONE;
-        }
-
-        break;
-    }
-    case DELETE_E: {
-        static int vertex1 = -1;
-        static int vertex2 = -1;
-
-        if (GraphVertexStep == 0) { GraphVertexStep = 1; }
-
-        if (GraphRandomStep < 3) { DrawText("Deleting Edge", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
-        else { DrawText("Deleted Edge", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
-		if (GraphVertexStep > 1) {
-			string text1 = "From Vertex " + to_string(vertex1);
-			DrawText(text1.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 150.0f, 20, C[0]);
-			if (GraphVertexStep > 2) {
-				string text2 = "To Vertex " + to_string(vertex2);
-				DrawText(text2.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 175.0f, 20, C[0]);
-			}
-		}
-
-        if (val != -1) {
-            if (GraphVertexStep == 1) {
-                vertex1 = val;
-                GraphVertexStep = 2;
+        switch (activemenu_graph) {
+        case DEFAULT: {
+            DrawLineEx({ 0, (float)ScreenHeight / 2.36f }, { ScreenWidth / 5, (float)ScreenHeight / 2.36f }, 2.0f, C[0]);
+            buttonvertex.ConfigureButton(5);
+            buttonedge.ConfigureButton(6);
+            if (buttonvertex.IsClick()) {
+                activemenu_graph = DELETE_V;
             }
-            else if (GraphVertexStep == 2) {
-                vertex2 = val;
-                graph.delete_edge(vertex1, vertex2);
-
-                GraphVertexStep = 3;
+            if (buttonedge.IsClick()) {
+                GraphVertexStep = 0;
+                activemenu_graph = DELETE_E;
             }
+            break;
         }
-        if (GraphVertexStep == 3) {
-			if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-				vertex1 = -1;
-				vertex2 = -1;
+        case DELETE_V: {
+            if (val != -1) {
+                graph.delete_node(val);
 
-				GraphVertexStep = 0;
-				inputActive = false;
-				currentInputMode = NONE;
-			}
+                activemenu_graph = DEFAULT;
+                inputActive = false;
+                currentInputMode = NONE;
+            }
+            break;
         }
-        
+        case DELETE_E: {
+            static int vertex1 = -1;
+            static int vertex2 = -1;
+
+            if (GraphVertexStep == 0) { GraphVertexStep = 1; }
+
+            if (GraphVertexStep < 3) { DrawText("Deleting Edge", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
+            else { DrawText("Deleted Edge", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
+            if (GraphVertexStep > 1) {
+                string text1 = "From Vertex " + to_string(vertex1);
+                DrawText(text1.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 150.0f, 20, C[0]);
+                if (GraphVertexStep > 2) {
+                    string text2 = "To Vertex " + to_string(vertex2);
+                    DrawText(text2.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 175.0f, 20, C[0]);
+                }
+            }
+
+            if (val != -1) {
+                if (GraphVertexStep == 1) {
+                    vertex1 = val;
+                    GraphVertexStep = 2;
+                }
+                else if (GraphVertexStep == 2) {
+                    vertex2 = val;
+                    graph.delete_edge(vertex1, vertex2);
+
+                    GraphVertexStep = 3;
+                }
+            }
+            if (GraphVertexStep == 3) {
+                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                    vertex1 = -1;
+                    vertex2 = -1;
+
+                    GraphVertexStep = 0;
+                    activemenu_graph = DEFAULT;
+                    inputActive = false;
+                    currentInputMode = NONE;
+                }
+            }
+            break;
+        }
+        default: break;
+        }
+
         break;
     }
     case DIJKSTRA: {
-        static bool firstRun = true;
+        static bool isAuto = true;
 
-        if (firstRun == true) {
+        switch (activemenu_graph) {
+        case DEFAULT: {
+            DrawLineEx({ 0, (float)ScreenHeight / 2.36f }, { ScreenWidth / 5, (float)ScreenHeight / 2.36f }, 2.0f, C[0]);
+            buttonstep.ConfigureButton(5);
+            buttonauto.ConfigureButton(6);
+            if (buttonstep.IsClick()) {
+                isAuto = false;
+                activemenu_graph = DIJKSTRA_ST;
+            }
+            if (buttonauto.IsClick()) {
+                isAuto = true;
+                activemenu_graph = DIJKSTRA_ST;
+            }
+            break;
+        }
+        case DIJKSTRA_ST: {
 			if (val != -1) {
-                dijkstra_animation.load_state(val);
-				firstRun = false;
-                graph.set_running_dijkstra(true);
+                dijkstra_animation.load_state_general(val);
+                dijkstra_animation.set_auto(isAuto);
+				graph.set_running_dijkstra(true);
+				activemenu_graph = DIJKSTRA_RUN;
 			}
+            break;
         }
-        else {
-            static bool for_click = false;
-
+        case DIJKSTRA_RUN: {
             dijkstra_animation.render();
-            if (dijkstra_animation.is_finnished()) { for_click = true; }
 
-            if (for_click && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                graph.set_running_dijkstra(false);
-                for_click = false; firstRun = true;
-				currentInputMode = NONE;
+            if (dijkstra_animation.is_finnished()) {
+                activemenu_graph = DIJKSTRA_TG;
             }
-            else if (!dijkstra_animation.is_finnished()) {
-                dijkstra_animation.next_state();
+            else {
+				if (isAuto) {
+					dijkstra_animation.next_state();
+                }
+                else {
+                    buttonnext.ConfigureButton(11);
+					buttonprev.ConfigureButton(12);
+
+                    if (buttonnext.IsClick()) { dijkstra_animation.next_state(); }
+                    if (buttonprev.IsClick()) { dijkstra_animation.prev_state(); }
+                }
             }
+            break;
+        }
+        case DIJKSTRA_TG: {
+			if (val != -1) {
+				dijkstra_animation.load_state_paths(val);
+				activemenu_graph = DIJKSTRA_PTH;
+			}
+
+			buttonreturn.ConfigureButton(12);
+			if (buttonreturn.IsClick()) {
+                ResetMenuState();
+			}
+			break;
+        }
+        case DIJKSTRA_PTH: {
+			dijkstra_animation.render_path();
+
+            buttonreturn.ConfigureButton(12);
+            if (buttonreturn.IsClick()) {
+				activemenu_graph = DIJKSTRA_TG;
+            }
+            break;
         }
 
+        default: break;
+        }
         break;
     }
-    default: {
-        break;
-    }
+   
+    default: break;
     }
   
 	graph.update();
@@ -760,7 +829,7 @@ void GUI::DrawBack() {
     }
 }
 
-void GUI::DrawInputBox(int posX, int posY) {
+void GUI::DrawInputBox() {
     if (!inputActive) return;
 
     // Style constants matching other buttons
@@ -799,12 +868,48 @@ void GUI::DrawInputBox(int posX, int posY) {
 	}
     if (CurrentStruture == GRAPH) {
         switch (currentInputMode) {
-        case RANDOM: labelText = (GraphRandomStep == 1) ? "Number of Vertex: " : "Number of Edges: "; break;
-        case INSERT_V:  labelText = "Insert Vertex: "; break;
-		case INSERT_E:  labelText = (GraphVertexStep == 1) ? "From Vertex: " : ((GraphVertexStep == 2) ? "To Vertex" : "Weight: "); break;
-        case DELETE_V:  labelText = "Delete Vertex: "; break;
-        case DELETE_E:  labelText = (GraphVertexStep == 1) ? "From Vertex: " : "To Vertex: "; break;
-		case DIJKSTRA: labelText = "Starting Vertex: "; break;
+        case RANDOM:
+            switch (GraphRandomStep) {
+			case 1: labelText = "Number of Vertex: "; break;
+			case 2: labelText = "Number of Edges: "; break;
+			default: return;
+            }
+            break;
+        case INSERT:
+			switch (activemenu_graph) {
+			case INSERT_V: labelText = "Insert Vertex: "; break;
+            case INSERT_E: 
+                switch (GraphVertexStep) {
+				case 1: labelText = "From Vertex: "; break;
+				case 2: labelText = "To Vertex: "; break;
+				case 3: labelText = "Weight: "; break;
+                default: return;
+                }
+                break;
+			default: return;
+			}
+            break;
+        case DELETE: 
+            switch (activemenu_graph) {
+			case DELETE_V: labelText = "Delete Vertex: "; break;
+			//case DELETE_E: labelText = (GraphVertexStep == 1) ? "From Vertex: " : "To Vertex: "; break;
+            case DELETE_E:
+                switch (GraphVertexStep) {
+				case 1: labelText = "From Vertex: "; break;
+				case 2: labelText = "To Vertex: "; break;
+				default: return;
+                }
+                break;
+			default: return;
+            }
+            break;
+        case DIJKSTRA: 
+            switch (activemenu_graph) {
+			case DIJKSTRA_ST: labelText = "Starting Vertex: "; break;
+			case DIJKSTRA_TG: labelText = "Target Vertex: "; break;
+			default: return;
+            }
+            break;
         default:      return;
         }
     }

@@ -10,6 +10,14 @@ ButtonClear buttonclear(20, SecondMenuHeight + SecondMenuHeight * float(5) / 6, 
 ButtonRandom buttonrandom(20 + SecondMenuWidth * float(1) / 3 + 50, SecondMenuHeight + SecondMenuHeight * float(1) / 6 + 50, SecondMenuWidth* float(1) / 3, 80, "Random", C[2]);
 ButtonLoadFile buttonloadfile(20 + SecondMenuWidth * float(1) / 3 + 50, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + 50, SecondMenuWidth* float(1) / 3, 80, "LoadFile", C[2]);
 
+Button buttonauto(20 + SecondMenuWidth * float(1) / 3 + 50, SecondMenuHeight + SecondMenuHeight * float(3) / 6 + 50, SecondMenuWidth* float(1) / 3, 80, "Auto", C[2]);
+Button buttonstep(20 + SecondMenuWidth * float(1) / 3 + 50, SecondMenuHeight + SecondMenuHeight * float(4) / 6 + 50, SecondMenuWidth* float(1) / 3, 80, "Steps", C[2]);
+
+Button buttonnext(20 + SecondMenuWidth * float(1) / 3 + 50, SecondMenuHeight + SecondMenuHeight * float(5) / 6 + 50, SecondMenuWidth* float(1) / 3, 80, "Next", C[2]);
+Button buttonprev(20 + SecondMenuWidth * float(1) / 3 + 50, SecondMenuHeight + SecondMenuHeight * float(6) / 6 + 50, SecondMenuWidth* float(1) / 3, 80, "Prev", C[2]);
+Button buttonreturn(20 + SecondMenuWidth * float(1) / 3 + 50, SecondMenuHeight + SecondMenuHeight * float(7) / 6 + 50, SecondMenuWidth* float(1) / 3, 80, "Return", C[2]);
+
+
 Button buttonvertex(20 + SecondMenuWidth * float(1) / 3 + 50, SecondMenuHeight + SecondMenuHeight * float(1) / 6 + 50, SecondMenuWidth* float(1) / 3, 80, "Vertex", C[2]);
 Button buttonedge(20 + SecondMenuWidth * float(1) / 3 + 50, SecondMenuHeight + SecondMenuHeight * float(2) / 6 + 50, SecondMenuWidth* float(1) / 3, 80, "Edge", C[2]);
 

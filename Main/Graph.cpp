@@ -249,12 +249,15 @@ std::vector<Graph::GraphStage> Graph::dijkstra_steps(int start) {
 	std::unordered_map<int, int> distance;
 	std::unordered_map<int, bool> processed;
 	std::unordered_map<int, int> previous;
+	std::unordered_map<int, std::string> node_txt;
 	for (auto& node : nodes) {
 		distance[node.first] = INT_MAX;
 		processed[node.first] = false;
 		previous[node.first] = -1;
+		node_txt[node.first] = "INF";
 	}
 	distance[start] = 0;
+	node_txt[start] = "0";
 
 	std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
 	pq.push({ 0, start });
@@ -264,7 +267,7 @@ std::vector<Graph::GraphStage> Graph::dijkstra_steps(int start) {
 		if (processed[a] == true) { continue; }
 		processed[a] = true;
 
-		steps.push_back({ distance, processed, previous, a, {-1,-1 } });
+		steps.push_back({ processed, previous, node_txt, a, { -1,-1 } });
 
 		for (const auto& neighbor : nodes[a].adj) {
 			int b = neighbor.first;
@@ -272,15 +275,48 @@ std::vector<Graph::GraphStage> Graph::dijkstra_steps(int start) {
 
 			if (processed[b] == true) { continue; }
 
+			steps.push_back({ processed, previous, node_txt, a, { a, b } });
+
+			if (distance[a] + w < distance[b]) {
+				if (distance[b] == INT_MAX) {
+					node_txt[b] = "INF > " + std::to_string(distance[a]) + "+" + std::to_string(w);
+				}
+				else {
+					node_txt[b] = std::to_string(distance[b]) + " > " + std::to_string(distance[a]) + "+" + std::to_string(w);
+				}
+			}
+			else { 
+				node_txt[b] = std::to_string(distance[b]) + " < " + std::to_string(distance[a]) + "+" + std::to_string(w);
+			}
+
+			steps.push_back({ processed, previous, node_txt, a, { a, b } });
+			//std::cout << node_txt[b] << std::endl;
+
 			if (distance[a] + w < distance[b]) {
 				distance[b] = distance[a] + w;
 				previous[b] = a;
 				pq.push({ distance[b], b });
 			}
+			node_txt[b] = std::to_string(distance[b]);
 
-			steps.push_back({ distance, processed, previous, a, {a, b} });
+			steps.push_back({ processed, previous, node_txt, a, { a, b} });
 		}
 	}
+
+	return steps;
+}
+
+std::vector<Graph::GraphStage> Graph::dijkstra_paths(int end, std::unordered_map<int, int> previous) {
+	std::vector<GraphStage> steps;
+
+	steps.push_back({ {}, {}, {}, end, { -1,-1 } });
+	while (end != -1 && previous[end] != -1) {
+		steps.push_back({ {}, {}, {}, end, {previous[end], end} });
+		end = previous[end];
+	}
+	steps.push_back({ {}, {}, {}, end, { -1,-1 } });
+
+	std::reverse(steps.begin(), steps.end());
 
 	return steps;
 }
@@ -297,9 +333,9 @@ void Graph::set_state(GraphStage state) {
 		active_edge = { active_edge.second, active_edge.first };
 	}
 
-	this->distance = state.distance;
 	this->processed = state.processed;
 	this->previous = state.previous;
+	this->node_txt = state.node_txt;
 }
 
 void Graph::print_nodes() {
@@ -327,7 +363,7 @@ void Graph::draw_node(Node node) {
 
 void Graph::draw_edge(int from, int to, int weight) {
 	if (from == active_edge.first && to == active_edge.second) 
-		{ DrawLineEx(nodes[from].pos, nodes[to].pos, 5.0f, C[5]); }
+		{ DrawLineEx(nodes[from].pos, nodes[to].pos, 7.5f, C[5]); }
 	DrawLineEx(nodes[from].pos, nodes[to].pos, 3.0f, C[3]);
 
 	// display weight
@@ -355,20 +391,25 @@ void Graph::draw() {
 
 
 	Color tmp = Color{
-		(unsigned char)(C[1].r * 0.7f),
-		(unsigned char)(C[1].g * 0.7f),
-		(unsigned char)(C[1].b * 0.7f),
-		C[1].a
+		(unsigned char)fmin(C[1].r * 0.9f, 255),
+		(unsigned char)fmin(C[1].g * 0.9f, 255),
+		(unsigned char)fmin(C[1].b * 0.9f, 255),
+		(unsigned char)fmax(C[1].a - 80, 0)
 	};
 	for (auto& node : nodes) {
 		draw_node(node.second);
 
 		if (is_running_dijkstra == true) {
 			if (processed[node.first] == true) { DrawCircleLinesV(node.second.pos, node_rad * 1.1, C[5]); }
+			/*
+			std::string node_txt;
 			if (distance[node.first] != INT_MAX) {
-				DrawText(std::to_string(distance[node.first]).c_str(), node.second.pos.x + 1.25*node_rad, node.second.pos.y, 20, C[0]);
+				node_txt = std::to_string(distance[node.first]);
 			}
-			else { DrawText("INF", node.second.pos.x + 1.25*node_rad, node.second.pos.y, 20, C[0]); }
+			else { node_txt = "INF"; }*/
+
+			DrawRectangle(node.second.pos.x + 1.25 * node_rad - 5, node.second.pos.y - 5, MeasureText(node_txt[node.first].c_str(), 20) + 10, 30, tmp);
+			DrawText(node_txt[node.first].c_str(), node.second.pos.x + 1.25 * node_rad, node.second.pos.y, 20, C[0]);
 		}
 	}
 }

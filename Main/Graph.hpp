@@ -28,18 +28,18 @@ private:
 	bool is_directed; //directed/undirected graph
 
 	bool is_running_dijkstra = false;
-	std::unordered_map<int, int> distance;
 	std::unordered_map<int, bool> processed;
 	std::unordered_map<int, int> previous;
+	std::unordered_map<int, std::string> node_txt;
 
 	void draw_node(Node node);
 	void draw_edge(int from, int to, int weight);
 
 public:
 	struct GraphStage {
-		std::unordered_map<int, int> distance;
 		std::unordered_map<int, bool> processed;
 		std::unordered_map<int, int> previous;
+		std::unordered_map<int, std::string> node_txt;
 
 		int current_node = -1;
 		std::pair<int, int> active_edge = { -1,-1 };
@@ -63,6 +63,7 @@ public:
 
 	void dijkstra(int start);
 	std::vector<GraphStage> dijkstra_steps(int start);
+	std::vector<GraphStage> dijkstra_paths(int end, std::unordered_map<int, int> previous);
 	void set_running_dijkstra(bool is_running);
 	void set_state(GraphStage state);
 
