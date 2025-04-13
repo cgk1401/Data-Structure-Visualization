@@ -69,5 +69,10 @@ extern ButtonClear buttonclear;
 extern Button buttonvertex;
 extern Button buttonedge;
 extern Button buttondijkstra;
+extern Button buttonauto;
+extern Button buttonstep;
+extern Button buttonnext;
+extern Button buttonprev;
+extern Button buttonreturn;
 
 #endif // BUTTON_HPP

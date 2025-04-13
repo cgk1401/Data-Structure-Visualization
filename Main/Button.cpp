@@ -10,6 +10,11 @@ ButtonLoadFile buttonloadfile("LoadFile", WHITE);
 Button buttonvertex("Vertex", C[2]);
 Button buttonedge("Edge", C[2]);
 Button buttondijkstra("Dijkstra", C[2]);
+Button buttonauto("Auto", C[2]);
+Button buttonstep("Step", C[2]);
+Button buttonnext("Next", C[2]);
+Button buttonprev("Prev", C[2]);
+Button buttonreturn("Return", C[2]);
 
 bool Button::IsCover() {
 	return GetMouseX() >= this->coordinateX && GetMouseX() <= this->coordinateX + this->width && GetMouseY() >= this->coordinateY && GetMouseY() <= this->coordinateY + this->height;
@@ -73,5 +78,6 @@ void Button::ConfigureButton(float position) {
 	this->coordinateY = BUTTON_START_Y + position * (BUTTON_HEIGHT + BUTTON_SPACING);
 	this->width = BUTTON_WIDTH;
 	this->height = BUTTON_HEIGHT;
-	this->DrawButton();
+	this->color = C[2];
+	this->DrawButton(); 
 }
