@@ -15,7 +15,7 @@
 #include <string>
 
 
-enum TypeDataStructure { MENU, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
+enum TypeDataStructure { MENU, THEME, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
 
 enum ActiveMenuTypeAVLTree { NONE_AVLTREE, INIT_AVLTREE, INSERT_AVLTREE, SEARCH_AVLTREE, DELETE_AVLTREE };
 enum ActiveMenuInitAVLTree { NONEINITAVLTREE, RANDOM_AVLTREE, LOADFILE_AVLTREE };
@@ -74,6 +74,7 @@ public:
 	void DrawBack();
 
 	void DrawMainMenu();
+	void DrawThemeMenu();
 	void DrawSecondMenu();
 	void DrawListMenu();
 

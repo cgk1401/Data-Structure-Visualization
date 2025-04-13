@@ -55,7 +55,10 @@ void GUI::Start() {
         }
         else if (CurrentStruture == GRAPH) {
             Gui.DrawGraph();
-        }
+		}
+		else if (CurrentStruture == THEME) {
+			Gui.DrawThemeMenu();
+		}
         EndDrawing();
     }
 
@@ -66,7 +69,7 @@ void GUI::DrawMainMenu() {
 
     //Font custom = LoadFont("../../Data-Structure-Visualization/assets/PublicSans-Bold.ttf");
     //DrawTextEx(customfont, "Choose Data Structure", { ScreenWidth * float(2) / 5, ScreenHeight * float(5) / 6 }, 60, 1, C[0]);
-    DrawText("Choose Data Structure", ScreenWidth * float(2) / 5, ScreenHeight * float(5) / 6, 40, C[0]);
+    DrawText("Choose Data Structure", ScreenWidth * float(2) / 5, ScreenHeight * float(0.5) / 6, 40, C[0]);
 
    	Rectangle HASHTABLEBUTTON = { ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
 
@@ -76,21 +79,20 @@ void GUI::DrawMainMenu() {
 
 	Rectangle GRAPHBUTTON = { ScreenWidth * float(3) / 5, ScreenHeight * float(3) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
 
+	Rectangle THEMEBUTTON = { ScreenWidth * float(2.25) / 5, ScreenHeight * float(4.5) / 5, ScreenWidth * float(1) / 10, ScreenHeight * float(1) / 18 };
+
 	DrawRectangleRounded(HASHTABLEBUTTON, 0.3f, 10, C[2]);
 	DrawRectangleRounded(LINKEDLISTBUTTON, 0.3f, 10, C[2]);
 	DrawRectangleRounded(AVLTREEBUTTON, 0.3f, 10, C[2]);
 	DrawRectangleRounded(GRAPHBUTTON, 0.3f, 10, C[2]);
 
-    /*
-    DrawTextEx(customfont, "HashTable", { ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2 }, 30, 1, C[0]);
-    DrawTextEx(customfont, "AVL", { ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2 }, 30, 1, C[0]);
-    DrawTextEx(customfont, "LINKEDLIST", { ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2 }, 30, 1, C[0]);
-    DrawTextEx(customfont, "GRAPH", { ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2 }, 30, 1, C[0]);
-    */
     DrawText("HASHTABLE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
     DrawText("LINKEDLIST", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
     DrawText("AVLTREE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
     DrawText("GRAPH", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
+
+    DrawRectangleRounded(THEMEBUTTON, 0.3f, 10, C[2]);
+    DrawText("THEME", THEMEBUTTON.x + (THEMEBUTTON.width - MeasureText("THEME", 20)) / 2, THEMEBUTTON.y + (THEMEBUTTON.height - 20) / 2, 20, C[0]);
 
 	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         Vector2 mouse = GetMousePosition();
@@ -105,8 +107,61 @@ void GUI::DrawMainMenu() {
         }
         else if (CheckCollisionPointRec(mouse, GRAPHBUTTON)) {
             CurrentStruture = GRAPH;
+		}
+        else if (CheckCollisionPointRec(mouse, THEMEBUTTON)) {
+			CurrentStruture = THEME;
         }
     }
+}
+
+void GUI::DrawThemeMenu() {
+    for (int i = 0; i < 4; i++) {
+        Rectangle themeRect = { ScreenWidth * 0.05f, ScreenHeight * 0.3f + i * 80, ScreenWidth * 0.1f, ScreenHeight * 0.05f };
+
+        // Background of theme preview
+        DrawRectangleRounded(themeRect, 0.2f, 6, ColorPalette[i][1]);
+        // A strip or smaller rectangle to show accent color
+        DrawRectangle(themeRect.x + 10, themeRect.y + 10, 30, 30, ColorPalette[i][5]);
+        // Optional label
+        DrawText(TextFormat("Theme %d", i + 1), themeRect.x + 50, themeRect.y + 15, 20, C[0]);
+
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(GetMousePosition(), themeRect)) {
+            for (int j = 0; j < 6; j++) C[j] = ColorPalette[i][j];
+        }
+    }
+
+    //Draw Sample (logic copy from Graph.cpp)
+    Vector2 sample[3];
+    sample[0] = { ScreenWidth * 0.5f, ScreenHeight * 0.4f };
+    sample[1] = { ScreenWidth * 0.65f, ScreenHeight * 0.5f };
+    sample[2] = { ScreenWidth * 0.45f, ScreenHeight * 0.65f };
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < i; j++) {
+            if (i + j == 3) { DrawLineEx(sample[i], sample[j], 7.5f, C[5]); }
+			DrawLineEx(sample[i], sample[j], 3.0f, C[3]);
+
+            // display weight
+            float posX = sample[i].x + (4.45f / 10.0f) * (sample[j].x - sample[i].x) - 7.0f;
+            float posY = sample[i].y + (4.45f / 10.0f) * (sample[j].y - sample[i].y) - 7.0f;
+
+            float displaceX = sample[i].y - sample[j].y;
+            float displaceY = sample[j].x - sample[i].x;
+            float distance = sqrt(displaceX * displaceX + displaceY * displaceY);
+            displaceX /= distance / 18; displaceY /= distance / 18;
+            if (displaceX < 0) { displaceX = -displaceX; displaceY = -displaceY; } // keep the edge's weight to the right side
+
+            DrawText(std::to_string(i+j).c_str(), posX + displaceX, posY + displaceY, 20, C[0]);
+        }
+    }
+    for (int i = 0; i < 3; i++) {
+		if (i == 0) { DrawCircleV(sample[i], 35.0f, C[5]); } else { DrawCircleV(sample[i], 35.0f, C[1]); }
+        DrawCircleLinesV(sample[i], 35.0f, C[3]);
+        int text_width = MeasureText(std::to_string(i).c_str(), 20);
+        DrawText(std::to_string(i).c_str(), sample[i].x - text_width / 2, sample[i].y - 10, 20, C[0]);
+    }
+
+    DrawBack();
 }
 
 void GUI::DrawSecondMenu() {
