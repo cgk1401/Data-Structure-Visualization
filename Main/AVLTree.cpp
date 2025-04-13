@@ -184,11 +184,12 @@ void AVLTree::Random() {
         DistanceHorizontal = 35;
         DistanceVertical = 90;
     }
-    for (int i = 0; i < size; i++) {
+    set <int> se;
+    while (se.size() < size) {
         int number_random = dist1(gen1);
-        Insert(Root, number_random, NodeList, true);
+        se.insert(number_random);
     }
-
+    for (auto it : se) Insert(Root, it, NodeList, true);
     balanceTree();
 }
 
@@ -207,10 +208,12 @@ void AVLTree::InitAVLTree(int val) {
         DistanceHorizontal = 35;
         DistanceVertical = 90;
     }
-    for (int i = 0; i < size; i++) {
+    set <int> se;
+    while (se.size() < size) {
         int number_random = dist(gen);
-        Insert(Root, number_random, NodeList, true);
+        se.insert(number_random);
     }
+    for (auto it : se) Insert(Root, it, NodeList, true);
     balanceTree();
 }
 
