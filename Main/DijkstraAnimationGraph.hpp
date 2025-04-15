@@ -25,12 +25,15 @@ public:
 
 	void set_auto(bool is_at);
 	void set_path_shown(bool is_shown);
+	void set_speed(int speed);
 
 	void load_state_general(int start);
 	void next_state();
 	void prev_state();
 
 	void load_state_paths(int end);
+
+	void show_distance();
 
 	void render();
 	void render_path();

@@ -737,7 +737,6 @@ void GUI::DrawGraph() {
         }
         default: break;
         }
-
         break;
     }
     case DELETE: {
@@ -809,7 +808,6 @@ void GUI::DrawGraph() {
         }
         default: break;
         }
-
         break;
     }
     case DIJKSTRA: {
@@ -847,14 +845,24 @@ void GUI::DrawGraph() {
             }
             else {
 				if (isAuto) {
-					dijkstra_animation.next_state();
+					buttonpause.ConfigureButton(10);
+					int speed = DrawSlider(5, 90);
+					dijkstra_animation.set_speed(speed);
+
+                    dijkstra_animation.next_state();
+
+					if (buttonpause.IsClick()) { isAuto = false; dijkstra_animation.set_auto(isAuto); }
                 }
                 else {
+					buttonfinal.ConfigureButton(9);
+					buttonrun.ConfigureButton(10);
                     buttonnext.ConfigureButton(11);
 					buttonprev.ConfigureButton(12);
 
                     if (buttonnext.IsClick()) { dijkstra_animation.next_state(); }
                     if (buttonprev.IsClick()) { dijkstra_animation.prev_state(); }
+                    if (buttonfinal.IsClick()) { dijkstra_animation.show_distance(); activemenu_graph = DIJKSTRA_TG; }
+                    if (buttonrun.IsClick()) { isAuto = true; dijkstra_animation.set_auto(isAuto); }
                 }
             }
             break;
@@ -876,6 +884,7 @@ void GUI::DrawGraph() {
 
             buttonreturn.ConfigureButton(12);
             if (buttonreturn.IsClick()) {
+				dijkstra_animation.show_distance();
 				activemenu_graph = DIJKSTRA_TG;
             }
             break;
@@ -1140,4 +1149,30 @@ int GUI::Input(int posX, int posY) {
     }
 
     return -1;
+}
+
+int GUI::DrawSlider(float minValue, float maxValue) {
+    float x = (ScreenWidth / 5.0f) * 0.075f;
+	float y = ScreenHeight / 8.0f + 11 * 55.0f;
+    float width = (ScreenWidth / 5.0f) * 0.85;
+	float height = 5.0f;
+
+	Rectangle sliderRect = { x, y, width, height };
+	DrawRectangleRec(sliderRect, C[3]);
+
+    static float handlePos = x + ((40 - minValue) / (float)(maxValue - minValue)) * width;
+    DrawCircle((int)handlePos, (int)y + height / 2, height * 1.5f, C[2]);
+
+	static bool is_dragging = false;
+	Vector2 mouse = GetMousePosition();
+
+    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && CheckCollisionPointCircle(mouse, { handlePos, y + height / 2 }, height * 1.5f)) { is_dragging = true; }
+	if (IsMouseButtonUp(MOUSE_LEFT_BUTTON)) { is_dragging = false; }
+
+	if (is_dragging) {
+		handlePos = Clamp(mouse.x, x, x + width);
+	}
+
+    int value = minValue + (1.0f - ((handlePos - x) / (float)width)) * (maxValue - minValue);
+    return value;
 }

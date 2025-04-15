@@ -12,6 +12,10 @@ void DijkstraAnimationGraph::set_path_shown(bool is_shown) {
 	this->is_path_shown = is_shown;
 }
 
+void DijkstraAnimationGraph::set_speed(int speed) {
+	this->delayFrame = speed;
+}
+
 void DijkstraAnimationGraph::load_state_general(int start) {
 	states = graph.dijkstra_steps(start);
 
@@ -50,6 +54,10 @@ void DijkstraAnimationGraph::prev_state() {
 	if (current_state > 0) { current_state--; }
 }
 
+void DijkstraAnimationGraph::show_distance() {
+	graph.set_state(states.back());
+}
+
 void DijkstraAnimationGraph::render() {
 	if (is_running == false) { return; }
 	graph.set_state(states[current_state]);
@@ -61,7 +69,7 @@ void DijkstraAnimationGraph::render_path() {
 	graph.set_state(path[path_state]);
 
 	frameCounter++;
-	if (frameCounter >= delayFrame/2) { // faster than normal 
+	if (frameCounter >= 20) { // faster than normal 
 		frameCounter = 0;
 		path_state++; path_state %= path.size(); //loop
 	}
