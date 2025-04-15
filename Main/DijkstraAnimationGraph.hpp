@@ -25,6 +25,7 @@ public:
 
 	void set_auto(bool is_at);
 	void set_path_shown(bool is_shown);
+	void set_speed(int speed);
 
 	void load_state_general(int start);
 	void next_state();

@@ -4,6 +4,7 @@
 #include "Config.hpp"
 #include "Button.hpp"
 #include "raylib.h"
+#include "raymath.h"
 #include "LinkedList.hpp"
 #include "AVLTree.hpp"
 #include "Graph.hpp"
@@ -85,6 +86,8 @@ public:
 
 	int Input(int posX, int posY);   
     void DrawInputBox();
+
+	int DrawSlider(float minValue, float maxValue);
 };
 
 extern GUI Gui;
