@@ -632,7 +632,6 @@ void GUI::DrawGraph() {
         }
         default: break;
         }
-
         break;
     }
     case DELETE: {
@@ -704,7 +703,6 @@ void GUI::DrawGraph() {
         }
         default: break;
         }
-
         break;
     }
     case DIJKSTRA: {
@@ -771,6 +769,7 @@ void GUI::DrawGraph() {
 
             buttonreturn.ConfigureButton(12);
             if (buttonreturn.IsClick()) {
+				dijkstra_animation.show_distance();
 				activemenu_graph = DIJKSTRA_TG;
             }
             break;

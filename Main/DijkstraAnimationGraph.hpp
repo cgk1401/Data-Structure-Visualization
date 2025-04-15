@@ -32,6 +32,8 @@ public:
 
 	void load_state_paths(int end);
 
+	void show_distance();
+
 	void render();
 	void render_path();
 };

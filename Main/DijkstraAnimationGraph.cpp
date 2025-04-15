@@ -50,6 +50,11 @@ void DijkstraAnimationGraph::prev_state() {
 	if (current_state > 0) { current_state--; }
 }
 
+
+void DijkstraAnimationGraph::show_distance() {
+	graph.set_state(states.back());
+}
+
 void DijkstraAnimationGraph::render() {
 	if (is_running == false) { return; }
 	graph.set_state(states[current_state]);
