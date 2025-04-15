@@ -747,12 +747,14 @@ void GUI::DrawGraph() {
 					if (buttonpause.IsClick()) { isAuto = false; dijkstra_animation.set_auto(isAuto); }
                 }
                 else {
+					buttonfinal.ConfigureButton(9);
 					buttonrun.ConfigureButton(10);
                     buttonnext.ConfigureButton(11);
 					buttonprev.ConfigureButton(12);
 
                     if (buttonnext.IsClick()) { dijkstra_animation.next_state(); }
                     if (buttonprev.IsClick()) { dijkstra_animation.prev_state(); }
+                    if (buttonfinal.IsClick()) { dijkstra_animation.show_distance(); activemenu_graph = DIJKSTRA_TG; }
                     if (buttonrun.IsClick()) { isAuto = true; dijkstra_animation.set_auto(isAuto); }
                 }
             }

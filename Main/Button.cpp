@@ -17,6 +17,7 @@ Button buttonprev("Prev", C[2]);
 Button buttonreturn("Return", C[2]);
 Button buttonpause("Pause", C[2]);
 Button buttonrun("Run", C[2]);
+Button buttonfinal("Final", C[2]);
 
 bool Button::IsCover() {
 	return GetMouseX() >= this->coordinateX && GetMouseX() <= this->coordinateX + this->width && GetMouseY() >= this->coordinateY && GetMouseY() <= this->coordinateY + this->height;
