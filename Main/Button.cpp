@@ -67,7 +67,8 @@ void Button::ConfigureButton(float position) {
 	const float BUTTON_HEIGHT = 40.0f;
 	const float BUTTON_MARGIN_X = MENU_WIDTH * 0.075f;
 	const float BUTTON_SPACING = 15.0f;
-	const float BUTTON_START_Y = MENU_HEIGHT / 8;
+	//const float BUTTON_START_Y = MENU_HEIGHT / 8;
+	const float BUTTON_START_Y = 20 + 60 + 10;
 
 	this->coordinateX = BUTTON_MARGIN_X;
 	this->coordinateY = BUTTON_START_Y + position * (BUTTON_HEIGHT + BUTTON_SPACING);

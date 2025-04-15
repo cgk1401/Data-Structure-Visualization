@@ -28,7 +28,7 @@ void InsertAnimationAVLTree::StartInsertAnimation(int value) {
 	this->ReverseIndexpath = 0;
 	this->AnimationStep = 1;
 	this->AnimationTime = 0.0f;
-	this->duration = 0.5f;
+	this->duration = 1.0f;
 	this->isDuplicate = false;
 	this->newNode = nullptr;
 	this->NodeReplace = nullptr;
@@ -399,6 +399,7 @@ void InsertAnimationAVLTree::UpdateStepInsert() {
 		string text = to_string(NodeSearch->val);
 		int textWidth = MeasureText(text.c_str(), fontSize);
 		DrawText(text.c_str(), NodeSearch->position.x - textWidth / 2, NodeSearch->position.y - fontSize / 2, fontSize, WHITE);
+		explanationcode.Setstringexplancode("Node already exists, highlight existing node.");
 		return;
 	}
 
@@ -413,6 +414,7 @@ void InsertAnimationAVLTree::UpdateStepInsert() {
 				AnimationTime = 0.0f;
 				Indexpath++;
 			}
+			explanationcode.Setstringexplancode("Traversing the path from root to the position for insertion.");
 		}
 		else if (t >= 1.0f) {
 			AnimationStep = 2;
@@ -433,6 +435,7 @@ void InsertAnimationAVLTree::UpdateStepInsert() {
 			AnimationStep = 3;
 			AnimationTime = 0.0f;
 		}
+		explanationcode.Setstringexplancode("Expanding the tree to create spacing for the new node");
 		break;
 	case 3:
 		tree->Insert(tree->Root, InsertValue, tree->NodeList, false);
@@ -450,6 +453,7 @@ void InsertAnimationAVLTree::UpdateStepInsert() {
 				AnimationTime = 0.0f;
 			}
 		}
+		explanationcode.Setstringexplancode("Inserting new node: " + to_string(InsertValue));
 		break;
 	case 4:
 		RotateStartPosition.clear();
@@ -467,6 +471,7 @@ void InsertAnimationAVLTree::UpdateStepInsert() {
 				RotateTargetPosition[node] = node->position;
 				node->position = RotateStartPosition[node];
 			}
+			explanationcode.Setstringexplancode("Rotating child before rotating parent");
 			AnimationStep = 5;
 			AnimationTime = 0.0f;
 		}
@@ -478,6 +483,7 @@ void InsertAnimationAVLTree::UpdateStepInsert() {
 				RotateTargetPosition[node] = node->position;
 				node->position = RotateStartPosition[node];
 			}
+			explanationcode.Setstringexplancode("Rotating Parent");
 			AnimationStep = 5;
 			AnimationTime = 0.0f;
 		}
@@ -512,6 +518,7 @@ void InsertAnimationAVLTree::UpdateStepInsert() {
 				node->isLeftEdgeHightLigted = false;
 				node->isRightEdgeHightLighted = false;
 			}
+			explanationcode.Setstringexplancode("Reset Status");
 			AnimationStep = 0;
 			AnimationTime = 0.0f;
 			RotateStartPosition.clear();
@@ -532,6 +539,7 @@ void InsertAnimationAVLTree::UpdateStepInsert() {
 			RotateTargetPosition[node] = node->position;
 			node->position = RotateStartPosition[node];
 		}
+		explanationcode.Setstringexplancode("Rotating Parent");
 		AnimationStep = 5;
 		AnimationTime = 0.0f;
 		break;
@@ -542,10 +550,12 @@ void InsertAnimationAVLTree::UpdateStepInsert() {
 				if (abs(reversepath[ReverseIndexpath]->balanceFactor) > 1) {
 					NodeRotate = reversepath[ReverseIndexpath];
 					ReverseIndexpath++;
+					explanationcode.Setstringexplancode("Highlight Reverse path");
 					AnimationStep = 4;
 					AnimationTime = 0.0f;
 				}
 				else {
+					explanationcode.Setstringexplancode("Highlight Reverse path");
 					ReverseIndexpath++;
 					AnimationTime = 0.0f;
 				}

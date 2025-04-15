@@ -10,6 +10,7 @@
 #include "tinyfiledialogs.h"
 #include "InsertAnimationAVLTree.hpp"
 #include "DijkstraAnimationGraph.hpp"
+#include "ExplanationCode.hpp"
 
 #include <fstream>
 #include <string>
@@ -35,6 +36,7 @@ private:
 
 	Graph graph;
 	DijkstraAnimationGraph dijkstra_animation;
+
 	
 public :
 

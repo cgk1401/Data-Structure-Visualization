@@ -141,7 +141,7 @@ void GUI::DrawSecondMenu() {
     const int TITLE_FONT_SIZE = 28;
     Vector2 titleSize = MeasureTextEx(GetFontDefault(), titleText, TITLE_FONT_SIZE, 1);
     float titleX = (MENU_WIDTH - titleSize.x) / 2;
-    float titleY = 20.0f; // Positioned at top of menu
+    float titleY = 20.0f + 20.0f; // Positioned at top of menu
     DrawText(titleText, titleX, titleY, TITLE_FONT_SIZE, C[0]);
 
     // Draw all buttons
@@ -382,9 +382,9 @@ void GUI::DrawAVLTree() {
     }
     else if (activemenu_avltree == DELETE_AVLTREE) {
         if (val != -1) {
-            if (!Gui.insertanimationavltree.isFinished()) {
+            /*if (!Gui.insertanimationavltree.isFinished()) {
                 Gui.insertanimationavltree = InsertAnimationAVLTree(&tree);
-            }
+            }*/
             Gui.insertanimationavltree.StartDeleteAnimation(val);
             inputActive = false;
         }
@@ -400,8 +400,11 @@ void GUI::DrawAVLTree() {
         }
         Gui.insertanimationavltree.UpdateStepSearch(val);
     }
-
+    if (tree.Root == nullptr) Gui.insertanimationavltree.explanationcode.Setstringexplancode("");
+    Gui.insertanimationavltree.explanationcode.DrawExplancodeArea();
     Gui.insertanimationavltree.SetTree(&tree);
+
+    
     tree.DrawTree();
 }
 
@@ -780,7 +783,8 @@ void GUI::DrawBack() {
     // Position at bottom of menu
     Rectangle BackButton = {
         BUTTON_MARGIN,
-        ScreenHeight - BUTTON_HEIGHT - BUTTON_MARGIN,
+        40,
+        //ScreenHeight - BUTTON_HEIGHT - BUTTON_MARGIN,
         BUTTON_WIDTH,
         BUTTON_HEIGHT
     };
@@ -809,6 +813,7 @@ void GUI::DrawBack() {
         if (CurrentStruture == AVLTREE) {
             tree.Clear(tree.Root);
             tree.NodeList.clear();
+            Gui.insertanimationavltree.explanationcode.Setstringexplancode("");
         }
         CurrentStruture = MENU;
         inputActive = false;
