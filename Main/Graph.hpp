@@ -1,0 +1,76 @@
+#ifndef GRAPH_HPP
+#define GRAPH_HPP
+
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <fstream>
+
+#include "raylib.h"
+
+class Graph {
+private:
+	struct Node {
+		int id;
+		std::vector<std::pair<int, int>> adj; //first: id, second: weight
+
+		//int coordinateX, coordinateY;
+		Vector2 pos{ -100.0f, -100.0f };
+		
+		Node() : id(-1), pos({ -100.0f, -100.0f }) {};
+		Node(int id, float x = 0, float y = 0, bool is_high = false) : id(id), pos({ x,y }) {};
+	};
+	float node_rad = 35.0f;
+	int active_node1 = -1;
+	std::pair<int, int> active_edge = { -1,-1 };
+
+	std::unordered_map <int, Node> nodes;
+	bool is_directed; //directed/undirected graph
+
+	bool is_running_dijkstra = false;
+	std::unordered_map<int, bool> processed;
+	std::unordered_map<int, int> previous;
+	std::unordered_map<int, std::string> node_txt;
+
+	void draw_node(Node node);
+	void draw_edge(int from, int to, int weight);
+
+public:
+	struct GraphStage {
+		std::unordered_map<int, bool> processed;
+		std::unordered_map<int, int> previous;
+		std::unordered_map<int, std::string> node_txt;
+
+		int current_node = -1;
+		std::pair<int, int> active_edge = { -1,-1 };
+	};
+
+public:
+	Graph(bool dir) : is_directed(dir) {}
+
+	void add_node(int id);
+	void add_edge(int id1, int id2, int w);
+	void delete_node(int id);
+	void delete_edge(int id1, int id2);
+
+	void update();
+	void clear();
+	int get_active1();
+	std::pair<int, int> get_active2();
+
+	void rand_graph(int n_vertex, int n_edge);
+	void input_graph(std::ifstream& fin);
+
+	void dijkstra(int start);
+	std::vector<GraphStage> dijkstra_steps(int start);
+	std::vector<GraphStage> dijkstra_paths(int end, std::unordered_map<int, int> previous);
+	void set_running_dijkstra(bool is_running);
+	void set_state(GraphStage state);
+
+	void print_nodes();
+
+	void draw();
+};
+
+#endif  
+

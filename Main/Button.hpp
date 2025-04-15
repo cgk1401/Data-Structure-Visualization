@@ -1,10 +1,11 @@
 #ifndef BUTTON_HPP  
 #define BUTTON_HPP  
-using namespace std;
+
 #include <iostream>
 #include <string>
 #include "raylib.h"
 #include "Config.hpp"
+using namespace std;
 
 
 
@@ -18,35 +19,63 @@ public:
 	Color color;
 	string s;
 
-
-	Button(float coordinateX, float coordinateY, float width, float height, string s, Color color);
+	Button(string s, Color color);
 	void DrawButton();
+	bool IsCover();
 	bool IsClick();
+	void setColor(Color color);
+	void DrawClickEffect();
+	void ConfigureButton(float position);
 };
 class ButtonInit : public Button {
 public:
-	ButtonInit(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
+	ButtonInit(string s, Color color) : Button(s, color) {};
 };
+
 class ButtonInsert : public Button {
 public:
-	ButtonInsert(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
+	ButtonInsert(string s, Color color) : Button(s, color) {};
 };
 
 class ButtonDelete : public Button {
 public:
-	ButtonDelete(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
+	ButtonDelete(string s, Color color) : Button(s, color) {};
 };
+
 class ButtonSearch : public Button {
 public:
-	ButtonSearch(float coordinateX, float coordinateY, float width, float height, string s, Color color) : Button(coordinateX, coordinateY, width, height, s, color) {};
+	ButtonSearch(string s, Color color) : Button(s, color) {};
+};
+
+class ButtonRandom : public Button {
+public:
+	ButtonRandom(string s, Color color) : Button(s, color) {};
+};
+
+class ButtonLoadFile : public Button {
+public:
+	ButtonLoadFile(string s, Color color) : Button(s, color) {};
+};
+
+class ButtonClear : public Button {
+public:
+	ButtonClear(string s, Color color) : Button(s, color) {};
 };
 
 extern ButtonInit buttoninit;
 extern ButtonInsert buttoninsert;
 extern ButtonDelete buttondelete;
 extern ButtonSearch buttonsearch;
-
-
-
+extern ButtonRandom buttonrandom;
+extern ButtonLoadFile buttonloadfile;
+extern ButtonClear buttonclear;
+extern Button buttonvertex;
+extern Button buttonedge;
+extern Button buttondijkstra;
+extern Button buttonauto;
+extern Button buttonstep;
+extern Button buttonnext;
+extern Button buttonprev;
+extern Button buttonreturn;
 
 #endif // BUTTON_HPP
