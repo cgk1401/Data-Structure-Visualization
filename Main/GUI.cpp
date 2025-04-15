@@ -740,14 +740,20 @@ void GUI::DrawGraph() {
             }
             else {
 				if (isAuto) {
-					dijkstra_animation.next_state();
+					buttonpause.ConfigureButton(10);
+
+                    dijkstra_animation.next_state();
+
+					if (buttonpause.IsClick()) { isAuto = false; dijkstra_animation.set_auto(isAuto); }
                 }
                 else {
+					buttonrun.ConfigureButton(10);
                     buttonnext.ConfigureButton(11);
 					buttonprev.ConfigureButton(12);
 
                     if (buttonnext.IsClick()) { dijkstra_animation.next_state(); }
                     if (buttonprev.IsClick()) { dijkstra_animation.prev_state(); }
+                    if (buttonrun.IsClick()) { isAuto = true; dijkstra_animation.set_auto(isAuto); }
                 }
             }
             break;
