@@ -6,42 +6,37 @@
 #include <random>
 #include <queue>
 #include <set>
+#include <string>
 class AVLTree {
 public:
-
 	AVLTree();
 	~AVLTree();
 	Node* Root;
 	vector <Node*> NodeList;
+	Node* DeleteNode(Node* root, int key);
 
 	float DistanceHorizontal;
 	float DistanceVertical;
 
 public:
+	void DrawTree();
+	void DrawTreeHelper(Node* root);
 	void MoveTree(Node* root, bool isLeft);
 	void balanceTree();
-public:
-	void DrawTreeHelper(Node* root);
-	void DrawTree();
 
-	void DrawLevelOrder(Node* root);
 	void DeleteLeafNode(Node*& root, int key);
 	void RebalanceChild(Node*& root, Node* noderotate);
 	void RebalanceParent(Node*& root, Node* noderotate);
+
 	int GetBalanceFactor(Node* node);
+	int GetHeight(Node* node);
 
-	void DrawRecursion(Node* root);
-	Node* DeleteNode(Node* root, int key);
-
-public:
 	void Insert(Node*& root, int data, vector <Node*>& NodeList, bool isNeedRotate);
 	Node* InsertHelper(Node*& root, int data, Node* parnent, vector <Node*>& NodeList, bool isNeedRotate);
-	int GetHeight(Node* node);
 	Node* RotationLeft(Node*& root);
 	Node* RotationRight(Node*& root);
-
-	void UpdateHeightAndBalanceFactor(Node*& root);
 	Node* GetNodeRotate();
+	void UpdateHeightAndBalanceFactor(Node*& root);
 
 	void Random();
 	void InitAVLTree(int val);

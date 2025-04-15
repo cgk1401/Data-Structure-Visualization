@@ -4,8 +4,8 @@ using namespace std;
 
 AVLTree::AVLTree() {
     Root = nullptr;
-    DistanceHorizontal = 60;
-    DistanceVertical = 120;
+    DistanceHorizontal = 50;
+    DistanceVertical = 80;
 }
 
 AVLTree::~AVLTree() {
@@ -30,18 +30,15 @@ Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& 
         NodeList.push_back(root);
         return root;
     }
-
     if (data < root->val) {
         root->left = InsertHelper(root->left, data, root, NodeList, isNeedRotate);
     }
     else if (data > root->val) {
         root->right = InsertHelper(root->right, data, root, NodeList, isNeedRotate);
     }
-
     if (isNeedRotate == true) {
         root->balanceFactor = GetHeight(root->left) - GetHeight(root->right);
         root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
-
         if (root->balanceFactor > 1 && data < root->left->val) {
             // Left - Left
             root = RotationRight(root);
@@ -65,7 +62,6 @@ Node* AVLTree::InsertHelper(Node*& root, int data, Node* parent, vector<Node*>& 
             return root;
         }
     }
-
     return root;
 }
 
@@ -75,70 +71,44 @@ int AVLTree::GetHeight(Node* root) {
 }
 
 Node* AVLTree::RotationLeft(Node*& root) {
-
     if (root == nullptr) return nullptr;
-
     Node* newroot = root->right;
     Node* child = newroot->left;
-
     newroot->parent = root->parent;
-
     newroot->left = root;
     root->parent = newroot;
     root->right = child;
-
     if (child != nullptr) {
         child->parent = root;
         child->isLeft = false;
     }
-
     newroot->isLeft = root->isLeft;
-
-
     root->isLeft = true;
-
     root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
     newroot->height = 1 + max(GetHeight(newroot->left), GetHeight(newroot->right));
-
     swap(NodeList[root->nodeIndex], NodeList[newroot->nodeIndex]);
-
     for (int i = 0; i < NodeList.size(); i++) NodeList[i]->nodeIndex = i;
-
     return newroot;
-
 }
 
 Node* AVLTree::RotationRight(Node*& root) {
     if (root == nullptr) return nullptr;
-
     Node* newroot = root->left;
     Node* child = newroot->right;
-
-
     newroot->parent = root->parent;
-
     newroot->right = root;
     root->parent = newroot;
     root->left = child;
-
-
     if (child != nullptr) {
         child->parent = root;
         child->isLeft = true;
     }
-
     newroot->isLeft = root->isLeft;
-
-
     root->isLeft = false;
-
     root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
     newroot->height = 1 + max(GetHeight(newroot->left), GetHeight(newroot->right));
-
     swap(NodeList[root->nodeIndex], NodeList[newroot->nodeIndex]);
     for (int i = 0; i < NodeList.size(); i++) NodeList[i]->nodeIndex = i;
-
-
     return newroot;
 }
 
@@ -149,7 +119,6 @@ void AVLTree::UpdateHeightAndBalanceFactor(Node*& root) {
 
     root->height = 1 + max(GetHeight(root->left), GetHeight(root->right));
     root->balanceFactor = GetHeight(root->left) - GetHeight(root->right);
-
 }
 
 Node* AVLTree::GetNodeRotate() {
@@ -178,11 +147,11 @@ void AVLTree::Random() {
     NodeList.clear();
     if (size > 30) {
         DistanceHorizontal = 40;
-        DistanceVertical = 80;
+        DistanceVertical = 70;
     }
     if (size > 35) {
         DistanceHorizontal = 35;
-        DistanceVertical = 90;
+        DistanceVertical = 70;
     }
     set <int> se;
     while (se.size() < size) {
@@ -230,7 +199,6 @@ void AVLTree::MoveTree(Node* root, bool isLeft) {
     root->position.x = root->position.x + (isLeft ? -DistanceHorizontal : DistanceHorizontal);
     if (root->left != nullptr) MoveTree(root->left, isLeft);
     if (root->right != nullptr) MoveTree(root->right, isLeft);
-
 }
 
 void AVLTree::balanceTree() {
@@ -286,54 +254,33 @@ void AVLTree::DrawTree() {
 }
 
 void AVLTree::DrawTreeHelper(Node* node) {
-
     for (Node* node : NodeList) {
         if (node->left) {
-            DrawLineEx(node->position, node->left->position, 3, DARKGRAY);
+            DrawLineEx(node->position, node->left->position, 3, C[1]);
         }
         if (node->right) {
-            DrawLineEx(node->position, node->right->position, 3, DARKGRAY);
+            DrawLineEx(node->position, node->right->position, 3, C[1]);
         }
-
     }
+    int fontSize = 20;
     for (Node* node : NodeList) {
+        string text = to_string(node->val);
+        if (text.size() > 2) fontSize = 19;
+        if (text.size() > 4) fontSize = 16;
+        int textWidth = MeasureText(text.c_str(), fontSize);
+        int textHeight = fontSize;
+
         if (node->isNodeInserted) {
-            DrawCircle(node->position.x, node->position.y, 35, BLUE);
-            DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, WHITE);
+            DrawCircle(node->position.x, node->position.y, 30, BLUE);
         }
         else if (node->isNodeHighLighted) {
             DrawCircle(node->position.x, node->position.y, 30, ORANGE);
-            DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, WHITE);
         }
         else {
-            DrawCircle(node->position.x, node->position.y, 30, BLACK);
-            DrawText(TextFormat("%d", node->val), node->position.x - 10, node->position.y - 10, 20, WHITE);
+            DrawCircle(node->position.x, node->position.y, 30, C[3]);
         }
+        DrawText(text.c_str(), node->position.x - textWidth / 2, node->position.y - textHeight / 2, fontSize, WHITE);
     }
-}
-
-void AVLTree::DrawLevelOrder(Node* root) {
-    vector <vector <int> > ans;
-    if (root == nullptr) return;
-    queue <Node*> q;
-    q.push(root);
-    while (q.empty() == false) {
-        int size = q.size();
-        vector <int> tmp;
-        for (int i = 0; i < size; i++) {
-            Node* top = q.front();
-            q.pop();
-            tmp.push_back(top->val);
-            if (top->left != nullptr) q.push(top->left);
-            if (top->right != nullptr) q.push(top->right);
-        }
-        ans.push_back(tmp);
-    }
-    for (auto it : ans) {
-        for (auto it1 : it) cout << it1 << " ";
-        cout << endl;
-    }
-    cout << endl;
 }
 
 void AVLTree::DeleteLeafNode(Node*& root, int key) {
@@ -389,30 +336,14 @@ void AVLTree::RebalanceChild(Node*& root, Node* noderotate) {
 }
 
 void AVLTree::RebalanceParent(Node*& root, Node* noderotate) {
-    cout << noderotate->val << endl;
     if (!root) return;
-
     if (root == noderotate) {
         if (root->balanceFactor > 1) root = RotationRight(root);
         else root = RotationLeft(root);
         return;
     }
-
     RebalanceParent(root->left, noderotate);
     RebalanceParent(root->right, noderotate);
-
-}
-
-void AVLTree::DrawRecursion(Node* root) {
-    if (root == nullptr) return;
-    if (root->left != nullptr) DrawLineV(root->position, root->left->position, BLACK);
-    if (root->right != nullptr) DrawLineV(root->position, root->right->position, BLACK);
-
-    DrawRecursion(root->left);
-    DrawRecursion(root->right);
-
-    DrawCircle(root->position.x, root->position.y, 30, BLACK);
-    DrawText(TextFormat("%d", root->val), root->position.x - 10, root->position.y - 10, 20, WHITE);
 }
 
 Node* AVLTree::DeleteNode(Node* root, int key) {
@@ -425,45 +356,57 @@ Node* AVLTree::DeleteNode(Node* root, int key) {
             root = root->right;
             if (root != nullptr) {
                 root->parent = nodedelete->parent;
-                if (nodedelete->isLeft == true) {
-                    nodedelete->parent->left = root;
-                    root->isLeft = true;
+                if (nodedelete->parent != nullptr) { 
+                    if (nodedelete->isLeft == true) {
+                        nodedelete->parent->left = root;
+                        root->isLeft = true;
+                    }
+                    else {
+                        nodedelete->parent->right = root;
+                        root->isLeft = false;
+                    }
                 }
                 else {
-                    nodedelete->parent->right = root;
                     root->isLeft = false;
                 }
             }
-            auto it = find(NodeList.begin(), NodeList.end(), nodedelete);
-            if (it != NodeList.end()) {
-                NodeList.erase(it);
-                delete nodedelete;
-            }
-
         }
         else if (root->right == nullptr) {
             root = root->left;
-            root->parent = nodedelete->parent;
-            if (nodedelete->isLeft == true) {
-                nodedelete->parent->left = root;
-                root->isLeft = true;
-            }
-            else {
-                nodedelete->parent->right = root;
-                root->isLeft = false;
-            }
-            auto it = find(NodeList.begin(), NodeList.end(), nodedelete);
-            if (it != NodeList.end()) {
-                NodeList.erase(it);
-                delete nodedelete;
+            if (root != nullptr) {
+                root->parent = nodedelete->parent;
+                if (nodedelete->parent != nullptr) { 
+                    if (nodedelete->isLeft == true) {
+                        nodedelete->parent->left = root;
+                        root->isLeft = true;
+                    }
+                    else {
+                        nodedelete->parent->right = root;
+                        root->isLeft = false;
+                    }
+                }
+                else {
+                    root->isLeft = false;
+                }
             }
         }
-        else if (root->left != nullptr && root->right != nullptr) {
-            Node* tmp = root->left;
-            if (root != nullptr) root->parent = nodedelete->parent;
-            while (tmp->right != nullptr) tmp = tmp->right;
-            root->val = tmp->val;
-            root->left = DeleteNode(root->left, tmp->val);
+        else {
+            Node* pre = root->left;
+            while (pre->right != nullptr) {
+                pre = pre->right;
+            }
+            root->val = pre->val; 
+            root->left = DeleteNode(root->left, pre->val); 
+            return root;
+        }
+        auto it = find(NodeList.begin(), NodeList.end(), nodedelete);
+        if (it != NodeList.end()) {
+            NodeList.erase(it);
+            delete nodedelete;
+
+            for (int i = 0; i < NodeList.size(); ++i) {
+                NodeList[i]->nodeIndex = i;
+            }
         }
     }
     return root;

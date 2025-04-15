@@ -516,21 +516,33 @@ void GUI::DrawAVLTree() {
         }
     }
     else if (activemenu_avltree == INSERT_AVLTREE) {
-        cout << val << " ";
         if (val != -1) {
             Gui.insertanimationavltree.StartInsertAnimation(val);
             inputActive = false;
         }
-        Gui.insertanimationavltree.UpdateStep();
+        Gui.insertanimationavltree.UpdateStepInsert();
     }
     else if (activemenu_avltree == DELETE_AVLTREE) {
         if (val != -1) {
-            Gui.insertanimationavltree.DeleteAnimation(val);
+            if (!Gui.insertanimationavltree.isFinished()) {
+                Gui.insertanimationavltree = InsertAnimationAVLTree(&tree);
+            }
+            Gui.insertanimationavltree.StartDeleteAnimation(val);
             inputActive = false;
         }
-        Gui.insertanimationavltree.UpdateStepDelete();
-
+        if (!Gui.insertanimationavltree.isFinished()) {
+            Gui.insertanimationavltree.UpdateStepDelete();
+        }
     }
+    else if (activemenu_avltree == SEARCH_AVLTREE) {
+        cout << val << " ";
+        if (val != -1) {
+            Gui.insertanimationavltree.StartSearchAnimation(val); 
+            inputActive = false;
+        }
+        Gui.insertanimationavltree.UpdateStepSearch(val);
+    }
+
     Gui.insertanimationavltree.SetTree(&tree);
     tree.DrawTree();
 }
@@ -958,6 +970,10 @@ void GUI::DrawBack() {
     // Handle click
     if (isHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         if (CurrentStruture == LINKEDLIST) list.clear();
+        if (CurrentStruture == AVLTREE) {
+            tree.Clear(tree.Root);
+            tree.NodeList.clear();
+        }
         if (CurrentStruture == GRAPH) graph.clear();
 
         CurrentStruture = MENU;
@@ -1102,12 +1118,12 @@ int GUI::Input(int posX, int posY) {
         if (inputstring.empty()) return -1;
         try {
             int val = std::stoi(inputstring);
-            std::cout << "Value: " << val << std::endl;
+            //std::cout << "Value: " << val << std::endl;
             inputstring = "";
             return val;
         }
         catch (const std::exception& e) {
-            std::cout << "Invalid input: " << e.what() << std::endl;
+            //std::cout << "Invalid input: " << e.what() << std::endl;
             inputstring = "";
             return -1;
         }

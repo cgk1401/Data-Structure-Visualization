@@ -55,8 +55,6 @@ public :
 	bool isClickInsert = false;
 	bool isClickDelete = false;
 	bool isClickDijkstra = false;
-
-
 public:
 	GUI();
 
