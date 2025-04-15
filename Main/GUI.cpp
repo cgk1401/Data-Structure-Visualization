@@ -2,7 +2,7 @@
 #include <string>
 #include "GUI.hpp"
 #include "Graph.hpp"
-
+#include "HashTable.hpp"
 using namespace std;
 
 GUI Gui;
@@ -211,6 +211,13 @@ void GUI::DrawSecondMenu() {
         buttondijkstra.ConfigureButton(3);
         buttonclear.ConfigureButton(4);
     }
+    else if (CurrentStruture == HASHTABLE) {
+        buttoninit.ConfigureButton(0);
+        buttoninsert.ConfigureButton(1);
+        buttondelete.ConfigureButton(2);
+        buttonsearch.ConfigureButton(3);
+        buttonclear.ConfigureButton(4);
+    }
 
 }
 
@@ -271,8 +278,94 @@ void GUI::DrawListMenu() {
 }
    
 void GUI::DrawHashTable() {
-    Gui.DrawSecondMenu();
-    Gui.DrawBack();
+    DrawSecondMenu();
+    DrawBack();
+    DrawInputBox();
+
+    if (buttoninit.IsClick()) {
+        hashtable.setInitMode(HashTable::NONE_INIT);
+        currentInputMode = INIT;
+        inputActive = true;
+    }
+    else if (buttoninsert.IsClick()) {
+        hashtable.setInitMode(HashTable::NONE_INIT);
+        currentInputMode = INSERT;
+        inputActive = true;
+        inputstring = "";
+    }
+    else if (buttondelete.IsClick()) {
+        hashtable.setInitMode(HashTable::NONE_INIT);
+        currentInputMode = DELETE;
+        inputActive = true;
+        inputstring = "";
+    }
+    else if (buttonsearch.IsClick()) {
+        hashtable.setInitMode(HashTable::NONE_INIT);
+        currentInputMode = SEARCH;
+        inputActive = true;
+        inputstring = "";
+    }
+    else if (buttonclear.IsClick()) {
+        hashtable.clear();
+    }
+
+    int val = Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
+
+    if (currentInputMode == INIT) {
+        // Dùng buttonrandom và buttonloadfile có sẵn của nhóm
+        buttonrandom.ConfigureButton(6.3);
+        buttonloadfile.ConfigureButton(7.3);
+
+        if (buttonrandom.IsClick()) {
+            hashtable.setInitMode(HashTable::RANDOM_HASHTABLE);
+        }
+        else if (buttonloadfile.IsClick()) {
+            hashtable.setInitMode(HashTable::LOADFILE_HASHTABLE);
+        }
+
+        if (val != -1) {
+            hashtable.init(val);
+            hashtable.setInitMode(HashTable::NONE_INIT);
+            inputActive = false;
+            currentInputMode = NONE;
+        }
+
+        if (hashtable.getInitMode() == HashTable::RANDOM_HASHTABLE) {
+            hashtable.handleRandom();
+            hashtable.setInitMode(HashTable::NONE_INIT);
+            inputActive = false;
+            currentInputMode = NONE;
+        }
+        else if (hashtable.getInitMode() == HashTable::LOADFILE_HASHTABLE) {
+            hashtable.LoadFromFile();
+            hashtable.setInitMode(HashTable::NONE_INIT);
+            inputActive = false;
+            currentInputMode = NONE;
+        }
+    }
+    else if (currentInputMode == INSERT) {
+        if (val != -1) {
+            hashtable.insert(val);
+            inputActive = false;
+            currentInputMode = NONE;
+        }
+    }
+    else if (currentInputMode == DELETE) {
+        if (val != -1) {
+            hashtable.remove(val);
+            inputActive = false;
+            currentInputMode = NONE;
+        }
+    }
+    else if (currentInputMode == SEARCH) {
+        if (val != -1) {
+            hashtable.search(val);
+            inputActive = false;
+            currentInputMode = NONE;
+        }
+    }
+
+    hashtable.draw();
 }
 
 void GUI::DrawLinkedList(){

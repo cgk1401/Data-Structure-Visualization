@@ -10,7 +10,7 @@
 #include "tinyfiledialogs.h"
 #include "InsertAnimationAVLTree.hpp"
 #include "DijkstraAnimationGraph.hpp"
-
+#include"HashTable.hpp"
 #include <fstream>
 #include <string>
 
@@ -42,7 +42,7 @@ private:
 	int GraphRandomStep = 0;
 	int GraphVertexStep = 0;
 	DijkstraAnimationGraph dijkstra_animation;
-	
+	HashTable hashtable;
 public :
 
 	void SetActiveMenuAVLTree(ActiveMenuTypeAVLTree newMenu);

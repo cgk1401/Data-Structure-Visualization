@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
   <!-- Define Filters -->
   <ItemGroup>
     <Filter Include="Source Files">
@@ -10,7 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
-
   <!-- Assign .cpp files to "Source Files" -->
   <ItemGroup>
     <ClCompile Include="AVLTree.cpp">
@@ -46,8 +44,8 @@
     <ClCompile Include="DijkstraAnimationGraph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HashTable.cpp" />
   </ItemGroup>
-
   <!-- Assign .hpp files to "Header Files" -->
   <ItemGroup>
     <ClInclude Include="..\..\..\tinyfiledialogs\tinyfiledialogs.h">
@@ -80,6 +78,6 @@
     <ClInclude Include="DijkstraAnimationGraph.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HashTable.hpp" />
   </ItemGroup>
-
 </Project>
