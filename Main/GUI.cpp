@@ -617,14 +617,16 @@ void GUI::DrawGraph() {
 
             if (GraphRandomStep == 0) { GraphRandomStep = 1; }
 
-            if (GraphRandomStep < 3) { DrawText("Generating Random Graph", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
-            else { DrawText("Generated Random Graph", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
+            float startY = buttonclear.coordinateY + ScreenHeight / 6.0f;
+			float spacing = ScreenHeight / 36.0f;
+            if (GraphRandomStep < 3) { DrawText("Generating Random Graph", buttonclear.coordinateX, startY, 20, C[0]); }
+            else { DrawText("Generated Random Graph", buttonclear.coordinateX, startY, 20, C[0]); }
             if (GraphRandomStep > 1) {
                 string text1 = to_string(n_vertex) + " Vertices";
-                DrawText(text1.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 150.0f, 20, C[0]);
+                DrawText(text1.c_str(), buttonclear.coordinateX, startY + spacing * 1, 20, C[0]);
                 if (GraphRandomStep > 2) {
                     string text2 = to_string(n_edge) + " Edges";
-                    DrawText(text2.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 175.0f, 20, C[0]);
+                    DrawText(text2.c_str(), buttonclear.coordinateX, startY + spacing * 2, 20, C[0]);
                 }
             }
 
@@ -696,17 +698,19 @@ void GUI::DrawGraph() {
 
             if (GraphVertexStep == 0) { GraphVertexStep = 1; }
 
-            if (GraphVertexStep < 4) { DrawText("Drawing Edge", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
-            else { DrawText("Drawn Edge", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
+            float startY = buttonclear.coordinateY + ScreenHeight / 6.0f;
+            float spacing = ScreenHeight / 36.0f;
+            if (GraphVertexStep < 4) { DrawText("Drawing Edge", buttonclear.coordinateX, startY, 20, C[0]); }
+            else { DrawText("Drawn Edge", buttonclear.coordinateX, startY, 20, C[0]); }
             if (GraphVertexStep > 1) {
                 string text1 = "From Vertex " + to_string(vertex1);
-                DrawText(text1.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 150.0f, 20, C[0]);
+                DrawText(text1.c_str(), buttonclear.coordinateX, startY + spacing * 1, 20, C[0]);
                 if (GraphVertexStep > 2) {
                     string text2 = "To Vertex " + to_string(vertex2);
-                    DrawText(text2.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 175.0f, 20, C[0]);
+                    DrawText(text2.c_str(), buttonclear.coordinateX, startY + spacing * 2, 20, C[0]);
                     if (GraphVertexStep > 3) {
                         string text3 = "Weight: " + to_string(weight);
-                        DrawText(text3.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 200.0f, 20, C[0]);
+                        DrawText(text3.c_str(), buttonclear.coordinateX, startY + spacing * 3, 20, C[0]);
                     }
                 }
             }
@@ -778,14 +782,16 @@ void GUI::DrawGraph() {
 
             if (GraphVertexStep == 0) { GraphVertexStep = 1; }
 
-            if (GraphVertexStep < 3) { DrawText("Deleting Edge", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
-            else { DrawText("Deleted Edge", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
+            float startY = buttonclear.coordinateY + ScreenHeight / 6.0f;
+            float spacing = ScreenHeight / 36.0f;
+            if (GraphVertexStep < 3) { DrawText("Deleting Edge", buttonclear.coordinateX, startY, 20, C[0]); }
+            else { DrawText("Deleted Edge", buttonclear.coordinateX, startY, 20, C[0]); }
             if (GraphVertexStep > 1) {
                 string text1 = "From Vertex " + to_string(vertex1);
-                DrawText(text1.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 150.0f, 20, C[0]);
+                DrawText(text1.c_str(), buttonclear.coordinateX, startY + spacing * 1, 20, C[0]);
                 if (GraphVertexStep > 2) {
                     string text2 = "To Vertex " + to_string(vertex2);
-                    DrawText(text2.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 175.0f, 20, C[0]);
+                    DrawText(text2.c_str(), buttonclear.coordinateX, startY + spacing * 2, 20, C[0]);
                 }
             }
 

@@ -399,11 +399,15 @@ void Graph::draw() {
 	for (auto& node : nodes) {
 		draw_node(node.second);
 
-		if (is_running_dijkstra == true) { // displace the distance when running dijkstra
+		if (is_running_dijkstra == true) { 
+			// displace the distance when running dijkstra
 			if (processed[node.first] == true) { DrawCircleLinesV(node.second.pos, node_rad * 1.1, C[5]); }
 
 			DrawRectangle(node.second.pos.x + 1.25 * node_rad - 5, node.second.pos.y - 5, MeasureText(node_txt[node.first].c_str(), 20) + 10, 30, tmp);
 			DrawText(node_txt[node.first].c_str(), node.second.pos.x + 1.25 * node_rad, node.second.pos.y, 20, C[0]);
+
+			// code block
+
 		}
 	}
 }

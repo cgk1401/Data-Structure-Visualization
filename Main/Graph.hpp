@@ -35,6 +35,24 @@ private:
 	void draw_node(Node node);
 	void draw_edge(int from, int to, int weight);
 
+	std::vector<std::string> DijkstraSteps = {
+		"while (!pq.empty()) :",
+		"int a = pq.top().second; pq.pop();",
+		"if (processed[a] == true) { continue; }",
+		"processed[a] = true;",
+		"",
+		"for (const auto& neighbor : nodes[a].adj) {",
+		"int b = neighbor.first;",
+		"int w = neighbor.second;"
+		"if (distance[a] + w < distance[b]) {",
+		"distance[b] = distance[a] + w;",
+		"previous[b] = a;"
+		"pq.push({ distance[b], b });"
+		"}",
+		"}",
+		"}"
+	};
+
 public:
 	struct GraphStage {
 		std::unordered_map<int, bool> processed;
