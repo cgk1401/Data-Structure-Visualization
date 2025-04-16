@@ -31,6 +31,7 @@ private:
 	std::unordered_map<int, bool> processed;
 	std::unordered_map<int, int> previous;
 	std::unordered_map<int, std::string> node_txt;
+	std::vector<int> highlight_line;
 
 	void draw_node(Node node);
 	void draw_edge(int from, int to, int weight);
@@ -62,6 +63,8 @@ public:
 
 		int current_node = -1;
 		std::pair<int, int> active_edge = { -1,-1 };
+
+		std::vector<int> highlight_line = {};
 	};
 
 public:

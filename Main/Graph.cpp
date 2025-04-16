@@ -266,10 +266,12 @@ std::vector<Graph::GraphStage> Graph::dijkstra_steps(int start) {
 
 	while (pq.empty() == false) {
 		int a = pq.top().second; pq.pop();
+		steps.push_back({ processed, previous, node_txt, a, { -1, -1 }, { 0, 1 } });
+
 		if (processed[a] == true) { continue; }
 		processed[a] = true;
 
-		steps.push_back({ processed, previous, node_txt, a, { -1,-1 } });
+		steps.push_back({ processed, previous, node_txt, a, { -1, -1 }, { 0, 3 } });
 
 		for (const auto& neighbor : nodes[a].adj) {
 			int b = neighbor.first;
@@ -277,7 +279,7 @@ std::vector<Graph::GraphStage> Graph::dijkstra_steps(int start) {
 
 			if (processed[b] == true) { continue; }
 
-			steps.push_back({ processed, previous, node_txt, a, { a, b } });
+			steps.push_back({ processed, previous, node_txt, a, { a, b }, { 5, 6, 7 } });
 
 			if (distance[a] + w < distance[b]) {
 				if (distance[b] == INT_MAX) {
@@ -290,8 +292,7 @@ std::vector<Graph::GraphStage> Graph::dijkstra_steps(int start) {
 			else { 
 				node_txt[b] = std::to_string(distance[b]) + " < " + std::to_string(distance[a]) + "+" + std::to_string(w);
 			}
-
-			steps.push_back({ processed, previous, node_txt, a, { a, b } });
+			steps.push_back({ processed, previous, node_txt, a, { a, b }, { 5, 8 } });
 			//std::cout << node_txt[b] << std::endl;
 
 			if (distance[a] + w < distance[b]) {
@@ -301,7 +302,7 @@ std::vector<Graph::GraphStage> Graph::dijkstra_steps(int start) {
 			}
 			node_txt[b] = std::to_string(distance[b]);
 
-			steps.push_back({ processed, previous, node_txt, a, { a, b} });
+			steps.push_back({ processed, previous, node_txt, a, { a, b }, {5, 8, 9, 10, 11, 12} });
 		}
 	}
 
@@ -342,6 +343,7 @@ void Graph::set_state(GraphStage state) {
 	this->processed = state.processed;
 	this->previous = state.previous;
 	this->node_txt = state.node_txt;
+	this->highlight_line = state.highlight_line;
 }
 
 void Graph::print_nodes() {
@@ -418,6 +420,12 @@ void Graph::draw() {
 			float startY = ScreenHeight / 8.0f;
 			float spacing = ScreenHeight / 36.0f;
 			for (int i = 0; i < DijkstraSteps.size(); i++) {
+				for (int j = 0; j < highlight_line.size(); j++) {
+					if (i == highlight_line[j]) {
+						DrawRectangle(startX - 5, startY + spacing * i - 5, MeasureText(DijkstraSteps[i].c_str(), 20) + 10, 30, tmp);
+						break;
+					}
+				}
 				DrawText(DijkstraSteps[i].c_str(), startX, startY + spacing * i, 20, C[0]);
 			}
 		}
