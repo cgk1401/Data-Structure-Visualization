@@ -37,21 +37,22 @@ private:
 
 	std::vector<std::string> DijkstraSteps = {
 		"while (!pq.empty()) :",
-		"int a = pq.top().second; pq.pop();",
-		"if (processed[a] == true) { continue; }",
-		"processed[a] = true;",
+		"	int a = pq.top().second; pq.pop();",
+		"	if (vis[a] == true) { continue; }",
+		"	vis[a] = true;",
 		"",
-		"for (const auto& neighbor : nodes[a].adj) {",
-		"int b = neighbor.first;",
-		"int w = neighbor.second;"
-		"if (distance[a] + w < distance[b]) {",
-		"distance[b] = distance[a] + w;",
-		"previous[b] = a;"
-		"pq.push({ distance[b], b });"
-		"}",
-		"}",
+		"	for (auto neighbor : nodes[a].adj) {",
+		"		int b = neighbor.first;",
+		"		int w = neighbor.second;",
+		"		if (dist[a] + w < dist[b]) {",
+		"			dist[b] = dist[a] + w;",
+		"			prev[b] = a;",
+		"			pq.push({ dist[b], b });",
+		"		}",
+		"	}",
 		"}"
 	};
+	bool is_showing_code = false;
 
 public:
 	struct GraphStage {
@@ -83,6 +84,7 @@ public:
 	std::vector<GraphStage> dijkstra_steps(int start);
 	std::vector<GraphStage> dijkstra_paths(int end, std::unordered_map<int, int> previous);
 	void set_running_dijkstra(bool is_running);
+	void set_showing_code(bool is_showing);
 	void set_state(GraphStage state);
 
 	void print_nodes();

@@ -189,6 +189,7 @@ void GUI::DrawSecondMenu() {
     float titleY = 20.0f; // Positioned at top of menu
     DrawText(titleText, titleX, titleY, TITLE_FONT_SIZE, C[0]);
 
+    if (CurrentStruture == GRAPH && currentInputMode == DIJKSTRA && activemenu_graph != DEFAULT) { return; }
     // Draw all buttons
     if (CurrentStruture == LINKEDLIST) {
         buttoninit.ConfigureButton(0);
@@ -847,6 +848,7 @@ void GUI::DrawGraph() {
                 dijkstra_animation.load_state_general(val);
                 dijkstra_animation.set_auto(isAuto);
 				graph.set_running_dijkstra(true);
+				graph.set_showing_code(true);
 				activemenu_graph = DIJKSTRA_RUN;
 			}
             break;
@@ -855,6 +857,7 @@ void GUI::DrawGraph() {
             dijkstra_animation.render();
 
             if (dijkstra_animation.is_finnished()) {
+                graph.set_showing_code(false);
                 activemenu_graph = DIJKSTRA_TG;
             }
             else {
@@ -875,7 +878,7 @@ void GUI::DrawGraph() {
 
                     if (buttonnext.IsClick()) { dijkstra_animation.next_state(); }
                     if (buttonprev.IsClick()) { dijkstra_animation.prev_state(); }
-                    if (buttonfinal.IsClick()) { dijkstra_animation.show_distance(); activemenu_graph = DIJKSTRA_TG; }
+                    if (buttonfinal.IsClick()) { dijkstra_animation.show_distance(); graph.set_showing_code(false); activemenu_graph = DIJKSTRA_TG; }
                     if (buttonrun.IsClick()) { isAuto = true; dijkstra_animation.set_auto(isAuto); }
                 }
             }
@@ -1168,7 +1171,7 @@ int GUI::Input(int posX, int posY) {
 
 int GUI::DrawSlider(float minValue, float maxValue) {
     float x = (ScreenWidth / 5.0f) * 0.075f;
-	float y = ScreenHeight / 8.0f + 11 * 55.0f;
+    float y = ScreenHeight / 8.0f + 11 * ScreenHeight * 0.062f;
     float width = (ScreenWidth / 5.0f) * 0.85;
 	float height = 5.0f;
 

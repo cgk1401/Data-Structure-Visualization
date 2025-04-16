@@ -25,6 +25,8 @@ void Graph::add_node(int id) {
 
 void Graph::add_edge(int id1, int id2, int w) {
 	if (nodes.find(id1) != nodes.end() && nodes.find(id2) != nodes.end()) {
+		delete_edge(id1, id2); // delete the edge if it already exists
+
 		nodes[id1].adj.push_back({ id2, w });
 
 		if (is_directed == false) {
@@ -325,6 +327,10 @@ void Graph::set_running_dijkstra(bool is_running) {
 	is_running_dijkstra = is_running;
 }
 
+void Graph::set_showing_code(bool is_showing) {
+	is_showing_code = is_showing;
+}
+
 void Graph::set_state(GraphStage state) {
 	active_node1 = state.current_node;
 	active_edge = state.active_edge;
@@ -407,7 +413,13 @@ void Graph::draw() {
 			DrawText(node_txt[node.first].c_str(), node.second.pos.x + 1.25 * node_rad, node.second.pos.y, 20, C[0]);
 
 			// code block
-
+			if (is_showing_code == false) { continue; }
+			float startX = (ScreenWidth / 5.0f) * 0.055f;
+			float startY = ScreenHeight / 8.0f;
+			float spacing = ScreenHeight / 36.0f;
+			for (int i = 0; i < DijkstraSteps.size(); i++) {
+				DrawText(DijkstraSteps[i].c_str(), startX, startY + spacing * i, 20, C[0]);
+			}
 		}
 	}
 }
