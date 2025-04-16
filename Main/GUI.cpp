@@ -591,66 +591,74 @@ void GUI::DrawGraph() {
     
     switch (currentInputMode) {
     case INIT: {
-        DrawLineEx({ 0, (float)ScreenHeight / 2.36f }, { ScreenWidth / 5, (float)ScreenHeight / 2.36f }, 2.0f, C[0]);
-        buttonrandom.ConfigureButton(5);
-        buttonloadfile.ConfigureButton(6);
+        switch (activemenu_graph) {
+        case DEFAULT: {
+            DrawLineEx({ 0, (float)ScreenHeight / 2.36f }, { ScreenWidth / 5, (float)ScreenHeight / 2.36f }, 2.0f, C[0]);
+            buttonrandom.ConfigureButton(5);
+            buttonloadfile.ConfigureButton(6);
 
-        if (buttonrandom.IsClick()) {
-            GraphRandomStep = 0;
-            currentInputMode = RANDOM;
-        }
-        if (buttonloadfile.IsClick()) {
-            LoadFileGraph();
-
-            inputActive = false;
-            currentInputMode = NONE;
-        }
-
-        break;
-    }
-    case RANDOM: {
-        static int n_vertex = -1;
-        static int n_edge = -1;
-
-        if (GraphRandomStep == 0) { GraphRandomStep = 1; }
-
-        if (GraphRandomStep < 3) { DrawText("Generating Random Graph", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
-        else { DrawText("Generated Random Graph", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
-        if (GraphRandomStep > 1) {
-            string text1 = to_string(n_vertex) + " Vertices";
-            DrawText(text1.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 150.0f, 20, C[0]);
-            if (GraphRandomStep > 2) {
-                string text2 = to_string(n_edge) + " Edges";
-                DrawText(text2.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 175.0f, 20, C[0]);
-            }
-        }
-
-        if (val != -1) {
-            if (GraphRandomStep == 1) {
-                n_vertex = val;
-                GraphRandomStep = 2;
-            }
-            else
-                if (GraphRandomStep == 2) {
-                    n_edge = val;
-
-                    graph.clear();
-                    graph.rand_graph(n_vertex, n_edge);
-
-                    GraphRandomStep = 3;
-                }
-        }
-        if (GraphRandomStep == 3) {
-            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-                n_vertex = -1;
-                n_edge = -1;
-
+            if (buttonrandom.IsClick()) {
                 GraphRandomStep = 0;
+                //currentInputMode = RANDOM;
+				activemenu_graph = INIT_RAND;
+            }
+            if (buttonloadfile.IsClick()) {
+                LoadFileGraph();
+
                 inputActive = false;
                 currentInputMode = NONE;
             }
-        }
 
+            break;
+        }
+        case INIT_RAND: {
+            static int n_vertex = -1;
+            static int n_edge = -1;
+
+            if (GraphRandomStep == 0) { GraphRandomStep = 1; }
+
+            if (GraphRandomStep < 3) { DrawText("Generating Random Graph", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
+            else { DrawText("Generated Random Graph", buttonclear.coordinateX, buttonclear.coordinateY + 125.0f, 20, C[0]); }
+            if (GraphRandomStep > 1) {
+                string text1 = to_string(n_vertex) + " Vertices";
+                DrawText(text1.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 150.0f, 20, C[0]);
+                if (GraphRandomStep > 2) {
+                    string text2 = to_string(n_edge) + " Edges";
+                    DrawText(text2.c_str(), buttonclear.coordinateX, buttonclear.coordinateY + 175.0f, 20, C[0]);
+                }
+            }
+
+            if (val != -1) {
+                if (GraphRandomStep == 1) {
+                    n_vertex = val;
+                    GraphRandomStep = 2;
+                }
+                else
+                    if (GraphRandomStep == 2) {
+                        n_edge = val;
+
+                        graph.clear();
+                        graph.rand_graph(n_vertex, n_edge);
+
+                        GraphRandomStep = 3;
+                    }
+            }
+            if (GraphRandomStep == 3) {
+                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                    n_vertex = -1;
+                    n_edge = -1;
+
+                    GraphRandomStep = 0;
+					activemenu_graph = DEFAULT;
+                    inputActive = false;
+                    currentInputMode = NONE;
+                }
+            }
+
+            break;
+        }
+		default: break;
+        }
         break;
     }
     case INSERT: {
@@ -1032,8 +1040,9 @@ void GUI::DrawInputBox() {
 	}
     if (CurrentStruture == GRAPH) {
         switch (currentInputMode) {
-        case RANDOM:
-            switch (GraphRandomStep) {
+        case INIT:
+            if (activemenu_graph == DEFAULT) { return; }
+            switch (GraphRandomStep) { 
 			case 1: labelText = "Number of Vertex: "; break;
 			case 2: labelText = "Number of Edges: "; break;
 			default: return;
