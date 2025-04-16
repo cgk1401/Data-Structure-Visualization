@@ -278,8 +278,7 @@ void GUI::DrawListMenu() {
     ConfigureButton(buttonsearch, 3);
     ConfigureButton(buttonclear, 4);
 }
-        //DrawText(createInput.c_str(), 300, 200, 20, BLACK);
-   
+
 void GUI::DrawHashTable() {
     DrawSecondMenu();
     DrawBack();
@@ -315,7 +314,7 @@ void GUI::DrawHashTable() {
     int val = Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
 
     if (currentInputMode == INIT) {
-        // Dùng buttonrandom và buttonloadfile có sẵn của nhóm
+    
         buttonrandom.ConfigureButton(6.3);
         buttonloadfile.ConfigureButton(7.3);
 

@@ -16,8 +16,7 @@ public:
     void draw();
     void handleRandom();
     void startCollisionAnimation(int index);
-    void LoadFromFile(); // Thêm hàm tải từ file
-    // Thêm trạng thái cho Init
+    void LoadFromFile();
     enum InitMode { NONE_INIT, RANDOM_HASHTABLE, LOADFILE_HASHTABLE };
     void setInitMode(InitMode mode) { initMode = mode; }
     InitMode getInitMode() const { return initMode; }
@@ -45,7 +44,7 @@ private:
     static const int EMPTY = -1;
     static const int DELETED = -2;
     int hashFunction(int key) const { return key % capacity; }
-    InitMode initMode = NONE_INIT; // Biến trạng thái cho Init
+    InitMode initMode = NONE_INIT;
 };
 
 #endif

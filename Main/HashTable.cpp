@@ -5,7 +5,7 @@
 #include <vector>
 #include <cmath>
 #include <fstream>
-#include "tinyfiledialogs.h" // Thư viện nhóm dùng để mở file
+#include "tinyfiledialogs.h"
 
 
 HashTable::HashTable(int cap) : capacity(cap), size(0) {
@@ -24,9 +24,7 @@ void HashTable::insert(int key, bool animate) {
     }
 
     if (!collisionIndices.empty()) {
-        std::cout << "✅ Collision detected at indices: ";
-        for (int idx : collisionIndices) std::cout << idx << " ";
-        std::cout << "\n";
+        for (int idx : collisionIndices)
         if (animate) startCollisionAnimation(0);
         return;
     }
@@ -34,13 +32,11 @@ void HashTable::insert(int key, bool animate) {
     while (table[index] != EMPTY && table[index] != DELETED) {
         index = (index + 1) % capacity;
         if (index == originalIndex) {
-            std::cout << "❌ HashTable is full!\n";
             return;
         }
     }
     table[index] = key;
     size++;
-    std::cout << "✅ Inserted " << key << " at index " << index << "\n";
     if (animate) {
         insertX = GetScreenWidth() / 2;
         insertY = GetScreenHeight() / 2;
@@ -58,20 +54,17 @@ void HashTable::search(int key, bool animate) {
     while (table[index] != EMPTY) {
         if (table[index] == key) {
             if (animate) highlightedIndex = index;
-            std::cout << "✅ Found " << key << " at index " << index << "\n";
             return;
         }
         index = (index + 1) % capacity;
         if (index == start) break;
     }
     if (animate) highlightedIndex = -1;
-    std::cout << "❌ Not found " << key << "\n";
 }
 
 void HashTable::remove(int key, bool animate) {
     int index = hashFunction(key);
     int start = index;
-
     while (table[index] != EMPTY) {
         if (table[index] == key && !isRemoveAnimating) {
             if (animate) {
@@ -85,13 +78,11 @@ void HashTable::remove(int key, bool animate) {
             }
             table[index] = DELETED;
             size--;
-            std::cout << "✅ Removed " << key << " at index " << index << "\n";
             return;
         }
         index = (index + 1) % capacity;
         if (index == start) break;
     }
-    std::cout << "❌ Not found " << key << " to remove\n";
 }
 
 void HashTable::clear() {
@@ -103,15 +94,13 @@ void HashTable::clear() {
     pendingKey = -1;
     highlightedIndex = -1;
     collisionIndices.clear();
-    initMode = NONE_INIT; // Reset trạng thái Init
-    std::cout << "✅ HashTable cleared\n";
+    initMode = NONE_INIT; 
 }
 
 void HashTable::init(int newCapacity) {
     capacity = newCapacity;
     table.assign(capacity, EMPTY);
     size = 0;
-    std::cout << "✅ Initialized HashTable with capacity " << capacity << "\n";
 }
 
 void HashTable::draw() {
@@ -128,8 +117,6 @@ void HashTable::draw() {
 
     if (progress < 1.0f) progress += 0.02f;
     float easedProgress = 1 - pow(1 - progress, 3);
-
-    // Animation va chạm
     if (isCollisionAnimation) {
         collisionProgress += 0.02f;
         if (collisionProgress >= 1.0f) {
@@ -139,34 +126,27 @@ void HashTable::draw() {
                 isCollisionAnimation = false;
                 collisionIndices.clear();
                 collisionBlinkCount = 0;
-
-                // Sau khi nháy đỏ xong, chèn số và bật animation insert
                 if (pendingKey != -1) {
                     int index = hashFunction(pendingKey);
                     int originalIndex = index;
                     while (table[index] != EMPTY && table[index] != DELETED) {
                         index = (index + 1) % capacity;
                         if (index == originalIndex) {
-                            std::cout << "❌ HashTable is full!\n";
                             pendingKey = -1;
                             return;
                         }
                     }
                     table[index] = pendingKey;
                     size++;
-                    std::cout << "✅ Inserted " << pendingKey << " at index " << index << " after collision\n";
                     insertX = GetScreenWidth() / 2;
                     insertY = GetScreenHeight() / 2;
                     insertTargetIndex = index;
                     insertProgress = 0.0f;
                     isInsertAnimating = true;
-                    // Không reset pendingKey ngay, để animation dùng
                 }
             }
         }
     }
-
-    // Animation di chuyển cho insert
     if (isInsertAnimating) {
         insertProgress += 0.02f;
         float easedInsert = 1 - pow(1 - insertProgress, 3);
@@ -180,7 +160,6 @@ void HashTable::draw() {
             pendingKey = -1;
         }
     }
-
     BeginScissorMode(GetScreenWidth() / 5, 0, GetScreenWidth() - GetScreenWidth() / 5, GetScreenHeight());
     {
         for (int i = 0; i < capacity; i++) {
@@ -212,8 +191,6 @@ void HashTable::draw() {
         }
     }
     EndScissorMode();
-
-    // Animation nhảy lên rồi rơi cho remove
     if (isRemoveAnimating) {
         removeProgress += 0.05f;
         if (isJumping) {
@@ -230,7 +207,6 @@ void HashTable::draw() {
                 isRemoveAnimating = false;
                 removeIndex = -1;
                 removedValue = -1;
-                std::cout << "✅ Remove animation completed\n";
             }
         }
         DrawText(std::to_string(removedValue).c_str(), removeX, removeY, 20, RED);
@@ -239,16 +215,13 @@ void HashTable::draw() {
 
 void HashTable::handleRandom() {
     int randomCount = GetRandomValue(5, std::min(20, capacity));
-    std::cout << "✅ Randomizing " << randomCount << " values\n";
     for (int i = 0; i < randomCount; i++) {
         if (size >= capacity) {
-            std::cout << "❌ Table is full after " << i << " insertions\n";
             break;
         }
         int value = GetRandomValue(1, 100);
         insert(value, true);
     }
-    std::cout << "✅ Random insertion completed with " << size << " values\n";
 }
 
 void HashTable::startCollisionAnimation(int index) {
@@ -259,25 +232,21 @@ void HashTable::startCollisionAnimation(int index) {
 }
 
 void HashTable::LoadFromFile() {
-    clear(); // Xóa bảng hiện tại
+    clear();
     const char* path = tinyfd_openFileDialog(
         "Open HashTable File", "", 0, nullptr, nullptr, 0
     );
     if (path == nullptr) {
-        std::cout << "❌ No file selected\n";
         return;
     }
 
     std::ifstream ifs(path);
     if (!ifs.is_open()) {
-        std::cout << "❌ Failed to open file: " << path << "\n";
         return;
     }
-
     int x;
     while (ifs >> x) {
-        insert(x, false); // Thêm mà không cần animation
+        insert(x, false);
     }
     ifs.close();
-    std::cout << "✅ Loaded HashTable from file: " << path << "\n";
 }
