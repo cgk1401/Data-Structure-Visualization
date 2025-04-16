@@ -339,6 +339,7 @@ void GUI::DrawAVLTree() {
         inputActive = true;
     }
     else if (buttonclear.IsClick()) {
+        Gui.insertanimationavltree.explanationcode.Setstringexplancode("");
         tree.Clear(tree.Root);
         tree.NodeList.clear();
     }
@@ -346,6 +347,7 @@ void GUI::DrawAVLTree() {
     int val = Gui.Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
 
     if (activemenu_avltree == INIT_AVLTREE) {
+        Gui.insertanimationavltree.explanationcode.Setstringexplancode("Starting Initialization.");
         buttonrandom.ConfigureButton(6.3);
         buttonloadfile.ConfigureButton(7.3);
 
@@ -353,6 +355,7 @@ void GUI::DrawAVLTree() {
         else if (buttonloadfile.IsClick())  Gui.SetActiveMenuInitAVLTree(LOADFILE_AVLTREE);
 
         if (val != -1) {
+            Gui.insertanimationavltree.explanationcode.Setstringexplancode("Init : " + to_string(val) + " Node");
             tree.InitAVLTree(val);
             Gui.insertanimationavltree.SetTree(&tree);
             SetActiveMenuInitAVLTree(NONEINITAVLTREE);
@@ -360,12 +363,14 @@ void GUI::DrawAVLTree() {
             inputActive = false;
         }
         if (activemenuinit_avltree == RANDOM_AVLTREE) {
+            Gui.insertanimationavltree.explanationcode.Setstringexplancode("Starting Random.");
             tree.Random();
             SetActiveMenuInitAVLTree(NONEINITAVLTREE);
             SetActiveMenuAVLTree(NONE_AVLTREE);
             inputActive = false;
         }
         else if (activemenuinit_avltree == LOADFILE_AVLTREE) {
+            Gui.insertanimationavltree.explanationcode.Setstringexplancode("Starting LoadFile.");
             Gui.LoadFileAVLTree();
             Gui.insertanimationavltree.SetTree(&tree);
             SetActiveMenuInitAVLTree(NONEINITAVLTREE);
@@ -374,6 +379,7 @@ void GUI::DrawAVLTree() {
         }
     }
     else if (activemenu_avltree == INSERT_AVLTREE) {
+        Gui.insertanimationavltree.explanationcode.Setstringexplancode("Starting Insertion.");
         if (val != -1) {
             Gui.insertanimationavltree.StartInsertAnimation(val);
             inputActive = false;
@@ -381,6 +387,7 @@ void GUI::DrawAVLTree() {
         Gui.insertanimationavltree.UpdateStepInsert();
     }
     else if (activemenu_avltree == DELETE_AVLTREE) {
+        Gui.insertanimationavltree.explanationcode.Setstringexplancode("Starting Deletion.");
         if (val != -1) {
             /*if (!Gui.insertanimationavltree.isFinished()) {
                 Gui.insertanimationavltree = InsertAnimationAVLTree(&tree);
@@ -393,6 +400,7 @@ void GUI::DrawAVLTree() {
         }
     }
     else if (activemenu_avltree == SEARCH_AVLTREE) {
+        Gui.insertanimationavltree.explanationcode.Setstringexplancode("Starting Search.");
         cout << val << " ";
         if (val != -1) {
             Gui.insertanimationavltree.StartSearchAnimation(val); 
@@ -400,7 +408,7 @@ void GUI::DrawAVLTree() {
         }
         Gui.insertanimationavltree.UpdateStepSearch(val);
     }
-    if (tree.Root == nullptr) Gui.insertanimationavltree.explanationcode.Setstringexplancode("");
+
     Gui.insertanimationavltree.explanationcode.DrawExplancodeArea();
     Gui.insertanimationavltree.SetTree(&tree);
 
@@ -814,6 +822,7 @@ void GUI::DrawBack() {
             tree.Clear(tree.Root);
             tree.NodeList.clear();
             Gui.insertanimationavltree.explanationcode.Setstringexplancode("");
+            activemenu_avltree = NONE_AVLTREE;
         }
         CurrentStruture = MENU;
         inputActive = false;

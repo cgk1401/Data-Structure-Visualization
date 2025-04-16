@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <raylib.h>
+#include <sstream>
 #include "Config.hpp"
 using namespace std;
 
