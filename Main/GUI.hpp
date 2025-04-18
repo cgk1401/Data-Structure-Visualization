@@ -11,6 +11,8 @@
 #include "tinyfiledialogs.h"
 #include "InsertAnimationAVLTree.hpp"
 #include "DijkstraAnimationGraph.hpp"
+#include "ExplanationCode.hpp"
+
 #include"HashTable.hpp"
 #include <fstream>
 #include <string>

@@ -44,6 +44,9 @@
     <ClCompile Include="DijkstraAnimationGraph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ExplanationCode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="HashTable.cpp" />
   </ItemGroup>
   <!-- Assign .hpp files to "Header Files" -->
@@ -76,6 +79,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DijkstraAnimationGraph.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplanationCode.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HashTable.hpp" />

@@ -133,6 +133,7 @@
     <ClCompile Include="AVLTree.cpp" />
     <ClCompile Include="DijkstraAnimationGraph.cpp" />
     <ClCompile Include="HashTable.cpp" />
+    <ClCompile Include="ExplanationCode.cpp" />
     <ClCompile Include="LinkedList.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Config.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="..\..\..\tinyfiledialogs\tinyfiledialogs.h" />
     <ClInclude Include="AVLTree.hpp" />
     <ClInclude Include="DijkstraAnimationGraph.hpp" />
+    <ClInclude Include="ExplanationCode.hpp" />
     <ClInclude Include="HashTable.hpp" />
     <ClInclude Include="LinkedList.hpp" />
     <ClInclude Include="Button.hpp" />

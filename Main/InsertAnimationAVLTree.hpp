@@ -2,6 +2,7 @@
 #define INSERTANIMATIONAVLTREE_HPP
 
 #include "AVLTree.hpp"
+#include "ExplanationCode.hpp"
 #include <map>
 
 class InsertAnimationAVLTree {
@@ -36,6 +37,7 @@ private:
 	map <Node*, Vector2> RotateTargetPosition;
 public:
 	InsertAnimationAVLTree(AVLTree* root);
+	ExplanationCode explanationcode;
 
 	void StartInsertAnimation(int value);
 	void StartDeleteAnimation(int value);
