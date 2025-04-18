@@ -268,6 +268,7 @@ std::vector<Graph::GraphStage> Graph::dijkstra_steps(int start) {
 		int a = pq.top().second; pq.pop();
 		steps.push_back({ processed, previous, node_txt, a, { -1, -1 }, { 0, 1 } });
 
+		steps.push_back({ processed, previous, node_txt, a, { -1, -1 }, { 0, 2 } });
 		if (processed[a] == true) { continue; }
 		processed[a] = true;
 
@@ -276,10 +277,10 @@ std::vector<Graph::GraphStage> Graph::dijkstra_steps(int start) {
 		for (const auto& neighbor : nodes[a].adj) {
 			int b = neighbor.first;
 			int w = neighbor.second;
-
-			if (processed[b] == true) { continue; }
-
 			steps.push_back({ processed, previous, node_txt, a, { a, b }, { 5, 6, 7 } });
+
+			steps.push_back({ processed, previous, node_txt, a, { a, b }, { 5, 9 } });
+			if (processed[b] == true) { continue; }
 
 			if (distance[a] + w < distance[b]) {
 				if (distance[b] == INT_MAX) {
@@ -292,18 +293,23 @@ std::vector<Graph::GraphStage> Graph::dijkstra_steps(int start) {
 			else { 
 				node_txt[b] = std::to_string(distance[b]) + " < " + std::to_string(distance[a]) + "+" + std::to_string(w);
 			}
-			steps.push_back({ processed, previous, node_txt, a, { a, b }, { 5, 8 } });
+			steps.push_back({ processed, previous, node_txt, a, { a, b }, { 5, 11 } });
 			//std::cout << node_txt[b] << std::endl;
 
 			if (distance[a] + w < distance[b]) {
 				distance[b] = distance[a] + w;
 				previous[b] = a;
 				pq.push({ distance[b], b });
-			}
-			node_txt[b] = std::to_string(distance[b]);
+				node_txt[b] = std::to_string(distance[b]);
 
-			steps.push_back({ processed, previous, node_txt, a, { a, b }, {5, 8, 9, 10, 11, 12} });
+				steps.push_back({ processed, previous, node_txt, a, { a, b }, { 5, 12, 13, 14 } });
+			}
+			else { node_txt[b] = std::to_string(distance[b]); }
+
+			steps.push_back({ processed, previous, node_txt, a, { -1, -1 }, { 5 } });
 		}
+		steps.push_back({ processed, previous, node_txt, -1, { -1, -1 }, { 0 } });
+		//kind of wasteful, but it works
 	}
 
 	return steps;
@@ -416,13 +422,14 @@ void Graph::draw() {
 
 			// code block
 			if (is_showing_code == false) { continue; }
-			float startX = (ScreenWidth / 5.0f) * 0.055f;
-			float startY = ScreenHeight / 8.0f;
+			float startX = (ScreenWidth / 260.0f) + 12.5f;
+			float startY = ScreenHeight / 12.0f;
 			float spacing = ScreenHeight / 36.0f;
+			DrawRectangleRounded({ startX - 10, startY - 20, ScreenWidth / 5.2f - 5, spacing * DijkstraSteps.size() + 30 }, 0.1f, 10, C[2]); // Background for the code
 			for (int i = 0; i < DijkstraSteps.size(); i++) {
 				for (int j = 0; j < highlight_line.size(); j++) {
 					if (i == highlight_line[j]) {
-						DrawRectangle(startX - 5, startY + spacing * i - 5, MeasureText(DijkstraSteps[i].c_str(), 20) + 10, 30, tmp);
+						DrawRectangle(startX - 10, startY + spacing * i - 5, ScreenWidth / 5.2f - 4, 25, tmp);
 						break;
 					}
 				}

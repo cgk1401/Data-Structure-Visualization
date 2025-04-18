@@ -45,7 +45,10 @@ private:
 		"	for (auto neighbor : nodes[a].adj) {",
 		"		int b = neighbor.first;",
 		"		int w = neighbor.second;",
-		"		if (dist[a] + w < dist[b]) {",
+		"",
+		"		if (vis[b] == true) { continue; }",
+		"",
+		"		if (dist[b] > dist[a] + w) {",
 		"			dist[b] = dist[a] + w;",
 		"			prev[b] = a;",
 		"			pq.push({ dist[b], b });",
@@ -95,5 +98,4 @@ public:
 	void draw();
 };
 
-#endif  
-
+#endif  // GRAPH_HPP
