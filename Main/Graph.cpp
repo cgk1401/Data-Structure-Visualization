@@ -25,6 +25,8 @@ void Graph::add_node(int id) {
 
 void Graph::add_edge(int id1, int id2, int w) {
 	if (nodes.find(id1) != nodes.end() && nodes.find(id2) != nodes.end()) {
+		delete_edge(id1, id2); // delete the edge if it already exists
+
 		nodes[id1].adj.push_back({ id2, w });
 
 		if (is_directed == false) {
@@ -264,18 +266,21 @@ std::vector<Graph::GraphStage> Graph::dijkstra_steps(int start) {
 
 	while (pq.empty() == false) {
 		int a = pq.top().second; pq.pop();
+		steps.push_back({ processed, previous, node_txt, a, { -1, -1 }, { 0, 1 } });
+
+		steps.push_back({ processed, previous, node_txt, a, { -1, -1 }, { 0, 2 } });
 		if (processed[a] == true) { continue; }
 		processed[a] = true;
 
-		steps.push_back({ processed, previous, node_txt, a, { -1,-1 } });
+		steps.push_back({ processed, previous, node_txt, a, { -1, -1 }, { 0, 3 } });
 
 		for (const auto& neighbor : nodes[a].adj) {
 			int b = neighbor.first;
 			int w = neighbor.second;
+			steps.push_back({ processed, previous, node_txt, a, { a, b }, { 5, 6, 7 } });
 
+			steps.push_back({ processed, previous, node_txt, a, { a, b }, { 5, 9 } });
 			if (processed[b] == true) { continue; }
-
-			steps.push_back({ processed, previous, node_txt, a, { a, b } });
 
 			if (distance[a] + w < distance[b]) {
 				if (distance[b] == INT_MAX) {
@@ -288,19 +293,23 @@ std::vector<Graph::GraphStage> Graph::dijkstra_steps(int start) {
 			else { 
 				node_txt[b] = std::to_string(distance[b]) + " < " + std::to_string(distance[a]) + "+" + std::to_string(w);
 			}
-
-			steps.push_back({ processed, previous, node_txt, a, { a, b } });
+			steps.push_back({ processed, previous, node_txt, a, { a, b }, { 5, 11 } });
 			//std::cout << node_txt[b] << std::endl;
 
 			if (distance[a] + w < distance[b]) {
 				distance[b] = distance[a] + w;
 				previous[b] = a;
 				pq.push({ distance[b], b });
-			}
-			node_txt[b] = std::to_string(distance[b]);
+				node_txt[b] = std::to_string(distance[b]);
 
-			steps.push_back({ processed, previous, node_txt, a, { a, b} });
+				steps.push_back({ processed, previous, node_txt, a, { a, b }, { 5, 12, 13, 14 } });
+			}
+			else { node_txt[b] = std::to_string(distance[b]); }
+
+			steps.push_back({ processed, previous, node_txt, a, { -1, -1 }, { 5 } });
 		}
+		steps.push_back({ processed, previous, node_txt, -1, { -1, -1 }, { 0 } });
+		//kind of wasteful, but it works
 	}
 
 	return steps;
@@ -325,6 +334,10 @@ void Graph::set_running_dijkstra(bool is_running) {
 	is_running_dijkstra = is_running;
 }
 
+void Graph::set_showing_code(bool is_showing) {
+	is_showing_code = is_showing;
+}
+
 void Graph::set_state(GraphStage state) {
 	active_node1 = state.current_node;
 	active_edge = state.active_edge;
@@ -336,6 +349,7 @@ void Graph::set_state(GraphStage state) {
 	this->processed = state.processed;
 	this->previous = state.previous;
 	this->node_txt = state.node_txt;
+	this->highlight_line = state.highlight_line;
 }
 
 void Graph::print_nodes() {
@@ -399,11 +413,28 @@ void Graph::draw() {
 	for (auto& node : nodes) {
 		draw_node(node.second);
 
-		if (is_running_dijkstra == true) { // displace the distance when running dijkstra
+		if (is_running_dijkstra == true) { 
+			// displace the distance when running dijkstra
 			if (processed[node.first] == true) { DrawCircleLinesV(node.second.pos, node_rad * 1.1, C[5]); }
 
 			DrawRectangle(node.second.pos.x + 1.25 * node_rad - 5, node.second.pos.y - 5, MeasureText(node_txt[node.first].c_str(), 20) + 10, 30, tmp);
 			DrawText(node_txt[node.first].c_str(), node.second.pos.x + 1.25 * node_rad, node.second.pos.y, 20, C[0]);
+
+			// code block
+			if (is_showing_code == false) { continue; }
+			float startX = (ScreenWidth / 260.0f) + 12.5f;
+			float startY = ScreenHeight / 10.0f;
+			float spacing = ScreenHeight / 36.0f;
+			DrawRectangleRounded({ startX - 10, startY - 20, ScreenWidth / 5.2f - 5, spacing * DijkstraSteps.size() + 30 }, 0.1f, 10, C[2]); // Background for the code
+			for (int i = 0; i < DijkstraSteps.size(); i++) {
+				for (int j = 0; j < highlight_line.size(); j++) {
+					if (i == highlight_line[j]) {
+						DrawRectangle(startX - 10, startY + spacing * i - 5, ScreenWidth / 5.2f - 4, 25, tmp);
+						break;
+					}
+				}
+				DrawText(DijkstraSteps[i].c_str(), startX, startY + spacing * i, 20, C[0]);
+			}
 		}
 	}
 }

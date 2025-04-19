@@ -31,9 +31,32 @@ private:
 	std::unordered_map<int, bool> processed;
 	std::unordered_map<int, int> previous;
 	std::unordered_map<int, std::string> node_txt;
+	std::vector<int> highlight_line;
 
 	void draw_node(Node node);
 	void draw_edge(int from, int to, int weight);
+
+	std::vector<std::string> DijkstraSteps = {
+		"while (!pq.empty()) :",
+		"	int a = pq.top().second; pq.pop();",
+		"	if (vis[a] == true) { continue; }",
+		"	vis[a] = true;",
+		"",
+		"	for (auto neighbor : nodes[a].adj) {",
+		"		int b = neighbor.first;",
+		"		int w = neighbor.second;",
+		"",
+		"		if (vis[b] == true) { continue; }",
+		"",
+		"		if (dist[b] > dist[a] + w) {",
+		"			dist[b] = dist[a] + w;",
+		"			prev[b] = a;",
+		"			pq.push({ dist[b], b });",
+		"		}",
+		"	}",
+		"}"
+	};
+	bool is_showing_code = false;
 
 public:
 	struct GraphStage {
@@ -43,6 +66,8 @@ public:
 
 		int current_node = -1;
 		std::pair<int, int> active_edge = { -1,-1 };
+
+		std::vector<int> highlight_line = {};
 	};
 
 public:
@@ -65,6 +90,7 @@ public:
 	std::vector<GraphStage> dijkstra_steps(int start);
 	std::vector<GraphStage> dijkstra_paths(int end, std::unordered_map<int, int> previous);
 	void set_running_dijkstra(bool is_running);
+	void set_showing_code(bool is_showing);
 	void set_state(GraphStage state);
 
 	void print_nodes();
@@ -72,5 +98,4 @@ public:
 	void draw();
 };
 
-#endif  
-
+#endif  // GRAPH_HPP
