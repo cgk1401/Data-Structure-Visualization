@@ -7,6 +7,7 @@
 #include <fstream>
 
 #include "raylib.h"
+#include "raymath.h"
 
 class Graph {
 private:
@@ -16,6 +17,8 @@ private:
 
 		//int coordinateX, coordinateY;
 		Vector2 pos{ -100.0f, -100.0f };
+		Vector2 velocity = { 0,0 };
+		Vector2 force = { 0,0 };
 		
 		Node() : id(-1), pos({ -100.0f, -100.0f }) {};
 		Node(int id, float x = 0, float y = 0, bool is_high = false) : id(id), pos({ x,y }) {};
@@ -23,6 +26,11 @@ private:
 	float node_rad = 35.0f;
 	int active_node1 = -1;
 	std::pair<int, int> active_edge = { -1,-1 };
+
+	float k_repulsion = 500.0f; 
+	float k_spring = 0.4f;
+	float spring_length = 500.0f;
+	float damping = 0.75f;
 
 	std::unordered_map <int, Node> nodes;
 	bool is_directed; //directed/undirected graph
@@ -82,6 +90,10 @@ public:
 	void clear();
 	int get_active1();
 	std::pair<int, int> get_active2();
+
+	void update_attractive_force();
+	void update_repulsive_force();
+	void update_pos();
 
 	void rand_graph(int n_vertex, int n_edge);
 	void input_graph(std::ifstream& fin);

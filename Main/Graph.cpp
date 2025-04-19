@@ -8,6 +8,7 @@
 #include "Graph.hpp"
 #include "Config.hpp"
 
+// ------------------------- Graph class -----------------------
 void Graph::add_node(int id) {
 	if (nodes.find(id) == nodes.end()) { 
 		nodes.emplace(id, Node(id)); 
@@ -77,13 +78,111 @@ void Graph::delete_edge(int id1, int id2) {
 	}
 }
 
+void Graph::clear() {
+	nodes.clear();
+}
+
+int Graph::get_active1() {
+	return active_node1;
+}
+
+std::pair<int, int> Graph::get_active2() {
+	return active_edge;
+}
+
+void Graph::rand_graph(int n_vertex, int n_edge) {
+	if (is_directed == false && n_edge > ((n_vertex - 1) * n_vertex) / 2) { std::cout << "Too many edge for that number of vertex\n"; return; }
+	if (is_directed == true && n_edge > (n_vertex - 1) * n_vertex) { std::cout << "Too many edge for that number of vertex\n"; return; }
+
+	for (int i = 0; i < n_vertex; i++) { add_node(i); }
+
+	srand(time(0));
+	for (int i = 0; i < n_edge; i++) {
+		int a = rand() % n_vertex;
+		int b = rand() % n_vertex;
+
+		if (a == b) { i--; continue; }
+		//std::cout << a << " " << b << std::endl;
+		bool neighbor_check = true; //check if have been neighbor
+		for (const auto& x : nodes[a].adj) {
+			if (x.first == b) { neighbor_check = false; break; }
+		}
+		if (neighbor_check == true) { add_edge(a, b, rand() % 10 + 1); }
+		else { i--; }
+	}
+}
+
+void Graph::input_graph(std::ifstream& fin) {
+	int n_vertex; //nums of nodes
+	int n_edge; //nums of edges
+	bool is_dir; //directed/undirected graph
+	fin >> n_vertex >> n_edge >> is_dir;
+	is_directed = is_dir;
+
+	for (int i = 0; i < n_vertex; i++) {
+		int id; fin >> id;
+		add_node(id);
+	}
+
+	for (int i = 0; i < n_edge; i++) {
+		int a, b;
+		int w;
+		fin >> a >> b >> w;
+		add_edge(a, b, w);
+	}
+}
+
+// ------------------------- Force directed -----------------------
+void Graph::update_repulsive_force() {
+	for (int i = 0; i < nodes.size(); i++) {
+		for (int j = i + 1; j < nodes.size(); j++) {
+			Vector2 delta = Vector2Subtract(nodes[i].pos, nodes[j].pos);
+			float distance = Vector2Length(delta) + 0.01f; // avoid div by zero
+			float force_magnitude = k_repulsion / (distance * distance);
+			Vector2 force = Vector2Scale(Vector2Normalize(delta), force_magnitude);
+
+			nodes[i].force = Vector2Add(nodes[i].force, force);
+			nodes[j].force = Vector2Subtract(nodes[j].force, force);
+		}
+	}
+}
+
+void Graph::update_attractive_force() {
+	for (auto& node : nodes) {
+		Node& a = node.second;
+		for (auto& neighbor : a.adj) {
+			Node& b = nodes[neighbor.first];
+			if (a.id < b.id) { continue; } // avoid double counting
+
+			Vector2 delta = Vector2Subtract(a.pos, b.pos);
+			float distance = Vector2Length(delta) + 0.01f; // avoid div by zero
+			float forceMagnitude = k_spring * (distance - spring_length);
+			Vector2 force = Vector2Scale(Vector2Normalize(delta), -forceMagnitude);
+
+			a.force = Vector2Add(a.force, force);
+			b.force = Vector2Subtract(b.force, force);
+		}
+	}
+}
+
+void Graph::update_pos() {
+	float dt = GetFrameTime();
+	for (auto& nd : nodes) {
+		Node& node = nd.second;
+		node.velocity = Vector2Add(node.velocity, Vector2Scale(node.force, dt));
+		node.velocity = Vector2Scale(node.velocity, damping); // to stabilize
+		node.pos = Vector2Add(node.pos, Vector2Scale(node.velocity, dt));
+		node.force = { 0, 0 }; // reset force
+	}
+}
+
 void Graph::update() {
 	static int cur_node = -1;
 
 	Vector2 mouse = GetMousePosition();
-	
+
 	// update cur_node (moving)
-	if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && cur_node == -1) { 
+	if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && cur_node == -1) {
 		for (auto& node : nodes) {
 			if (CheckCollisionPointCircle(mouse, node.second.pos, node_rad)) {
 				cur_node = node.first;
@@ -142,63 +241,12 @@ void Graph::update() {
 		if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) { cur_node = -1; }
 	}
 
-	//if (active_node1 >= 0 && buttondel)
+	update_attractive_force();
+	update_repulsive_force();
+	update_pos();
 }
 
-void Graph::clear() {
-	nodes.clear();
-}
-
-int Graph::get_active1() {
-	return active_node1;
-}
-
-std::pair<int, int> Graph::get_active2() {
-	return active_edge;
-}
-
-void Graph::rand_graph(int n_vertex, int n_edge) {
-	if (is_directed == false && n_edge > ((n_vertex - 1) * n_vertex) / 2) { std::cout << "Too many edge for that number of vertex\n"; return; }
-	if (is_directed == true && n_edge > (n_vertex - 1) * n_vertex) { std::cout << "Too many edge for that number of vertex\n"; return; }
-
-	for (int i = 0; i < n_vertex; i++) { add_node(i); }
-
-	srand(time(0));
-	for (int i = 0; i < n_edge; i++) {
-		int a = rand() % n_vertex;
-		int b = rand() % n_vertex;
-
-		if (a == b) { i--; continue; }
-		//std::cout << a << " " << b << std::endl;
-		bool neighbor_check = true; //check if have been neighbor
-		for (const auto& x : nodes[a].adj) {
-			if (x.first == b) { neighbor_check = false; break; }
-		}
-		if (neighbor_check == true) { add_edge(a, b, rand() % 10 + 1); }
-		else { i--; }
-	}
-}
-
-void Graph::input_graph(std::ifstream& fin) {
-	int n_vertex; //nums of nodes
-	int n_edge; //nums of edges
-	bool is_dir; //directed/undirected graph
-	fin >> n_vertex >> n_edge >> is_dir;
-	is_directed = is_dir;
-
-	for (int i = 0; i < n_vertex; i++) {
-		int id; fin >> id;
-		add_node(id);
-	}
-
-	for (int i = 0; i < n_edge; i++) {
-		int a, b;
-		int w;
-		fin >> a >> b >> w;
-		add_edge(a, b, w);
-	}
-}
-
+// ------------------------- Dijkstra's algorithm -----------------------
 void Graph::dijkstra(int start) {
 	if (nodes.find(start) == nodes.end()) { std::cout << "Can not find node\n"; return; }
 
@@ -352,6 +400,7 @@ void Graph::set_state(GraphStage state) {
 	this->highlight_line = state.highlight_line;
 }
 
+// ------------------------- Drawing -----------------------
 void Graph::print_nodes() {
 	for (const auto& x : nodes) {
 		std::cout << "Node: " << x.first;
