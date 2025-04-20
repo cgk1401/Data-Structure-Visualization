@@ -48,6 +48,7 @@ public:
 	void UpdateStepSearch(int value);
 		
 	void SetTree(AVLTree* root);
+	void SetTime(float value) { this->duration = value; }
 	bool isFinished() const;
 };
 

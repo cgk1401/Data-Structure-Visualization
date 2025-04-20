@@ -91,7 +91,7 @@ void InsertAnimationAVLTree::StartDeleteAnimation(int value) {
 	this->Indexpath = 0;
 	this->AnimationStep = 1;
 	this->AnimationTime = 0.0f;
-	this->duration = 0.5f;
+	this->duration = 1.0f;
 	this->ReverseIndexpath = 0;
 	this->newNode = nullptr;
 	this->NodeDelete = nullptr;

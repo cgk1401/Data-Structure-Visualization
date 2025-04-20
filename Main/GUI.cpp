@@ -457,7 +457,9 @@ void GUI::DrawLinkedList(){
 void GUI::DrawAVLTree() {
     Gui.DrawSecondMenu();
     Gui.DrawBack();
-
+    float durationtime = DrawSliderAVLTree();
+    Gui.insertanimationavltree.SetTime(durationtime);
+       
     Gui.DrawInputBox();
 
     if (buttoninit.IsClick()) {
@@ -1189,4 +1191,37 @@ int GUI::DrawSlider(float minValue, float maxValue) {
 
     int value = minValue + (1.0f - ((handlePos - x) / (float)width)) * (maxValue - minValue);
     return value;
+}
+
+float GUI::DrawSliderAVLTree() {
+    const float minValue = 0.1f;
+    const float maxValue = 2.0f;
+
+    float x = (ScreenWidth / 5.0f) * 0.075f;
+    float y = ScreenHeight - 50;
+    float width = (ScreenWidth / 5.0f) * 0.85;
+    float height = 7.0f;
+
+    Rectangle sliderRect = { x, y, width, height };
+    DrawRectangleRec(sliderRect, C[3]);
+
+    static float handlePos = x + ((1 - minValue) / (float)(maxValue - minValue)) * width;
+    DrawCircle((int)handlePos, (int)y + height / 2, height * 1.5f, C[2]);
+
+    static bool is_dragging = false;
+    Vector2 mouse = GetMousePosition();
+
+    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && CheckCollisionPointCircle(mouse, { handlePos, y + height / 2 }, height * 1.5f)) { is_dragging = true; }
+    if (IsMouseButtonUp(MOUSE_LEFT_BUTTON)) { is_dragging = false; }
+
+    if (is_dragging) {
+        handlePos = Clamp(mouse.x, x, x + width);
+    }
+
+    float value = minValue + (((handlePos - x) / (float)width)) * (maxValue - minValue);
+    char buffer[32];
+    sprintf_s(buffer,sizeof(buffer), "%.3f", value);
+
+    DrawText(buffer, handlePos - x / float(width) - minValue, ScreenHeight - 90, 20, WHITE);
+    return maxValue - value;
 }

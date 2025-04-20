@@ -88,6 +88,7 @@ public:
     void DrawInputBox();
 
 	int DrawSlider(float minValue, float maxValue);
+	float DrawSliderAVLTree();
 };
 
 extern GUI Gui;
