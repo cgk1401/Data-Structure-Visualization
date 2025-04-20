@@ -7,7 +7,6 @@
 #include <fstream>
 #include "tinyfiledialogs.h"
 
-
 HashTable::HashTable(int cap) : capacity(cap), size(0) {
     table.resize(capacity, EMPTY);
 }
@@ -17,19 +16,13 @@ void HashTable::insert(int key, bool animate) {
     int originalIndex = index;
 
     collisionIndices.clear();
-    for (int i = 0; i < capacity; i++) {
-        if (table[i] == key && table[i] != EMPTY && table[i] != DELETED) {
-            collisionIndices.push_back(i);
-        }
-    }
-
-    if (!collisionIndices.empty()) {
-        for (int idx : collisionIndices)
-        if (animate) startCollisionAnimation(0);
-        return;
-    }
-
     while (table[index] != EMPTY && table[index] != DELETED) {
+        if (table[index] == key && animate) {
+            collisionIndices.push_back(index);
+            pendingKey = key;
+            startCollisionAnimation(index);
+            return;
+        }
         index = (index + 1) % capacity;
         if (index == originalIndex) {
             return;
@@ -37,14 +30,6 @@ void HashTable::insert(int key, bool animate) {
     }
     table[index] = key;
     size++;
-    if (animate) {
-        insertX = GetScreenWidth() / 2;
-        insertY = GetScreenHeight() / 2;
-        insertTargetIndex = index;
-        insertProgress = 0.0f;
-        isInsertAnimating = true;
-        pendingKey = key;
-    }
 }
 
 void HashTable::search(int key, bool animate) {
@@ -88,13 +73,12 @@ void HashTable::remove(int key, bool animate) {
 void HashTable::clear() {
     table.assign(capacity, EMPTY);
     size = 0;
-    isInsertAnimating = false;
     isRemoveAnimating = false;
     isCollisionAnimation = false;
-    pendingKey = -1;
     highlightedIndex = -1;
     collisionIndices.clear();
-    initMode = NONE_INIT; 
+    pendingKey = -1;
+    initMode = NONE_INIT;
 }
 
 void HashTable::init(int newCapacity) {
@@ -127,37 +111,20 @@ void HashTable::draw() {
                 collisionIndices.clear();
                 collisionBlinkCount = 0;
                 if (pendingKey != -1) {
-                    int index = hashFunction(pendingKey);
+                    int key = pendingKey;
+                    pendingKey = -1;
+                    int index = hashFunction(key);
                     int originalIndex = index;
                     while (table[index] != EMPTY && table[index] != DELETED) {
                         index = (index + 1) % capacity;
                         if (index == originalIndex) {
-                            pendingKey = -1;
                             return;
                         }
                     }
-                    table[index] = pendingKey;
+                    table[index] = key;
                     size++;
-                    insertX = GetScreenWidth() / 2;
-                    insertY = GetScreenHeight() / 2;
-                    insertTargetIndex = index;
-                    insertProgress = 0.0f;
-                    isInsertAnimating = true;
                 }
             }
-        }
-    }
-    if (isInsertAnimating) {
-        insertProgress += 0.02f;
-        float easedInsert = 1 - pow(1 - insertProgress, 3);
-        int targetX = startX + (insertTargetIndex % bucketsPerRow) * (bucketWidth + spacingX) + bucketWidth / 2;
-        int targetY = startY + (insertTargetIndex / bucketsPerRow) * (bucketHeight + spacingY) + bucketHeight / 2;
-        insertX = centerX + (targetX - centerX) * easedInsert;
-        insertY = centerY + (targetY - centerY) * easedInsert;
-        DrawText(std::to_string(pendingKey).c_str(), insertX - 10, insertY - 10, 20, RED);
-        if (insertProgress >= 1.0f) {
-            isInsertAnimating = false;
-            pendingKey = -1;
         }
     }
     BeginScissorMode(GetScreenWidth() / 5, 0, GetScreenWidth() - GetScreenWidth() / 5, GetScreenHeight());

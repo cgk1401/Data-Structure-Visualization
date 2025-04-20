@@ -30,10 +30,6 @@ private:
     int collisionBlinkCount = 0;
     std::vector<int> collisionIndices;
     int pendingKey = -1;
-    int insertTargetIndex = -1;
-    float insertProgress = 0.0f;
-    float insertX = 0.0f, insertY = 0.0f;
-    bool isInsertAnimating = false;
     bool isRemoveAnimating = false;
     bool isJumping = false;
     float removeProgress = 0.0f;
