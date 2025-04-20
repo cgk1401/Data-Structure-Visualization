@@ -23,14 +23,9 @@ private:
 		Node() : id(-1), pos({ -100.0f, -100.0f }) {};
 		Node(int id, float x = 0, float y = 0, bool is_high = false) : id(id), pos({ x,y }) {};
 	};
-	float node_rad = 35.0f;
+	float node_rad = 30.0f;
 	int active_node1 = -1;
 	std::pair<int, int> active_edge = { -1,-1 };
-
-	float k_repulsion = 500.0f; 
-	float k_spring = 0.4f;
-	float spring_length = 500.0f;
-	float damping = 0.75f;
 
 	std::unordered_map <int, Node> nodes;
 	bool is_directed; //directed/undirected graph
@@ -43,6 +38,16 @@ private:
 
 	void draw_node(Node node);
 	void draw_edge(int from, int to, int weight);
+
+	float k_repulsion = 100000000.0f;
+	float k_spring = 8.0f;
+	float spring_length = 300.0f;
+	float damping = 0.75f;
+
+	void update_attractive_force();
+	void update_repulsive_force();
+	void update_centering_force();
+	void update_pos();
 
 	std::vector<std::string> DijkstraSteps = {
 		"while (!pq.empty()) :",
@@ -90,10 +95,6 @@ public:
 	void clear();
 	int get_active1();
 	std::pair<int, int> get_active2();
-
-	void update_attractive_force();
-	void update_repulsive_force();
-	void update_pos();
 
 	void rand_graph(int n_vertex, int n_edge);
 	void input_graph(std::ifstream& fin);

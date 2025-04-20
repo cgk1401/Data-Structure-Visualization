@@ -569,6 +569,7 @@ void GUI::DrawGraph() {
 	Gui.DrawBack();
 
     Gui.DrawInputBox();
+    DrawCircle(ScreenWidth * 0.6, ScreenHeight * 0.5f, 2.0f, RED);
 
     if (buttoninit.IsClick()) {
 		ResetMenuState();

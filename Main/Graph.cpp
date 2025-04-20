@@ -134,15 +134,18 @@ void Graph::input_graph(std::ifstream& fin) {
 
 // ------------------------- Force directed -----------------------
 void Graph::update_repulsive_force() {
-	for (int i = 0; i < nodes.size(); i++) {
-		for (int j = i + 1; j < nodes.size(); j++) {
-			Vector2 delta = Vector2Subtract(nodes[i].pos, nodes[j].pos);
-			float distance = Vector2Length(delta) + 0.01f; // avoid div by zero
+	for (auto it1 = nodes.begin(); it1 != nodes.end(); ++it1) {
+		for (auto it2 = std::next(it1); it2 != nodes.end(); ++it2) {
+			Node& a = it1->second;
+			Node& b = it2->second;
+
+			Vector2 delta = Vector2Subtract(a.pos, b.pos);
+			float distance = Vector2Length(delta) + 0.01f; // avoid division by zero
 			float force_magnitude = k_repulsion / (distance * distance);
 			Vector2 force = Vector2Scale(Vector2Normalize(delta), force_magnitude);
 
-			nodes[i].force = Vector2Add(nodes[i].force, force);
-			nodes[j].force = Vector2Subtract(nodes[j].force, force);
+			a.force = Vector2Add(a.force, force);
+			b.force = Vector2Subtract(b.force, force);
 		}
 	}
 }
@@ -156,12 +159,24 @@ void Graph::update_attractive_force() {
 
 			Vector2 delta = Vector2Subtract(a.pos, b.pos);
 			float distance = Vector2Length(delta) + 0.01f; // avoid div by zero
-			float forceMagnitude = k_spring * (distance - spring_length);
-			Vector2 force = Vector2Scale(Vector2Normalize(delta), -forceMagnitude);
+			float force_magnitude = k_spring * (distance - spring_length);
+			Vector2 force = Vector2Scale(Vector2Normalize(delta), -force_magnitude);
 
 			a.force = Vector2Add(a.force, force);
 			b.force = Vector2Subtract(b.force, force);
 		}
+	}
+}
+
+void Graph::update_centering_force() {
+	Vector2 center = { ScreenWidth * 0.6f, ScreenHeight * 0.5f };
+	float centering_strength = 10.0f;
+
+	for (auto& nd : nodes) {
+		Node& node = nd.second;
+		Vector2 delta = Vector2Subtract(center, node.pos);
+		Vector2 centering_force = Vector2Scale(delta, centering_strength);
+		node.force = Vector2Add(node.force, centering_force);
 	}
 }
 
@@ -243,6 +258,7 @@ void Graph::update() {
 
 	update_attractive_force();
 	update_repulsive_force();
+	update_centering_force();
 	update_pos();
 }
 
