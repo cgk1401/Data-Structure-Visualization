@@ -42,9 +42,11 @@ private:
 
 	Graph graph;
 	ActiveMenuTypeGraph activemenu_graph = DEFAULT;
+	bool is_graph_fixed = false;
 	int GraphRandomStep = 0;
 	int GraphVertexStep = 0;
 	DijkstraAnimationGraph dijkstra_animation;
+
 	HashTable hashtable;
 public :
 

@@ -10,17 +10,15 @@
 
 // ------------------------- Graph class -----------------------
 void Graph::add_node(int id) {
-	if (nodes.find(id) == nodes.end()) { 
-		nodes.emplace(id, Node(id)); 
+	if (nodes.find(id) == nodes.end()) {
+		nodes.emplace(id, Node(id));
 
-		int k = nodes.size() - 1;
-		nodes[id].pos.x = ScreenWidth / 4 + (ScreenWidth * 7.0f / 40) * (k / 5);
-		nodes[id].pos.y = ScreenHeight / 4 + (ScreenWidth * 5.0f / 40) * (k % 5);
-
-		if (k%5 >= 3) {
-			nodes[id].pos.x += (ScreenWidth * 7.00f / 80);
-			nodes[id].pos.y -= (ScreenWidth * 25.0f / 80);
-		}
+		float minX = ScreenWidth / 5.0f;
+		float maxX = ScreenWidth;
+		float minY = 0.0f;
+		float maxY = ScreenHeight;
+		nodes[id].pos.x = minX + GetRandomValue(0, 10000) / 10000.0f * (maxX - minX);
+		nodes[id].pos.y = minY + GetRandomValue(0, 10000) / 10000.0f * (maxY - minY);
 	}
 }
 
@@ -133,6 +131,10 @@ void Graph::input_graph(std::ifstream& fin) {
 }
 
 // ------------------------- Force directed -----------------------
+void Graph::set_fix_graph(bool is_fixed) {
+	this->is_graph_fixed = is_fixed;
+}
+
 void Graph::update_repulsive_force() {
 	for (auto it1 = nodes.begin(); it1 != nodes.end(); ++it1) {
 		for (auto it2 = std::next(it1); it2 != nodes.end(); ++it2) {
@@ -256,10 +258,12 @@ void Graph::update() {
 		if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) { cur_node = -1; }
 	}
 
-	update_attractive_force();
-	update_repulsive_force();
-	update_centering_force();
-	update_pos();
+	if (is_graph_fixed == false) {
+		update_attractive_force();
+		update_repulsive_force();
+		update_centering_force();
+		update_pos();
+	}
 }
 
 // ------------------------- Dijkstra's algorithm -----------------------

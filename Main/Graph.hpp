@@ -41,8 +41,9 @@ private:
 
 	float k_repulsion = 100000000.0f;
 	float k_spring = 8.0f;
-	float spring_length = 300.0f;
+	float spring_length = 350.0f;
 	float damping = 0.75f;
+	bool is_graph_fixed = false;
 
 	void update_attractive_force();
 	void update_repulsive_force();
@@ -95,6 +96,8 @@ public:
 	void clear();
 	int get_active1();
 	std::pair<int, int> get_active2();
+
+	void set_fix_graph(bool is_fixed);
 
 	void rand_graph(int n_vertex, int n_edge);
 	void input_graph(std::ifstream& fin);
