@@ -239,49 +239,6 @@ void GUI::ResetMenuState() {
 	inputActive = false;
 	currentInputMode = NONE;
 }
-
-void GUI::DrawListMenu() {
-    // Menu constants
-    const float MENU_WIDTH = ScreenWidth / 5.0f;
-    const float MENU_HEIGHT = ScreenHeight;
-
-    // Draw menu background
-    DrawRectangleRounded(
-        { 0, 0, MENU_WIDTH, MENU_HEIGHT },
-        0.1f, 10, C[1]
-    );
-
-    // Draw "Linked List" title inside menu
-    const char* titleText = "Linked List";
-    const int TITLE_FONT_SIZE = 28;
-    Vector2 titleSize = MeasureTextEx(GetFontDefault(), titleText, TITLE_FONT_SIZE, 1);
-    float titleX = (MENU_WIDTH - titleSize.x) / 2;
-    float titleY = 20.0f; // Positioned at top of menu
-    DrawText(titleText, titleX, titleY, TITLE_FONT_SIZE, C[0]);
-
-    // Button layout constants
-    const float BUTTON_WIDTH = MENU_WIDTH * 0.85f;
-    const float BUTTON_HEIGHT = 40.0f;
-    const float BUTTON_MARGIN_X = MENU_WIDTH * 0.075f;
-    const float BUTTON_SPACING = 15.0f;
-    const float BUTTON_START_Y = titleY + titleSize.y + 20.0f; // Start below title
-
-    // Button configuration helper
-    auto ConfigureButton = [&](Button& button, int position) {
-        button.coordinateX = BUTTON_MARGIN_X;
-        button.coordinateY = BUTTON_START_Y + position * (BUTTON_HEIGHT + BUTTON_SPACING);
-        button.width = BUTTON_WIDTH;
-        button.height = BUTTON_HEIGHT;
-        button.DrawButton();
-        };
-
-    // Draw all buttons
-    ConfigureButton(buttoninit, 0);
-    ConfigureButton(buttoninsert, 1);
-    ConfigureButton(buttondelete, 2);
-    ConfigureButton(buttonsearch, 3);
-    ConfigureButton(buttonclear, 4);
-}
    
 void GUI::DrawHashTable() {
     DrawSecondMenu();

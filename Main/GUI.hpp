@@ -77,7 +77,6 @@ public:
 	void DrawMainMenu();
 	void DrawThemeMenu();
 	void DrawSecondMenu();
-	void DrawListMenu();
 	void DrawDivider();
 
 	void ResetMenuState();
