@@ -842,8 +842,9 @@ void GUI::DrawGraph() {
             else {
 				if (isAuto) {
 					buttonpause.ConfigureButton(10);
-					int speed = DrawSlider(5, 90);
-					dijkstra_animation.set_speed(speed);
+					float speed = DrawSlider();
+					//dijkstra_animation.set_speed(speed);
+					dijkstra_animation.set_duration(speed);
 
                     dijkstra_animation.next_state();
 
@@ -1150,28 +1151,35 @@ int GUI::Input(int posX, int posY) {
     return -1;
 }
 
-int GUI::DrawSlider(float minValue, float maxValue) {
+float GUI::DrawSlider() {
+    const float minValue = 0.1f;
+    const float maxValue = 2.0f;
+
     float x = (ScreenWidth / 5.0f) * 0.075f;
     float y = ScreenHeight / 8.0f + 11 * ScreenHeight * 0.062f;
     float width = (ScreenWidth / 5.0f) * 0.85;
-	float height = 5.0f;
+    float height = 7.0f;
 
-	Rectangle sliderRect = { x, y, width, height };
-	DrawRectangleRec(sliderRect, C[3]);
+    Rectangle sliderRect = { x, y, width, height };
+    DrawRectangleRec(sliderRect, C[3]);
 
-    static float handlePos = x + ((40 - minValue) / (float)(maxValue - minValue)) * width;
+    static float handlePos = x + ((1 - minValue) / (float)(maxValue - minValue)) * width;
     DrawCircle((int)handlePos, (int)y + height / 2, height * 1.5f, C[2]);
 
-	static bool is_dragging = false;
-	Vector2 mouse = GetMousePosition();
+    static bool is_dragging = false;
+    Vector2 mouse = GetMousePosition();
 
     if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && CheckCollisionPointCircle(mouse, { handlePos, y + height / 2 }, height * 1.5f)) { is_dragging = true; }
-	if (IsMouseButtonUp(MOUSE_LEFT_BUTTON)) { is_dragging = false; }
+    if (IsMouseButtonUp(MOUSE_LEFT_BUTTON)) { is_dragging = false; }
 
-	if (is_dragging) {
-		handlePos = Clamp(mouse.x, x, x + width);
-	}
+    if (is_dragging) {
+        handlePos = Clamp(mouse.x, x, x + width);
+    }
 
-    int value = minValue + (1.0f - ((handlePos - x) / (float)width)) * (maxValue - minValue);
-    return value;
+    float value = minValue + (((handlePos - x) / (float)width)) * (maxValue - minValue);
+    char buffer[32];
+    sprintf_s(buffer, sizeof(buffer), "%.3f", value);
+
+	DrawText(buffer, handlePos - MeasureText(buffer, 20) / 2, y - 25, 20, C[0]);
+    return maxValue - value;
 }

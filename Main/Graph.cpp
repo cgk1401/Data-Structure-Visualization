@@ -386,6 +386,10 @@ std::vector<Graph::GraphStage> Graph::dijkstra_steps(int start) {
 std::vector<Graph::GraphStage> Graph::dijkstra_paths(int end, std::unordered_map<int, int> previous) {
 	std::vector<GraphStage> steps;
 
+	if (nodes.size() == 0) { std::cout << "Graph is empty\n"; return steps; }
+	if (previous.find(end) == previous.end()) { std::cout << "Can not find node\n"; return steps; }
+	if (previous[end] == -1) { std::cout << "No path\n"; return steps; }
+
 	steps.push_back({ {}, {}, {}, end, { -1,-1 } });
 	while (end != -1 && previous[end] != -1) {
 		steps.push_back({ {}, {}, {}, end, {previous[end], end} });
