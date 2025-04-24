@@ -85,6 +85,16 @@ void HashTable::init(int newCapacity) {
     capacity = newCapacity;
     table.assign(capacity, EMPTY);
     size = 0;
+    progress = 0.0f; // Reset progress để chạy lại hoạt ảnh
+    isCollisionAnimation = false;
+    isRemoveAnimating = false;
+    highlightedIndex = -1;
+    collisionIndices.clear();
+    pendingKey = -1;
+    collisionProgress = 0.0f;
+    removeProgress = 0.0f;
+    removeIndex = -1;
+    removedValue = -1;
 }
 
 void HashTable::draw() {
