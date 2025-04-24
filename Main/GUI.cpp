@@ -11,7 +11,7 @@ TypeDataStructure CurrentStruture = MENU;
 
 
 GUI::GUI()
-	: table(10), insertanimationavltree(&tree), graph(false), dijkstra_animation(graph)
+	: table(60), insertanimationavltree(&tree), graph(false), dijkstra_animation(graph)
 {}
 
 void GUI::SetActiveMenuAVLTree(ActiveMenuTypeAVLTree newMenu) {

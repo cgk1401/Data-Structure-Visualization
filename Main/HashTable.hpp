@@ -7,7 +7,7 @@
 
 class HashTable {
 public:
-    HashTable(int cap = 10);
+    HashTable(int cap = 60);
     void insert(int key, bool animate = true);
     void search(int key, bool animate = true);
     void remove(int key, bool animate = true);

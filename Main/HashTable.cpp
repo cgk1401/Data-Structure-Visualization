@@ -102,7 +102,7 @@ void HashTable::draw() {
     int bucketHeight = 50;
     int startX = GetScreenWidth() / 5 + 50;
     int startY = 150;
-    int bucketsPerRow = std::min(10, capacity);
+    int bucketsPerRow = 15;
     int spacingX = 10;
     int spacingY = 30;
 
