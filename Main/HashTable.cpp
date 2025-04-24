@@ -191,12 +191,14 @@ void HashTable::draw() {
 }
 
 void HashTable::handleRandom() {
-    int randomCount = GetRandomValue(5, std::min(20, capacity));
+    int newCapacity = GetRandomValue(30, 100);
+    init(newCapacity); 
+    int randomCount = GetRandomValue(newCapacity * 0.5, newCapacity * 0.8);
     for (int i = 0; i < randomCount; i++) {
         if (size >= capacity) {
             break;
         }
-        int value = GetRandomValue(1, 100);
+        int value = GetRandomValue(1, 100); 
         insert(value, true);
     }
 }
