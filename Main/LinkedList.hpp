@@ -4,6 +4,8 @@
 #include "raylib.h"
 #include <vector>
 #include <iostream>
+#include <string>
+using namespace std;
 
 class LinkedList {
 private:
@@ -83,6 +85,7 @@ public:
     void clear();
     void rand_list(int n_nodes);
     void print_list() const;
+    bool load_from_file(const string& filename);
 
     // Visualization
     void update();
