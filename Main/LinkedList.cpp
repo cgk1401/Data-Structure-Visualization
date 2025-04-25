@@ -102,7 +102,7 @@ void LinkedList::add_node(int data) {
         current->next = new_node;
     }
     nodeCount++;
-    calculate_layout(); // This will update contentHeight
+    calculate_layout();
 }
 
 void LinkedList::add_node_front(int data) {
@@ -114,6 +114,8 @@ void LinkedList::add_node_front(int data) {
 }
 
 void LinkedList::delete_node(int data) {
+    deleteState = DeleteState::SEARCHING;
+    active_node = data;
     start_delete_animation(data);
 }
 
