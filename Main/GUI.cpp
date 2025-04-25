@@ -332,9 +332,9 @@ void GUI::DrawHashTable() {
 }
 
 void GUI::DrawLinkedList() {
-    Gui.DrawSecondMenu();
-    Gui.DrawBack();
-    Gui.DrawInputBox();
+    DrawSecondMenu();
+    DrawBack();
+    DrawInputBox();
 
     if (buttoninit.IsClick()) {
         currentInputMode = INIT;
@@ -374,19 +374,13 @@ void GUI::DrawLinkedList() {
     }
 
     if (inputActive) {
-        int val = Gui.Input(
-            buttonclear.coordinateX,
-            buttonclear.coordinateY + buttonclear.height + 20
-        );
+        int val = Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
         if (val != -1) {
             switch (currentInputMode) {
             case INIT: list.clear(); list.rand_list(val); break;
-            case INSERT: list.add_node(val); break;
-            case DELETE: list.delete_node(val); break;
-            case SEARCH:
-                list.search_node(val);
-                search_result_timer = 2.0f;
-                break;
+            case INSERT: list.start_animation(LinkedList::AnimationType::INSERT, val); break;
+            case DELETE: list.start_animation(LinkedList::AnimationType::DELETE, val); break;
+            case SEARCH: list.start_animation(LinkedList::AnimationType::SEARCH, val); search_result_timer = 2.0f; break;
             }
             currentInputMode = NONE;
             inputActive = false;
@@ -394,49 +388,46 @@ void GUI::DrawLinkedList() {
     }
 
     list.update();
-    list.draw();
     BeginScissorMode(SecondMenuWidth, 0, ScreenWidth - SecondMenuWidth, ScreenHeight);
     list.setDrawOffset(linkedListScrollY);
-    list.update();
     list.draw();
     EndScissorMode();
 
-    if (search_result_timer > 0.0f) {
-        search_result_timer -= GetFrameTime();
+    if (list.get_search_state() != -1 || list.get_active() != -1) {
+        buttonBackward.ConfigureButton(6.0f);
+        buttonForward.ConfigureButton(7.0f);
+        buttonPausePlay.ConfigureButton(8.0f);
+        buttonPausePlay.s = list.get_paused() ? "Play" : "Pause";
 
+        if (buttonBackward.IsClick()) {
+            list.step_backward();
+        }
+        if (buttonForward.IsClick()) {
+            list.step_forward();
+        }
+        if (buttonPausePlay.IsClick()) {
+            list.set_paused(!list.get_paused());
+        }
+    }
+
+    if (search_result_timer > 0.0f && list.get_search_state() != -1) {
+        search_result_timer -= GetFrameTime();
         float boxWidth = 150;
         float boxHeight = 40;
         float boxX = 150;
         float boxY = ScreenHeight - 60;
-
-        Color bgColor, borderColor;
-        const char* resultText;
-
-        if (list.get_search_state() == 1) {
-            bgColor = C[2];
-            resultText = "Found";
-        }
-        else {
-            bgColor = C[2];
-            bgColor.a = 180;
-            resultText = "Not Found";
-        }
-
-        borderColor = C[3];
+        Color bgColor = C[2];
+        Color borderColor = C[3];
         borderColor.a = 150;
         Color textColor = C[0];
+        const char* resultText = (list.get_search_state() == 1) ? "Found" : "Not Found";
+        if (list.get_search_state() != 1) bgColor.a = 180;
 
         Rectangle resultRect = { boxX, boxY, boxWidth, boxHeight };
-        DrawRectangleRounded(resultRect, 0.3f, 10, bgColor);
+        DrawRectangleRounded(resultRect, 0.3f, 100, bgColor);
         DrawRectangleLinesEx(resultRect, 2.0f, borderColor);
         Vector2 textSize = MeasureTextEx(GetFontDefault(), resultText, 20, 1);
-        DrawText(
-            resultText,
-            boxX + (boxWidth - textSize.x) / 2,
-            boxY + (boxHeight - textSize.y) / 2,
-            20,
-            textColor
-        );
+        DrawText(resultText, boxX + (boxWidth - textSize.x) / 2, boxY + (boxHeight - textSize.y) / 2, 20, textColor);
     }
 }
 
