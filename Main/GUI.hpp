@@ -81,6 +81,7 @@ public:
 
 	void ResetMenuState();
 
+	bool LoadFileLinkedList();
 	bool LoadFileAVLTree();
 	bool LoadFileGraph();
 
