@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include "GUI.hpp"
 #include "Graph.hpp"
@@ -11,16 +11,16 @@ TypeDataStructure CurrentStruture = MENU;
 
 
 GUI::GUI()
-	: table(60), insertanimationavltree(&tree), graph(false), dijkstra_animation(graph)
+    : table(60), insertanimationavltree(&tree), graph(false), dijkstra_animation(graph)
 {}
 
 void GUI::SetActiveMenuAVLTree(ActiveMenuTypeAVLTree newMenu) {
-	if (activemenu_avltree == newMenu) {
-		activemenu_avltree = newMenu;
-	}
-	else {
-		activemenu_avltree = newMenu;
-	}
+    if (activemenu_avltree == newMenu) {
+        activemenu_avltree = newMenu;
+    }
+    else {
+        activemenu_avltree = newMenu;
+    }
 }
 
 void GUI::SetActiveMenuInitAVLTree(ActiveMenuInitAVLTree newMenu) {
@@ -56,10 +56,10 @@ void GUI::Start() {
         }
         else if (CurrentStruture == GRAPH) {
             Gui.DrawGraph();
-		}
-		else if (CurrentStruture == THEME) {
-			Gui.DrawThemeMenu();
-		}
+        }
+        else if (CurrentStruture == THEME) {
+            Gui.DrawThemeMenu();
+        }
         EndDrawing();
     }
 
@@ -67,26 +67,26 @@ void GUI::Start() {
 }
 
 void GUI::DrawMainMenu() {
-	DrawText("Choose Data Structure", ScreenWidth * float(2) / 5, ScreenHeight * float(5) / 6, 40, WHITE);
+    DrawText("Choose Data Structure", ScreenWidth * float(2) / 5, ScreenHeight * float(5) / 6, 40, WHITE);
 
     //Font custom = LoadFont("../../Data-Structure-Visualization/assets/PublicSans-Bold.ttf");
     //DrawTextEx(customfont, "Choose Data Structure", { ScreenWidth * float(2) / 5, ScreenHeight * float(5) / 6 }, 60, 1, C[0]);
     DrawText("Choose Data Structure", ScreenWidth * float(2) / 5, ScreenHeight * float(0.5) / 6, 40, C[0]);
 
-   	Rectangle HASHTABLEBUTTON = { ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
+    Rectangle HASHTABLEBUTTON = { ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
 
-	Rectangle LINKEDLISTBUTTON = { ScreenWidth * float(3) / 5, ScreenHeight * float(1) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
+    Rectangle LINKEDLISTBUTTON = { ScreenWidth * float(3) / 5, ScreenHeight * float(1) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
 
-	Rectangle AVLTREEBUTTON = { ScreenWidth * float(1) / 5, ScreenHeight * float(3) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
+    Rectangle AVLTREEBUTTON = { ScreenWidth * float(1) / 5, ScreenHeight * float(3) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
 
-	Rectangle GRAPHBUTTON = { ScreenWidth * float(3) / 5, ScreenHeight * float(3) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
+    Rectangle GRAPHBUTTON = { ScreenWidth * float(3) / 5, ScreenHeight * float(3) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
 
-	Rectangle THEMEBUTTON = { ScreenWidth * float(2.25) / 5, ScreenHeight * float(4.5) / 5, ScreenWidth * float(1) / 10, ScreenHeight * float(1) / 18 };
+    Rectangle THEMEBUTTON = { ScreenWidth * float(2.25) / 5, ScreenHeight * float(4.5) / 5, ScreenWidth * float(1) / 10, ScreenHeight * float(1) / 18 };
 
-	DrawRectangleRounded(HASHTABLEBUTTON, 0.3f, 10, C[2]);
-	DrawRectangleRounded(LINKEDLISTBUTTON, 0.3f, 10, C[2]);
-	DrawRectangleRounded(AVLTREEBUTTON, 0.3f, 10, C[2]);
-	DrawRectangleRounded(GRAPHBUTTON, 0.3f, 10, C[2]);
+    DrawRectangleRounded(HASHTABLEBUTTON, 0.3f, 10, C[2]);
+    DrawRectangleRounded(LINKEDLISTBUTTON, 0.3f, 10, C[2]);
+    DrawRectangleRounded(AVLTREEBUTTON, 0.3f, 10, C[2]);
+    DrawRectangleRounded(GRAPHBUTTON, 0.3f, 10, C[2]);
 
     DrawText("HASHTABLE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
     DrawText("LINKEDLIST", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(1) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
@@ -96,7 +96,7 @@ void GUI::DrawMainMenu() {
     DrawRectangleRounded(THEMEBUTTON, 0.3f, 10, C[2]);
     DrawText("THEME", THEMEBUTTON.x + (THEMEBUTTON.width - MeasureText("THEME", 20)) / 2, THEMEBUTTON.y + (THEMEBUTTON.height - 20) / 2, 20, C[0]);
 
-	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         Vector2 mouse = GetMousePosition();
         if (CheckCollisionPointRec(mouse, HASHTABLEBUTTON)) {
             CurrentStruture = HASHTABLE;
@@ -109,9 +109,9 @@ void GUI::DrawMainMenu() {
         }
         else if (CheckCollisionPointRec(mouse, GRAPHBUTTON)) {
             CurrentStruture = GRAPH;
-		}
+        }
         else if (CheckCollisionPointRec(mouse, THEMEBUTTON)) {
-			CurrentStruture = THEME;
+            CurrentStruture = THEME;
         }
     }
 }
@@ -141,7 +141,7 @@ void GUI::DrawThemeMenu() {
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < i; j++) {
             if (i + j == 3) { DrawLineEx(sample[i], sample[j], 7.5f, C[5]); }
-			DrawLineEx(sample[i], sample[j], 3.0f, C[3]);
+            DrawLineEx(sample[i], sample[j], 3.0f, C[3]);
 
             // display weight
             float posX = sample[i].x + (4.45f / 10.0f) * (sample[j].x - sample[i].x) - 7.0f;
@@ -153,11 +153,12 @@ void GUI::DrawThemeMenu() {
             displaceX /= distance / 18; displaceY /= distance / 18;
             if (displaceX < 0) { displaceX = -displaceX; displaceY = -displaceY; } // keep the edge's weight to the right side
 
-            DrawText(std::to_string(i+j).c_str(), posX + displaceX, posY + displaceY, 20, C[0]);
+            DrawText(std::to_string(i + j).c_str(), posX + displaceX, posY + displaceY, 20, C[0]);
         }
     }
     for (int i = 0; i < 3; i++) {
-		if (i == 0) { DrawCircleV(sample[i], 35.0f, C[5]); } else { DrawCircleV(sample[i], 35.0f, C[1]); }
+        if (i == 0) { DrawCircleV(sample[i], 35.0f, C[5]); }
+        else { DrawCircleV(sample[i], 35.0f, C[1]); }
         DrawCircleLinesV(sample[i], 35.0f, C[3]);
         int text_width = MeasureText(std::to_string(i).c_str(), 20);
         DrawText(std::to_string(i).c_str(), sample[i].x - text_width / 2, sample[i].y - 10, 20, C[0]);
@@ -182,8 +183,8 @@ void GUI::DrawSecondMenu() {
     if (CurrentStruture == HASHTABLE) { titleText = "Hash Table"; }
     else if (CurrentStruture == LINKEDLIST) { titleText = "Linked List"; }
     else if (CurrentStruture == AVLTREE) { titleText = "AVL Tree"; }
-	else if (CurrentStruture == GRAPH) { titleText = "Graph"; }
-	else { titleText = "Data Structure"; }
+    else if (CurrentStruture == GRAPH) { titleText = "Graph"; }
+    else { titleText = "Data Structure"; }
 
     const int TITLE_FONT_SIZE = 28;
     Vector2 titleSize = MeasureTextEx(GetFontDefault(), titleText, TITLE_FONT_SIZE, 1);
@@ -199,13 +200,13 @@ void GUI::DrawSecondMenu() {
         buttonsearch.ConfigureButton(3);
         buttonclear.ConfigureButton(4);
     }
-	else if (CurrentStruture == AVLTREE) {
+    else if (CurrentStruture == AVLTREE) {
         buttoninit.ConfigureButton(0);
         buttoninsert.ConfigureButton(1);
         buttondelete.ConfigureButton(2);
         buttonsearch.ConfigureButton(3);
         buttonclear.ConfigureButton(4);
-	}
+    }
     else if (CurrentStruture == GRAPH) {
         buttoninit.ConfigureButton(0);
         buttoninsert.ConfigureButton(1);
@@ -224,16 +225,16 @@ void GUI::DrawSecondMenu() {
 }
 
 void GUI::ResetMenuState() {
-	activemenu_avltree = NONE_AVLTREE;
-	activemenuinit_avltree = NONEINITAVLTREE;
+    activemenu_avltree = NONE_AVLTREE;
+    activemenuinit_avltree = NONEINITAVLTREE;
 
-	activemenu_graph = DEFAULT;
-	GraphRandomStep = 0;
-	GraphVertexStep = 0;
-	graph.set_running_dijkstra(false);
+    activemenu_graph = DEFAULT;
+    GraphRandomStep = 0;
+    GraphVertexStep = 0;
+    graph.set_running_dijkstra(false);
 
-	inputActive = false;
-	currentInputMode = NONE;
+    inputActive = false;
+    currentInputMode = NONE;
 }
 
 void GUI::DrawListMenu() {
@@ -284,45 +285,79 @@ void GUI::DrawHashTable() {
     DrawBack();
     DrawInputBox();
 
+    // Tạo hai đối tượng tĩnh
+    static Pseudocode pseudocode;
+    static ExplanationCode explanationcode;
+
+    // Đặt nội dung mặc định khi vào DrawHashTable
+    static bool firstFrame = true;
+    if (firstFrame) {
+        pseudocode.SetstringPseudocode("INSERT_HASHTABLE");
+        explanationcode.Setstringexplancode("Chọn thao tác để bắt đầu.");
+        explanationcode.SetHighLight(0);
+        firstFrame = false;
+    }
+
+    // Xử lý các nút thao tác và cập nhật pseudocode/explanation
     if (buttoninit.IsClick()) {
         hashtable.setInitMode(HashTable::NONE_INIT);
         currentInputMode = INIT;
         inputActive = true;
+        pseudocode.SetstringPseudocode("");
+        explanationcode.Setstringexplancode("INIT");
+        explanationcode.SetHighLight(1); // Đang khởi tạo
     }
     else if (buttoninsert.IsClick()) {
         hashtable.setInitMode(HashTable::NONE_INIT);
         currentInputMode = INSERT;
         inputActive = true;
         inputstring = "";
+        pseudocode.SetstringPseudocode("INSERT_HASHTABLE");
+        explanationcode.Setstringexplancode("INSERT");
+        explanationcode.SetHighLight(1); // Đang tính index
     }
     else if (buttondelete.IsClick()) {
         hashtable.setInitMode(HashTable::NONE_INIT);
         currentInputMode = DELETE;
         inputActive = true;
         inputstring = "";
+        pseudocode.SetstringPseudocode("DELETE_HASHTABLE");
+        explanationcode.Setstringexplancode("DELETE");
+        explanationcode.SetHighLight(1); // Đang tính index
     }
     else if (buttonsearch.IsClick()) {
         hashtable.setInitMode(HashTable::NONE_INIT);
         currentInputMode = SEARCH;
         inputActive = true;
         inputstring = "";
+        pseudocode.SetstringPseudocode("SEARCH_HASHTABLE");
+        explanationcode.Setstringexplancode("SEARCH");
+        explanationcode.SetHighLight(1); // Đang tính index
     }
     else if (buttonclear.IsClick()) {
         hashtable.clear();
+        pseudocode.SetstringPseudocode("");
+        explanationcode.Setstringexplancode("Đã xóa bảng.");
+        explanationcode.SetHighLight(-1);
     }
 
     int val = Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
 
     if (currentInputMode == INIT) {
-    
         buttonrandom.ConfigureButton(6.3);
         buttonloadfile.ConfigureButton(7.3);
 
         if (buttonrandom.IsClick()) {
             hashtable.setInitMode(HashTable::RANDOM_HASHTABLE);
+            pseudocode.SetstringPseudocode("");
+            explanationcode.Setstringexplancode("INIT");
+            explanationcode.SetHighLight(2); // Đang tạo ngẫu nhiên
         }
         else if (buttonloadfile.IsClick()) {
             hashtable.setInitMode(HashTable::LOADFILE_HASHTABLE);
+            pseudocode.SetstringPseudocode("");
+            explanationcode.Setstringexplancode("INIT");
+            explanationcode.SetHighLight(3); // Đang tải file
         }
 
         if (val != -1) {
@@ -330,6 +365,9 @@ void GUI::DrawHashTable() {
             hashtable.setInitMode(HashTable::NONE_INIT);
             inputActive = false;
             currentInputMode = NONE;
+            pseudocode.SetstringPseudocode("");
+            explanationcode.Setstringexplancode("Khởi tạo bảng với kích thước " + std::to_string(val) + ".");
+            explanationcode.SetHighLight(-1);
         }
 
         if (hashtable.getInitMode() == HashTable::RANDOM_HASHTABLE) {
@@ -337,12 +375,18 @@ void GUI::DrawHashTable() {
             hashtable.setInitMode(HashTable::NONE_INIT);
             inputActive = false;
             currentInputMode = NONE;
+            pseudocode.SetstringPseudocode("");
+            explanationcode.Setstringexplancode("Đã tạo bảng ngẫu nhiên.");
+            explanationcode.SetHighLight(-1);
         }
         else if (hashtable.getInitMode() == HashTable::LOADFILE_HASHTABLE) {
             hashtable.LoadFromFile();
             hashtable.setInitMode(HashTable::NONE_INIT);
             inputActive = false;
             currentInputMode = NONE;
+            pseudocode.SetstringPseudocode("");
+            explanationcode.Setstringexplancode("Đã tải bảng từ file.");
+            explanationcode.SetHighLight(-1);
         }
     }
     else if (currentInputMode == INSERT) {
@@ -350,6 +394,9 @@ void GUI::DrawHashTable() {
             hashtable.insert(val);
             inputActive = false;
             currentInputMode = NONE;
+            pseudocode.SetstringPseudocode("INSERT_HASHTABLE");
+            explanationcode.Setstringexplancode("Đã chèn giá trị " + std::to_string(val) + ".");
+            explanationcode.SetHighLight(-1);
         }
     }
     else if (currentInputMode == DELETE) {
@@ -357,6 +404,9 @@ void GUI::DrawHashTable() {
             hashtable.remove(val);
             inputActive = false;
             currentInputMode = NONE;
+            pseudocode.SetstringPseudocode("DELETE_HASHTABLE");
+            explanationcode.Setstringexplancode("Đã xóa giá trị " + std::to_string(val) + ".");
+            explanationcode.SetHighLight(-1);
         }
     }
     else if (currentInputMode == SEARCH) {
@@ -364,13 +414,24 @@ void GUI::DrawHashTable() {
             hashtable.search(val);
             inputActive = false;
             currentInputMode = NONE;
+            pseudocode.SetstringPseudocode("SEARCH_HASHTABLE");
+            explanationcode.Setstringexplancode("Đã tìm giá trị " + std::to_string(val) + ".");
+            explanationcode.SetHighLight(-1);
         }
     }
 
+    // Vẽ bảng HashTable
     hashtable.draw();
+
+    // Vẽ ô pseudocode (trên)
+    pseudocode.DrawPseudocode();
+
+    // Vẽ ô explanation (dưới ô pseudocode)
+    explanationcode.area_text.y = pseudocode.area_text.y + pseudocode.area_text.height + 20;
+    explanationcode.DrawExplancodeArea();
 }
 
-void GUI::DrawLinkedList(){
+void GUI::DrawLinkedList() {
     Gui.DrawSecondMenu();
     Gui.DrawBack();
 
@@ -538,13 +599,13 @@ void GUI::DrawAVLTree() {
 }
 
 void GUI::DrawGraph() {
-	Gui.DrawSecondMenu();
-	Gui.DrawBack();
+    Gui.DrawSecondMenu();
+    Gui.DrawBack();
 
     Gui.DrawInputBox();
 
     if (buttoninit.IsClick()) {
-		ResetMenuState();
+        ResetMenuState();
         currentInputMode = INIT;
         inputActive = true;
         inputstring = "";
@@ -574,11 +635,11 @@ void GUI::DrawGraph() {
     if (buttonclear.IsClick()) {
         ResetMenuState();
         graph.clear();
-		currentInputMode = NONE;
+        currentInputMode = NONE;
     }
 
     int val = Gui.Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
-    
+
     switch (currentInputMode) {
     case INIT: {
         DrawLineEx({ 0, (float)ScreenHeight / 2.36f }, { ScreenWidth / 5, (float)ScreenHeight / 2.36f }, 2.0f, C[0]);
@@ -821,12 +882,12 @@ void GUI::DrawGraph() {
             break;
         }
         case DIJKSTRA_ST: {
-			if (val != -1) {
+            if (val != -1) {
                 dijkstra_animation.load_state_general(val);
                 dijkstra_animation.set_auto(isAuto);
-				graph.set_running_dijkstra(true);
-				activemenu_graph = DIJKSTRA_RUN;
-			}
+                graph.set_running_dijkstra(true);
+                activemenu_graph = DIJKSTRA_RUN;
+            }
             break;
         }
         case DIJKSTRA_RUN: {
@@ -836,12 +897,12 @@ void GUI::DrawGraph() {
                 activemenu_graph = DIJKSTRA_TG;
             }
             else {
-				if (isAuto) {
-					dijkstra_animation.next_state();
+                if (isAuto) {
+                    dijkstra_animation.next_state();
                 }
                 else {
                     buttonnext.ConfigureButton(11);
-					buttonprev.ConfigureButton(12);
+                    buttonprev.ConfigureButton(12);
 
                     if (buttonnext.IsClick()) { dijkstra_animation.next_state(); }
                     if (buttonprev.IsClick()) { dijkstra_animation.prev_state(); }
@@ -850,23 +911,23 @@ void GUI::DrawGraph() {
             break;
         }
         case DIJKSTRA_TG: {
-			if (val != -1) {
-				dijkstra_animation.load_state_paths(val);
-				activemenu_graph = DIJKSTRA_PTH;
-			}
-
-			buttonreturn.ConfigureButton(12);
-			if (buttonreturn.IsClick()) {
-                ResetMenuState();
-			}
-			break;
-        }
-        case DIJKSTRA_PTH: {
-			dijkstra_animation.render_path();
+            if (val != -1) {
+                dijkstra_animation.load_state_paths(val);
+                activemenu_graph = DIJKSTRA_PTH;
+            }
 
             buttonreturn.ConfigureButton(12);
             if (buttonreturn.IsClick()) {
-				activemenu_graph = DIJKSTRA_TG;
+                ResetMenuState();
+            }
+            break;
+        }
+        case DIJKSTRA_PTH: {
+            dijkstra_animation.render_path();
+
+            buttonreturn.ConfigureButton(12);
+            if (buttonreturn.IsClick()) {
+                activemenu_graph = DIJKSTRA_TG;
             }
             break;
         }
@@ -875,12 +936,12 @@ void GUI::DrawGraph() {
         }
         break;
     }
-   
+
     default: break;
     }
-  
-	graph.update();
-	graph.draw();
+
+    graph.update();
+    graph.draw();
 }
 
 bool GUI::LoadFileAVLTree() {
@@ -907,19 +968,19 @@ bool GUI::LoadFileAVLTree() {
 }
 
 bool GUI::LoadFileGraph() {
-	const char* path = tinyfd_openFileDialog("Open Graph File", "", 0, nullptr, nullptr, 0);
+    const char* path = tinyfd_openFileDialog("Open Graph File", "", 0, nullptr, nullptr, 0);
 
-	if (path == nullptr) return false;
+    if (path == nullptr) return false;
 
-	ifstream ifs(path);
+    ifstream ifs(path);
 
-	if (ifs.is_open() == false) return false;
+    if (ifs.is_open() == false) return false;
 
-	graph.input_graph(ifs);
+    graph.input_graph(ifs);
 
-	ifs.close();
+    ifs.close();
 
-	return true;
+    return true;
 }
 
 void GUI::DrawBack() {
@@ -998,57 +1059,57 @@ void GUI::DrawInputBox() {
         default:      return;
         }
     }
-	if (CurrentStruture == AVLTREE) {
-		switch (currentInputMode) {
+    if (CurrentStruture == AVLTREE) {
+        switch (currentInputMode) {
         case INIT:    labelText = "Init Value: "; break;
-		case INSERT:  labelText = "Insert Value: "; break;
-		case DELETE:  labelText = "Delete Value: "; break;
-		case SEARCH:  labelText = "Search Value: "; break;
-		default:      return;
-		}
-	}
+        case INSERT:  labelText = "Insert Value: "; break;
+        case DELETE:  labelText = "Delete Value: "; break;
+        case SEARCH:  labelText = "Search Value: "; break;
+        default:      return;
+        }
+    }
     if (CurrentStruture == GRAPH) {
         switch (currentInputMode) {
         case RANDOM:
             switch (GraphRandomStep) {
-			case 1: labelText = "Number of Vertex: "; break;
-			case 2: labelText = "Number of Edges: "; break;
-			default: return;
+            case 1: labelText = "Number of Vertex: "; break;
+            case 2: labelText = "Number of Edges: "; break;
+            default: return;
             }
             break;
         case INSERT:
-			switch (activemenu_graph) {
-			case INSERT_V: labelText = "Insert Vertex: "; break;
-            case INSERT_E: 
+            switch (activemenu_graph) {
+            case INSERT_V: labelText = "Insert Vertex: "; break;
+            case INSERT_E:
                 switch (GraphVertexStep) {
-				case 1: labelText = "From Vertex: "; break;
-				case 2: labelText = "To Vertex: "; break;
-				case 3: labelText = "Weight: "; break;
+                case 1: labelText = "From Vertex: "; break;
+                case 2: labelText = "To Vertex: "; break;
+                case 3: labelText = "Weight: "; break;
                 default: return;
                 }
                 break;
-			default: return;
-			}
-            break;
-        case DELETE: 
-            switch (activemenu_graph) {
-			case DELETE_V: labelText = "Delete Vertex: "; break;
-			//case DELETE_E: labelText = (GraphVertexStep == 1) ? "From Vertex: " : "To Vertex: "; break;
-            case DELETE_E:
-                switch (GraphVertexStep) {
-				case 1: labelText = "From Vertex: "; break;
-				case 2: labelText = "To Vertex: "; break;
-				default: return;
-                }
-                break;
-			default: return;
+            default: return;
             }
             break;
-        case DIJKSTRA: 
+        case DELETE:
             switch (activemenu_graph) {
-			case DIJKSTRA_ST: labelText = "Starting Vertex: "; break;
-			case DIJKSTRA_TG: labelText = "Target Vertex: "; break;
-			default: return;
+            case DELETE_V: labelText = "Delete Vertex: "; break;
+                //case DELETE_E: labelText = (GraphVertexStep == 1) ? "From Vertex: " : "To Vertex: "; break;
+            case DELETE_E:
+                switch (GraphVertexStep) {
+                case 1: labelText = "From Vertex: "; break;
+                case 2: labelText = "To Vertex: "; break;
+                default: return;
+                }
+                break;
+            default: return;
+            }
+            break;
+        case DIJKSTRA:
+            switch (activemenu_graph) {
+            case DIJKSTRA_ST: labelText = "Starting Vertex: "; break;
+            case DIJKSTRA_TG: labelText = "Target Vertex: "; break;
+            default: return;
             }
             break;
         default:      return;
@@ -1099,7 +1160,7 @@ int GUI::Input(int posX, int posY) {
         }
         key = GetCharPressed();
     }
-	DrawText(inputstring.c_str(), posX, posY, 20, BLACK);
+    DrawText(inputstring.c_str(), posX, posY, 20, BLACK);
 
     if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER)) {
         if (inputstring.empty()) return -1;
@@ -1116,9 +1177,9 @@ int GUI::Input(int posX, int posY) {
         }
     }
 
-	if (IsKeyPressed(KEY_BACKSPACE) && !inputstring.empty()) {
-		inputstring.pop_back();
-	}
+    if (IsKeyPressed(KEY_BACKSPACE) && !inputstring.empty()) {
+        inputstring.pop_back();
+    }
 
     if (IsKeyPressed(KEY_ESCAPE) && inputActive) {
         inputActive = false;

@@ -13,8 +13,8 @@
 #include"HashTable.hpp"
 #include <fstream>
 #include <string>
-
-
+#include "Pseudocode.hpp"
+#include "ExplanationCode.hpp"
 enum TypeDataStructure { MENU, THEME, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
 
 enum ActiveMenuTypeAVLTree { NONE_AVLTREE, INIT_AVLTREE, INSERT_AVLTREE, SEARCH_AVLTREE, DELETE_AVLTREE };
