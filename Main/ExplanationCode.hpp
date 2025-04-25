@@ -12,28 +12,31 @@ class ExplanationCode {
 public:
     string text = "";
     vector<string> lines_insert = {
-        "Chọn thao tác để bắt đầu.",
-        "Đang tính index cho giá trị.",
-        "Đang dò tuyến tính do va chạm.",
-        "Đã chèn giá trị vào slot."
+    "Select an operation to begin.",
+    "Calculating index for the value.",
+    "Probing linearly due to collision.",
+    "Value inserted into slot."
     };
+
     vector<string> lines_search = {
-        "Chọn thao tác để bắt đầu.",
-        "Đang tính index cho giá trị.",
-        "Đang dò tuyến tính để tìm.",
-        "Đã tìm thấy giá trị."
+        "Select an operation to begin.",
+        "Calculating index for the value.",
+        "Probing linearly to find value.",
+        "Value found."
     };
+
     vector<string> lines_delete = {
-        "Chọn thao tác để bắt đầu.",
-        "Đang tính index cho giá trị.",
-        "Đang dò tuyến tính để xóa.",
-        "Đã xóa giá trị khỏi slot."
+        "Select an operation to begin.",
+        "Calculating index for the value.",
+        "Probing linearly to delete.",
+        "Value deleted from slot."
     };
+
     vector<string> lines_init = {
-        "Chọn thao tác để bắt đầu.",
-        "Đang khởi tạo bảng mới.",
-        "Đang tạo bảng ngẫu nhiên.",
-        "Đang tải bảng từ file."
+        "Select an operation to begin.",
+        "Initializing new table.",
+        "Generating random table.",
+        "Loading table from file."
     };
     vector<string> lines;
 

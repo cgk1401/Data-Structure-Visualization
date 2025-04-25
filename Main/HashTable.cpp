@@ -23,6 +23,7 @@ void HashTable::insert(int key, bool animate) {
             startCollisionAnimation(index);
             return;
         }
+        collisionIndices.push_back(index);
         index = (index + 1) % capacity;
         if (index == originalIndex) {
             return;
@@ -77,24 +78,32 @@ void HashTable::clear() {
     isCollisionAnimation = false;
     highlightedIndex = -1;
     collisionIndices.clear();
+    stepCollisionIndices.clear();
     pendingKey = -1;
     initMode = NONE_INIT;
+    stepCurrentIndex = -1;
+    stepCollisionDetected = false;
+    stepInsertIndex = -1;
 }
 
 void HashTable::init(int newCapacity) {
     capacity = newCapacity;
     table.assign(capacity, EMPTY);
     size = 0;
-    progress = 0.0f; // Reset progress để chạy lại hoạt ảnh
+    progress = 0.0f;
     isCollisionAnimation = false;
     isRemoveAnimating = false;
     highlightedIndex = -1;
     collisionIndices.clear();
+    stepCollisionIndices.clear();
     pendingKey = -1;
     collisionProgress = 0.0f;
     removeProgress = 0.0f;
     removeIndex = -1;
     removedValue = -1;
+    stepCurrentIndex = -1;
+    stepCollisionDetected = false;
+    stepInsertIndex = -1;
 }
 
 void HashTable::draw() {
@@ -111,6 +120,7 @@ void HashTable::draw() {
 
     if (progress < 1.0f) progress += 0.02f;
     float easedProgress = 1 - pow(1 - progress, 3);
+
     if (isCollisionAnimation) {
         collisionProgress += 0.02f;
         if (collisionProgress >= 1.0f) {
@@ -119,7 +129,6 @@ void HashTable::draw() {
             if (collisionBlinkCount >= 2) {
                 isCollisionAnimation = false;
                 collisionIndices.clear();
-                collisionBlinkCount = 0;
                 if (pendingKey != -1) {
                     int key = pendingKey;
                     pendingKey = -1;
@@ -137,6 +146,7 @@ void HashTable::draw() {
             }
         }
     }
+
     BeginScissorMode(GetScreenWidth() / 5, 0, GetScreenWidth() - GetScreenWidth() / 5, GetScreenHeight());
     {
         for (int i = 0; i < capacity; i++) {
@@ -152,7 +162,14 @@ void HashTable::draw() {
                 bucketColor = (fmod(collisionProgress, 0.5f) < 0.25f) ? RED : YELLOW;
             }
             else if (i == highlightedIndex) {
-                bucketColor = PINK;
+                bucketColor = PINK; // Tô hồng cho bucket đang kiểm tra
+            }
+            else if (std::find(stepCollisionIndices.begin(), stepCollisionIndices.end(), i) != stepCollisionIndices.end()) {
+                bucketColor = (fmod(GetTime(), 0.5f) < 0.25f) ? RED : YELLOW; // Nháy đỏ cho va chạm
+            }
+            // Chỉ tô xanh khi đang ở bước 3 và giá trị đã được chèn
+            else if (i == stepInsertIndex && table[i] != EMPTY && table[i] != DELETED) {
+                bucketColor = GREEN;
             }
 
             DrawRectangle(x, y, bucketWidth, bucketHeight, bucketColor);
@@ -168,6 +185,7 @@ void HashTable::draw() {
         }
     }
     EndScissorMode();
+
     if (isRemoveAnimating) {
         removeProgress += 0.05f;
         if (isJumping) {
@@ -192,13 +210,13 @@ void HashTable::draw() {
 
 void HashTable::handleRandom() {
     int newCapacity = GetRandomValue(30, 100);
-    init(newCapacity); 
+    init(newCapacity);
     int randomCount = GetRandomValue(newCapacity * 0.5, newCapacity * 0.8);
     for (int i = 0; i < randomCount; i++) {
         if (size >= capacity) {
             break;
         }
-        int value = GetRandomValue(1, 100); 
+        int value = GetRandomValue(1, 100);
         insert(value, true);
     }
 }
@@ -228,4 +246,117 @@ void HashTable::LoadFromFile() {
         insert(x, false);
     }
     ifs.close();
+}
+
+void HashTable::startInsertStep(int key) {
+    pendingKey = key;
+    stepCollisionIndices.clear();
+    stepCurrentIndex = hashFunction(key);
+    stepInsertIndex = -1;
+    stepCollisionDetected = false;
+    highlightedIndex = -1;
+
+    // Kiểm tra bucket ban đầu
+    if (table[stepCurrentIndex] != EMPTY && table[stepCurrentIndex] != DELETED) {
+        stepCollisionDetected = true;
+        stepCollisionIndices.push_back(stepCurrentIndex);
+    }
+}
+
+void HashTable::performInsertStep(int step) {
+    if (step == 1) {
+        // Bước 1: Tô sáng bucket ban đầu
+        highlightedIndex = stepCurrentIndex;
+    }
+    else if (step == 2) {
+        if (stepCollisionDetected) {
+            // Bước 2: Dò tuyến tính
+            int originalIndex = hashFunction(pendingKey);
+            stepCurrentIndex = (stepCurrentIndex + 1) % capacity;
+            if (stepCurrentIndex == originalIndex) {
+                // Bảng đầy, không thể chèn
+                stepInsertIndex = -1;
+                highlightedIndex = -1;
+                return;
+            }
+            if (table[stepCurrentIndex] != EMPTY && table[stepCurrentIndex] != DELETED) {
+                stepCollisionIndices.push_back(stepCurrentIndex);
+                stepCollisionDetected = true;
+            }
+            else {
+                stepInsertIndex = stepCurrentIndex; // Tìm thấy vị trí chèn
+                stepCollisionDetected = false;
+            }
+            highlightedIndex = stepCurrentIndex;
+        }
+        else {
+            // Không có va chạm, đặt vị trí chèn
+            stepInsertIndex = stepCurrentIndex;
+        }
+    }
+    else if (step == 3 && stepInsertIndex != -1) {
+        // Bước 3: Chèn giá trị
+        table[stepInsertIndex] = pendingKey;
+        size++;
+        highlightedIndex = -1; // Không tô sáng nữa
+    }
+}
+
+void HashTable::revertInsertStep(int step) {
+    if (step == 0) {
+        // Quay lại bước đầu: reset trạng thái
+        stepCurrentIndex = hashFunction(pendingKey);
+        stepCollisionIndices.clear();
+        stepInsertIndex = -1;
+        stepCollisionDetected = (table[stepCurrentIndex] != EMPTY && table[stepCurrentIndex] != DELETED);
+        if (stepCollisionDetected) {
+            stepCollisionIndices.push_back(stepCurrentIndex);
+        }
+        highlightedIndex = -1;
+        if (stepInsertIndex != -1 && table[stepInsertIndex] == pendingKey) {
+            table[stepInsertIndex] = EMPTY; // Xóa giá trị đã chèn
+            size--;
+        }
+    }
+    else if (step == 1) {
+        // Quay lại bước 1: hiển thị bucket ban đầu
+        highlightedIndex = stepCurrentIndex;
+        if (stepInsertIndex != -1 && table[stepInsertIndex] == pendingKey) {
+            table[stepInsertIndex] = EMPTY; // Xóa giá trị đã chèn
+            size--;
+        }
+        stepInsertIndex = -1;
+    }
+    else if (step == 2) {
+        // Quay lại bước 2: hoàn tác dò tuyến tính
+        if (stepInsertIndex != -1 && table[stepInsertIndex] == pendingKey) {
+            table[stepInsertIndex] = EMPTY; // Xóa giá trị đã chèn
+            size--;
+        }
+        if (stepInsertIndex != -1 && stepInsertIndex == stepCurrentIndex) {
+            stepInsertIndex = -1; // Bỏ vị trí chèn
+        }
+        else if (!stepCollisionIndices.empty()) {
+            stepCurrentIndex = stepCollisionIndices.back();
+            stepCollisionIndices.pop_back();
+            stepCollisionDetected = true;
+        }
+        else {
+            stepCurrentIndex = hashFunction(pendingKey);
+            stepCollisionDetected = (table[stepCurrentIndex] != EMPTY && table[stepCurrentIndex] != DELETED);
+            if (stepCollisionDetected) {
+                stepCollisionIndices.push_back(stepCurrentIndex);
+            }
+        }
+        highlightedIndex = stepCurrentIndex;
+        stepInsertIndex = -1;
+    }
+}
+
+void HashTable::resetStepState() {
+    stepInsertIndex = -1;
+    highlightedIndex = -1;
+    stepCollisionIndices.clear();
+    stepCollisionDetected = false;
+    stepCurrentIndex = -1;
 }

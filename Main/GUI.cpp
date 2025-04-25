@@ -285,12 +285,13 @@ void GUI::DrawHashTable() {
     DrawBack();
     DrawInputBox();
 
-    // Tạo hai đối tượng tĩnh
     static Pseudocode pseudocode;
     static ExplanationCode explanationcode;
-
-    // Đặt nội dung mặc định khi vào DrawHashTable
     static bool firstFrame = true;
+    static int currentStep = -1; // Bước hiện tại
+    static int pendingKey = -1; // Giá trị đang chờ chèn
+    static bool isStepping = false; // Trạng thái step-by-step
+
     if (firstFrame) {
         pseudocode.SetstringPseudocode("INSERT_HASHTABLE");
         explanationcode.Setstringexplancode("Select Action To Start");
@@ -298,14 +299,16 @@ void GUI::DrawHashTable() {
         firstFrame = false;
     }
 
-    // Xử lý các nút thao tác và cập nhật pseudocode/explanation
     if (buttoninit.IsClick()) {
         hashtable.setInitMode(HashTable::NONE_INIT);
         currentInputMode = INIT;
         inputActive = true;
         pseudocode.SetstringPseudocode("");
         explanationcode.Setstringexplancode("INIT");
-        explanationcode.SetHighLight(1); // Đang khởi tạo
+        explanationcode.SetHighLight(1);
+        isStepping = false;
+        currentStep = -1;
+        pendingKey = -1;
     }
     else if (buttoninsert.IsClick()) {
         hashtable.setInitMode(HashTable::NONE_INIT);
@@ -314,7 +317,10 @@ void GUI::DrawHashTable() {
         inputstring = "";
         pseudocode.SetstringPseudocode("INSERT_HASHTABLE");
         explanationcode.Setstringexplancode("INSERT");
-        explanationcode.SetHighLight(1); // Đang tính index
+        explanationcode.SetHighLight(1);
+        isStepping = false;
+        currentStep = -1;
+        pendingKey = -1;
     }
     else if (buttondelete.IsClick()) {
         hashtable.setInitMode(HashTable::NONE_INIT);
@@ -323,7 +329,10 @@ void GUI::DrawHashTable() {
         inputstring = "";
         pseudocode.SetstringPseudocode("DELETE_HASHTABLE");
         explanationcode.Setstringexplancode("DELETE");
-        explanationcode.SetHighLight(1); // Đang tính index
+        explanationcode.SetHighLight(1);
+        isStepping = false;
+        currentStep = -1;
+        pendingKey = -1;
     }
     else if (buttonsearch.IsClick()) {
         hashtable.setInitMode(HashTable::NONE_INIT);
@@ -332,13 +341,19 @@ void GUI::DrawHashTable() {
         inputstring = "";
         pseudocode.SetstringPseudocode("SEARCH_HASHTABLE");
         explanationcode.Setstringexplancode("SEARCH");
-        explanationcode.SetHighLight(1); // Đang tính index
+        explanationcode.SetHighLight(1);
+        isStepping = false;
+        currentStep = -1;
+        pendingKey = -1;
     }
     else if (buttonclear.IsClick()) {
         hashtable.clear();
         pseudocode.SetstringPseudocode("");
         explanationcode.Setstringexplancode("Table Deleted.");
         explanationcode.SetHighLight(-1);
+        isStepping = false;
+        currentStep = -1;
+        pendingKey = -1;
     }
 
     int val = Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
@@ -351,13 +366,13 @@ void GUI::DrawHashTable() {
             hashtable.setInitMode(HashTable::RANDOM_HASHTABLE);
             pseudocode.SetstringPseudocode("");
             explanationcode.Setstringexplancode("INIT");
-            explanationcode.SetHighLight(2); // Đang tạo ngẫu nhiên
+            explanationcode.SetHighLight(2);
         }
         else if (buttonloadfile.IsClick()) {
             hashtable.setInitMode(HashTable::LOADFILE_HASHTABLE);
             pseudocode.SetstringPseudocode("");
             explanationcode.Setstringexplancode("INIT");
-            explanationcode.SetHighLight(3); // Đang tải file
+            explanationcode.SetHighLight(3);
         }
 
         if (val != -1) {
@@ -389,47 +404,118 @@ void GUI::DrawHashTable() {
             explanationcode.SetHighLight(-1);
         }
     }
-    else if (currentInputMode == INSERT) {
-        if (val != -1) {
-            hashtable.insert(val);
-            inputActive = false;
-            currentInputMode = NONE;
-            pseudocode.SetstringPseudocode("INSERT_HASHTABLE");
-            explanationcode.Setstringexplancode("Value inserted " + std::to_string(val) + ".");
-            explanationcode.SetHighLight(-1);
-        }
+    else if (currentInputMode == INSERT && val != -1 && !isStepping) {
+        pendingKey = val;
+        isStepping = true;
+        currentStep = 0; // Bắt đầu từ bước đầu tiên
+        pseudocode.SetHighLight(currentStep);
+        hashtable.startInsertStep(pendingKey);
+        explanationcode.Setstringexplancode("Starting insertion of value " + std::to_string(val) + ".");
+        explanationcode.SetHighLight(0);
+        inputActive = false;
+        currentInputMode = NONE;
     }
-    else if (currentInputMode == DELETE) {
-        if (val != -1) {
-            hashtable.remove(val);
-            inputActive = false;
-            currentInputMode = NONE;
-            pseudocode.SetstringPseudocode("DELETE_HASHTABLE");
-            explanationcode.Setstringexplancode("Value deleted " + std::to_string(val) + ".");
-            explanationcode.SetHighLight(-1);
-        }
+    else if (currentInputMode == DELETE && val != -1) {
+        hashtable.remove(val);
+        inputActive = false;
+        currentInputMode = NONE;
+        pseudocode.SetstringPseudocode("DELETE_HASHTABLE");
+        explanationcode.Setstringexplancode("Value " + std::to_string(val) + " deleted.");
+        explanationcode.SetHighLight(-1);
     }
-    else if (currentInputMode == SEARCH) {
-        if (val != -1) {
-            hashtable.search(val);
-            inputActive = false;
-            currentInputMode = NONE;
-            pseudocode.SetstringPseudocode("SEARCH_HASHTABLE");
-            explanationcode.Setstringexplancode("Value found " + std::to_string(val) + ".");
-            explanationcode.SetHighLight(-1);
+    else if (currentInputMode == SEARCH && val != -1) {
+        hashtable.search(val);
+        inputActive = false;
+        currentInputMode = NONE;
+        pseudocode.SetstringPseudocode("SEARCH_HASHTABLE");
+        explanationcode.Setstringexplancode("Searched for value " + std::to_string(val) + ".");
+        explanationcode.SetHighLight(-1);
+    }
+
+    // Xử lý nút Next và Prev
+    if (isStepping) {
+        if (buttonnext.IsClick()) {
+            currentStep++;
+            if (currentStep >= 5) { // Số bước tối đa (0-based index: 0, 1, 2, 3, 4)
+                currentStep = -1;
+                isStepping = false;
+                explanationcode.Setstringexplancode("Select Action To Start");
+                explanationcode.SetHighLight(0);
+                pseudocode.SetHighLight(-1);
+                hashtable.clear(); // Reset trạng thái step-by-step
+                hashtable.startInsertStep(pendingKey); // Khôi phục pendingKey để Prev hoạt động
+                pendingKey = -1;
+            }
+            else {
+                pseudocode.SetHighLight(currentStep < 4 ? currentStep : -1);
+                if (currentStep < 4) {
+                    hashtable.performInsertStep(currentStep);
+                }
+                if (currentStep == 1) {
+                    explanationcode.Setstringexplancode("Computed index for value " + std::to_string(pendingKey) + ".");
+                    explanationcode.SetHighLight(1);
+                }
+                else if (currentStep == 2) {
+                    explanationcode.Setstringexplancode(hashtable.getStepCollisionDetected() ? "Collision detected, probing next slot." : "No collision, ready to insert.");
+                    explanationcode.SetHighLight(2);
+                }
+                else if (currentStep == 3) {
+                    if (hashtable.getStepInsertIndex() != -1) {
+                        explanationcode.Setstringexplancode("Inserted value " + std::to_string(pendingKey) + " into slot.");
+                        explanationcode.SetHighLight(3);
+                    }
+                    else {
+                        explanationcode.Setstringexplancode("Table is full, cannot insert.");
+                        explanationcode.SetHighLight(-1);
+                        isStepping = false;
+                        currentStep = -1;
+                        pendingKey = -1;
+                    }
+                }
+                else if (currentStep == 4) {
+                    explanationcode.Setstringexplancode("Insertion completed.");
+                    explanationcode.SetHighLight(-1);
+                    hashtable.resetStepState(); // Reset trạng thái để bucket trở lại màu vàng
+                }
+            }
+        }
+        else if (buttonprev.IsClick()) {
+            if (currentStep > 0) {
+                currentStep--;
+                pseudocode.SetHighLight(currentStep);
+                hashtable.revertInsertStep(currentStep);
+                if (currentStep == 0) {
+                    explanationcode.Setstringexplancode("Starting insertion of value " + std::to_string(pendingKey) + ".");
+                    explanationcode.SetHighLight(0);
+                }
+                else if (currentStep == 1) {
+                    explanationcode.Setstringexplancode("Computed index for value " + std::to_string(pendingKey) + ".");
+                    explanationcode.SetHighLight(1);
+                }
+                else if (currentStep == 2) {
+                    explanationcode.Setstringexplancode(hashtable.getStepCollisionDetected() ? "Collision detected, probing next slot." : "No collision, ready to insert.");
+                    explanationcode.SetHighLight(2);
+                }
+            }
+            else {
+                currentStep = -1;
+                isStepping = false;
+                explanationcode.Setstringexplancode("Insertion cancelled.");
+                explanationcode.SetHighLight(-1);
+                pseudocode.SetHighLight(-1);
+                hashtable.clear(); // Reset trạng thái step-by-step
+                pendingKey = -1;
+            }
         }
     }
 
-    // Vẽ bảng HashTable
     hashtable.draw();
-
-    // Vẽ ô explanation (trên, nhích lên gần mép trên)
-    explanationcode.area_text.y = ScreenHeight*5/9; // Nhích lên cao hơn (cách mép trên 30 pixel)
+    explanationcode.area_text.y = ScreenHeight * 5 / 9;
     explanationcode.DrawExplancodeArea();
-
-    // Vẽ ô pseudocode (dưới ô explanation)
-    pseudocode.area_text.y = explanationcode.area_text.y + explanationcode.area_text.height + 10; // Giảm khoảng cách xuống 10 pixel
+    pseudocode.area_text.y = explanationcode.area_text.y + explanationcode.area_text.height + 10;
     pseudocode.DrawPseudocode();
+    buttonnext.ConfigureButton(7);
+    buttonprev.ConfigureButton(8);
 }
 
 void GUI::DrawLinkedList() {

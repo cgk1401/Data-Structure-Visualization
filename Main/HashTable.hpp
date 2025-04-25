@@ -20,6 +20,24 @@ public:
     enum InitMode { NONE_INIT, RANDOM_HASHTABLE, LOADFILE_HASHTABLE };
     void setInitMode(InitMode mode) { initMode = mode; }
     InitMode getInitMode() const { return initMode; }
+
+    // Step-by-step methods for insert
+    void startInsertStep(int key);
+    void performInsertStep(int step);
+    void revertInsertStep(int step);
+
+    // Getter và Setter cho các biến private
+    int getHighlightedIndex() const { return highlightedIndex; }
+    void setHighlightedIndex(int index) { highlightedIndex = index; }
+    int getStepInsertIndex() const { return stepInsertIndex; }
+    void setStepInsertIndex(int index) { stepInsertIndex = index; }
+    bool getStepCollisionDetected() const { return stepCollisionDetected; }
+    const std::vector<int>& getStepCollisionIndices() const { return stepCollisionIndices; }
+    void clearStepCollisionIndices() { stepCollisionIndices.clear(); }
+
+    // Reset trạng thái step-by-step
+    void resetStepState();
+
 private:
     std::vector<int> table;
     int capacity, size;
@@ -41,6 +59,12 @@ private:
     static const int DELETED = -2;
     int hashFunction(int key) const { return key % capacity; }
     InitMode initMode = NONE_INIT;
+
+    // Step-by-step state
+    int stepCurrentIndex = -1; // Current index during insertion
+    std::vector<int> stepCollisionIndices; // List of collision indices
+    bool stepCollisionDetected = false; // Flag for collision detection
+    int stepInsertIndex = -1; // Index where key will be inserted
 };
 
 #endif
