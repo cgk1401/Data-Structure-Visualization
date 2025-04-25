@@ -4,8 +4,8 @@ using namespace std;
 
 float ScreenWidth = 1920;
 float ScreenHeight = 900;
-float SecondMenuWidth = 480;//ScreenWidth * float(1) / 4;
-float SecondMenuHeight = 540;
+float SecondMenuWidth = 600;//ScreenWidth * float(1) / 4;
+float SecondMenuHeight = 400;
 
 Color ColorPalette[4][6] = {
 	{//#1 Monochrome Magic
