@@ -106,7 +106,7 @@ void HashTable::init(int newCapacity) {
     stepInsertIndex = -1;
 }
 
-void HashTable::draw() {
+void HashTable::draw(int currentStep) {
     int bucketWidth = 80;
     int bucketHeight = 50;
     int startX = GetScreenWidth() / 5 + 50;
@@ -164,7 +164,8 @@ void HashTable::draw() {
             else if (i == highlightedIndex) {
                 bucketColor = PINK; // Tô hồng cho bucket đang kiểm tra
             }
-            else if (std::find(stepCollisionIndices.begin(), stepCollisionIndices.end(), i) != stepCollisionIndices.end()) {
+            // Chỉ nháy đỏ khi ở bước 2 (dòng "If slot is occupied, probe next")
+            else if (currentStep == 2 && std::find(stepCollisionIndices.begin(), stepCollisionIndices.end(), i) != stepCollisionIndices.end()) {
                 bucketColor = (fmod(GetTime(), 0.5f) < 0.25f) ? RED : YELLOW; // Nháy đỏ cho va chạm
             }
             // Chỉ tô xanh khi đang ở bước 3 và giá trị đã được chèn

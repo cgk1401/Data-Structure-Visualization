@@ -509,7 +509,7 @@ void GUI::DrawHashTable() {
         }
     }
 
-    hashtable.draw();
+    hashtable.draw(currentStep); // Truyền currentStep vào draw
     explanationcode.area_text.y = ScreenHeight * 5 / 9;
     explanationcode.DrawExplancodeArea();
     pseudocode.area_text.y = explanationcode.area_text.y + explanationcode.area_text.height + 10;

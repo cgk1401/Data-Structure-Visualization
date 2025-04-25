@@ -13,7 +13,7 @@ public:
     void remove(int key, bool animate = true);
     void clear();
     void init(int newCapacity);
-    void draw();
+    void draw(int currentStep = -1); // Thêm tham số currentStep
     void handleRandom();
     void startCollisionAnimation(int index);
     void LoadFromFile();
