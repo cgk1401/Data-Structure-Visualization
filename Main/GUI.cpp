@@ -291,12 +291,32 @@ void GUI::DrawHashTable() {
     static int currentStep = -1; // Bước hiện tại
     static int pendingKey = -1; // Giá trị đang chờ chèn
     static bool isStepping = false; // Trạng thái step-by-step
+    static bool isStepByStepMode = false; // Chế độ: true = step-by-step, false = insert at once
 
     if (firstFrame) {
         pseudocode.SetstringPseudocode("INSERT_HASHTABLE");
         explanationcode.Setstringexplancode("Select Action To Start");
         explanationcode.SetHighLight(0);
         firstFrame = false;
+    }
+
+    // Xử lý nút Pause
+    if (buttonpause.IsClick()) {
+        isStepByStepMode = !isStepByStepMode; // Đảo ngược chế độ
+        if (!isStepByStepMode && isStepping) { // Nếu đang ở giữa step-by-step và chuyển về insert at once
+            if (pendingKey != -1) {
+                hashtable.insert(pendingKey); // Hoàn thành việc chèn
+                explanationcode.Setstringexplancode("Inserted value " + std::to_string(pendingKey) + ".");
+                explanationcode.SetHighLight(-1);
+                pseudocode.SetHighLight(-1);
+            }
+            isStepping = false;
+            currentStep = -1;
+            pendingKey = -1;
+            hashtable.resetStepState();
+        }
+        explanationcode.Setstringexplancode(isStepByStepMode ? "Switched to Step-by-Step mode." : "Switched to Insert at Once mode.");
+        explanationcode.SetHighLight(-1);
     }
 
     if (buttoninit.IsClick()) {
@@ -404,16 +424,28 @@ void GUI::DrawHashTable() {
             explanationcode.SetHighLight(-1);
         }
     }
-    else if (currentInputMode == INSERT && val != -1 && !isStepping) {
-        pendingKey = val;
-        isStepping = true;
-        currentStep = 0; // Bắt đầu từ bước đầu tiên
-        pseudocode.SetHighLight(currentStep);
-        hashtable.startInsertStep(pendingKey);
-        explanationcode.Setstringexplancode("Starting insertion of value " + std::to_string(val) + ".");
-        explanationcode.SetHighLight(0);
-        inputActive = false;
-        currentInputMode = NONE;
+    else if (currentInputMode == INSERT && val != -1) {
+        if (isStepByStepMode && !isStepping) {
+            // Chế độ step-by-step
+            pendingKey = val;
+            isStepping = true;
+            currentStep = 0; // Bắt đầu từ bước đầu tiên
+            pseudocode.SetHighLight(currentStep);
+            hashtable.startInsertStep(pendingKey);
+            explanationcode.Setstringexplancode("Starting insertion of value " + std::to_string(val) + ".");
+            explanationcode.SetHighLight(0);
+            inputActive = false;
+            currentInputMode = NONE;
+        }
+        else if (!isStepByStepMode) {
+            // Chế độ insert at once
+            hashtable.insert(val);
+            inputActive = false;
+            currentInputMode = NONE;
+            pseudocode.SetstringPseudocode("INSERT_HASHTABLE");
+            explanationcode.Setstringexplancode("Inserted value " + std::to_string(val) + ".");
+            explanationcode.SetHighLight(-1);
+        }
     }
     else if (currentInputMode == DELETE && val != -1) {
         hashtable.remove(val);
@@ -432,8 +464,8 @@ void GUI::DrawHashTable() {
         explanationcode.SetHighLight(-1);
     }
 
-    // Xử lý nút Next và Prev
-    if (isStepping) {
+    // Xử lý nút Next và Prev (chỉ hoạt động ở chế độ step-by-step)
+    if (isStepping && isStepByStepMode) {
         if (buttonnext.IsClick()) {
             currentStep++;
             if (currentStep >= 5) { // Số bước tối đa (0-based index: 0, 1, 2, 3, 4)
@@ -514,8 +546,8 @@ void GUI::DrawHashTable() {
     explanationcode.DrawExplancodeArea();
     pseudocode.area_text.y = explanationcode.area_text.y + explanationcode.area_text.height + 10;
     pseudocode.DrawPseudocode();
-    buttonnext.ConfigureButton(7);
-    buttonprev.ConfigureButton(8);
+    buttonnext.ConfigureButton(8);
+    buttonpause.ConfigureButton(7);
 }
 
 void GUI::DrawLinkedList() {
