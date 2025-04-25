@@ -2,10 +2,10 @@
 #include "Config.hpp"
 using namespace std;
 
-float ScreenWidth = 2500;
-float ScreenHeight = 1300;
-float SecondMenuWidth = 625;//ScreenWidth * float(1) / 4;
-float SecondMenuHeight = 650;
+float ScreenWidth = 1920;
+float ScreenHeight = 1080;
+float SecondMenuWidth = 480;//ScreenWidth * float(1) / 4;
+float SecondMenuHeight = 540;
 
 Color ColorPalette[4][6] = {
 	{//#1 Monochrome Magic

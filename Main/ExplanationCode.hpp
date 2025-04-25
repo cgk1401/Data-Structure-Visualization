@@ -15,7 +15,7 @@ public :
 	const float Height_Area = 100.0f;
 	const float Weigh_Area = MENU_WIDTH * 0.85f;
 	const float Coordinate_X_Area = MENU_WIDTH * 0.075f;
-	const float Coordinate_Y_Area = (20 + 60 + 10 /*Start position Button Init*/) + 8.3 * (40 + 15); /*position * (BUTTON_HEIGHT + BUTTON_SPACING)*/
+	const float Coordinate_Y_Area = (20 + 60  /*Start position Button Init*/) + 8.3 * (30 + 15); /*position * (BUTTON_HEIGHT + BUTTON_SPACING)*/
 	Color color_area = C[1];
 
 

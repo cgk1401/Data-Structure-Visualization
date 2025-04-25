@@ -226,6 +226,8 @@ void InsertAnimationAVLTree::UpdateStepInsert() {
 			RotateStartPosition[node] = node->position;
 		}
 		if (NodeRotate->balanceFactor > 1 && (NodeRotate->left && NodeRotate->left->balanceFactor < 0) || NodeRotate->balanceFactor < -1 && (NodeRotate->right && NodeRotate->right->balanceFactor > 0)) {
+			if (NodeRotate->balanceFactor > 1 && (NodeRotate->left && NodeRotate->left->balanceFactor < 0)) pseudocode.SetHighLight(4);
+			else pseudocode.SetHighLight(5);
 			tree->RebalanceChild(tree->Root, NodeRotate);
 			tree->UpdateHeightAndBalanceFactor(tree->Root);
 			RotateSecond = true;
@@ -240,6 +242,8 @@ void InsertAnimationAVLTree::UpdateStepInsert() {
 			AnimationTime = 0.0f;
 		}
 		else {
+			if (NodeRotate->balanceFactor > 1) pseudocode.SetHighLight(3);
+			else pseudocode.SetHighLight(2);
 			tree->RebalanceParent(tree->Root, NodeRotate);
 			tree->UpdateHeightAndBalanceFactor(tree->Root);
 			tree->balanceTree();
@@ -276,6 +280,7 @@ void InsertAnimationAVLTree::UpdateStepInsert() {
 		break;
 	case 6:
 		explanationcode.Setstringexplancode("Reset Status.");
+		pseudocode.SetHighLight(-1);
 		if (t >= 1.0f) {
 			for (Node* node : tree->NodeList) {
 				node->isNodeHighLighted = false;

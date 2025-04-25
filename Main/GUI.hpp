@@ -12,6 +12,7 @@
 #include "InsertAnimationAVLTree.hpp"
 #include "DijkstraAnimationGraph.hpp"
 #include "ExplanationCode.hpp"
+#include "Pseudocode.hpp"
 
 #include"HashTable.hpp"
 #include <fstream>

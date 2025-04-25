@@ -3,6 +3,7 @@
 
 #include "AVLTree.hpp"
 #include "ExplanationCode.hpp"
+#include "Pseudocode.hpp"
 #include <map>
 
 class InsertAnimationAVLTree {
@@ -38,6 +39,8 @@ private:
 public:
 	InsertAnimationAVLTree(AVLTree* root);
 	ExplanationCode explanationcode;
+	Pseudocode pseudocode;
+	
 
 	void StartInsertAnimation(int value);
 	void StartDeleteAnimation(int value);

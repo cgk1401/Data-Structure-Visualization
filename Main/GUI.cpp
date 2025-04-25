@@ -464,11 +464,13 @@ void GUI::DrawAVLTree() {
 
     if (buttoninit.IsClick()) {
         Gui.SetActiveMenuAVLTree(INIT_AVLTREE);
+        Gui.insertanimationavltree.pseudocode.SetstringPseudocode("");
         currentInputMode = INIT;
         inputActive = true;
     }
     else if (buttoninsert.IsClick()) {
         Gui.SetActiveMenuAVLTree(INSERT_AVLTREE);
+        Gui.insertanimationavltree.pseudocode.SetstringPseudocode("INSERT");
         currentInputMode = INSERT;
         inputActive = true;
     }
@@ -479,6 +481,7 @@ void GUI::DrawAVLTree() {
     }
     else if (buttondelete.IsClick()) {
         Gui.SetActiveMenuAVLTree(DELETE_AVLTREE);
+        Gui.insertanimationavltree.pseudocode.SetstringPseudocode("DELETE");
         currentInputMode = DELETE;
         inputActive = true;
     }
@@ -554,6 +557,7 @@ void GUI::DrawAVLTree() {
     }
 
     Gui.insertanimationavltree.explanationcode.DrawExplancodeArea();
+    Gui.insertanimationavltree.pseudocode.DrawPseudocode();
     Gui.insertanimationavltree.SetTree(&tree);
 
     
@@ -1014,7 +1018,7 @@ void GUI::DrawInputBox() {
     // Style constants matching other buttons
     const float MENU_WIDTH = ScreenWidth / 5.0f;
     const float BUTTON_WIDTH = MENU_WIDTH * 0.85f;
-    const float BUTTON_HEIGHT = 40.0f;
+    const float BUTTON_HEIGHT = 30.0f;
     const float BUTTON_MARGIN_X = MENU_WIDTH * 0.075f;
     const float CORNER_RADIUS = 0.3f;
     const int SEGMENTS = 10;
@@ -1198,7 +1202,7 @@ float GUI::DrawSliderAVLTree() {
     const float maxValue = 2.0f;
 
     float x = (ScreenWidth / 5.0f) * 0.075f;
-    float y = ScreenHeight - 50;
+    float y = ScreenHeight - 40;
     float width = (ScreenWidth / 5.0f) * 0.85;
     float height = 7.0f;
 
@@ -1222,6 +1226,6 @@ float GUI::DrawSliderAVLTree() {
     char buffer[32];
     sprintf_s(buffer,sizeof(buffer), "%.3f", value);
 
-    DrawText(buffer, handlePos - x / float(width) - minValue, ScreenHeight - 90, 20, WHITE);
+    DrawText(buffer, handlePos - x / float(width) - minValue, ScreenHeight - 80, 20, WHITE);
     return maxValue - value;
 }
