@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cmath>
+#include <fstream>
 #include "raylib.h"
 #include "raymath.h"
 #include "LinkedList.hpp"
@@ -286,6 +287,34 @@ void LinkedList::rand_list(int n_nodes) {
     }
 }
 
+bool LinkedList::load_from_file(const string& filename) {
+    clear(); // Clear existing list
+
+    ifstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open file " << filename << std::endl;
+        return false;
+    }
+
+    int value;
+    while (file >> value) {
+        // Validate input (optional)
+        if (value < -9999 || value > 9999) {
+            std::cerr << "Warning: Skipping invalid value " << value << std::endl;
+            continue;
+        }
+        add_node(value);
+    }
+
+    if (nodeCount == 0) {
+        std::cerr << "Warning: File was empty or contained no valid numbers" << std::endl;
+    }
+
+    file.close();
+    calculate_layout(); // Update visual layout
+    return true;
+}
+
 void LinkedList::print_list() const {
     Node* current = head;
     while (current) {
@@ -390,15 +419,29 @@ void LinkedList::draw() const {
 }
 
 bool LinkedList::search_node(int data) {
+    // Reset previous search states
     Node* current = head;
     while (current) {
         current->is_highlighted = false;
+        current->searched = false;
         current = current->next;
     }
+
     active_node = data;
-    search_state = 0;
+    search_state = 0;  // Start search animation
     search_timer = 0.5f;
-    return true;
+
+    // Actual search implementation
+    current = head;
+    bool found = false;
+    while (current) {
+        if (current->data == data) {
+            found = true;
+            break;
+        }
+        current = current->next;
+    }
+    return found;
 }
 
 int LinkedList::get_search_state() const {
