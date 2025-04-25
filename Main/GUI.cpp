@@ -337,7 +337,7 @@ void GUI::DrawHashTable() {
     else if (buttonclear.IsClick()) {
         hashtable.clear();
         pseudocode.SetstringPseudocode("");
-        explanationcode.Setstringexplancode("Talbe Deleted.");
+        explanationcode.Setstringexplancode("Table Deleted.");
         explanationcode.SetHighLight(-1);
     }
 
@@ -415,7 +415,7 @@ void GUI::DrawHashTable() {
             inputActive = false;
             currentInputMode = NONE;
             pseudocode.SetstringPseudocode("SEARCH_HASHTABLE");
-            explanationcode.Setstringexplancode("Value found" + std::to_string(val) + ".");
+            explanationcode.Setstringexplancode("Value found " + std::to_string(val) + ".");
             explanationcode.SetHighLight(-1);
         }
     }
@@ -423,12 +423,13 @@ void GUI::DrawHashTable() {
     // Vẽ bảng HashTable
     hashtable.draw();
 
-    // Vẽ ô pseudocode (trên)
-    pseudocode.DrawPseudocode();
-
-    // Vẽ ô explanation (dưới ô pseudocode)
-    explanationcode.area_text.y = pseudocode.area_text.y + pseudocode.area_text.height + 20;
+    // Vẽ ô explanation (trên, nhích lên gần mép trên)
+    explanationcode.area_text.y = ScreenHeight*5/9; // Nhích lên cao hơn (cách mép trên 30 pixel)
     explanationcode.DrawExplancodeArea();
+
+    // Vẽ ô pseudocode (dưới ô explanation)
+    pseudocode.area_text.y = explanationcode.area_text.y + explanationcode.area_text.height + 10; // Giảm khoảng cách xuống 10 pixel
+    pseudocode.DrawPseudocode();
 }
 
 void GUI::DrawLinkedList() {
