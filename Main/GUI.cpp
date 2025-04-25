@@ -211,6 +211,11 @@ void GUI::DrawSecondMenu() {
         buttondelete.ConfigureButton(2);
         buttondijkstra.ConfigureButton(3);
         buttonclear.ConfigureButton(4);
+
+        if (currentInputMode != DIJKSTRA) {
+            if (is_graph_fixed == true) { buttonunfix.ConfigureButton(11); } else
+            if (is_graph_fixed == false) { buttonfix.ConfigureButton(12); }
+        }
     }
     else if (CurrentStruture == HASHTABLE) {
         buttoninit.ConfigureButton(0);
@@ -238,49 +243,6 @@ void GUI::ResetMenuState() {
 
 	inputActive = false;
 	currentInputMode = NONE;
-}
-
-void GUI::DrawListMenu() {
-    // Menu constants
-    const float MENU_WIDTH = ScreenWidth / 5.0f;
-    const float MENU_HEIGHT = ScreenHeight;
-
-    // Draw menu background
-    DrawRectangleRounded(
-        { 0, 0, MENU_WIDTH, MENU_HEIGHT },
-        0.1f, 10, C[1]
-    );
-
-    // Draw "Linked List" title inside menu
-    const char* titleText = "Linked List";
-    const int TITLE_FONT_SIZE = 28;
-    Vector2 titleSize = MeasureTextEx(GetFontDefault(), titleText, TITLE_FONT_SIZE, 1);
-    float titleX = (MENU_WIDTH - titleSize.x) / 2;
-    float titleY = 20.0f; // Positioned at top of menu
-    DrawText(titleText, titleX, titleY, TITLE_FONT_SIZE, C[0]);
-
-    // Button layout constants
-    const float BUTTON_WIDTH = MENU_WIDTH * 0.85f;
-    const float BUTTON_HEIGHT = 40.0f;
-    const float BUTTON_MARGIN_X = MENU_WIDTH * 0.075f;
-    const float BUTTON_SPACING = 15.0f;
-    const float BUTTON_START_Y = titleY + titleSize.y + 20.0f; // Start below title
-
-    // Button configuration helper
-    auto ConfigureButton = [&](Button& button, int position) {
-        button.coordinateX = BUTTON_MARGIN_X;
-        button.coordinateY = BUTTON_START_Y + position * (BUTTON_HEIGHT + BUTTON_SPACING);
-        button.width = BUTTON_WIDTH;
-        button.height = BUTTON_HEIGHT;
-        button.DrawButton();
-        };
-
-    // Draw all buttons
-    ConfigureButton(buttoninit, 0);
-    ConfigureButton(buttoninsert, 1);
-    ConfigureButton(buttondelete, 2);
-    ConfigureButton(buttonsearch, 3);
-    ConfigureButton(buttonclear, 4);
 }
    
 void GUI::DrawHashTable() {
@@ -463,7 +425,7 @@ void GUI::DrawLinkedList(){
 void GUI::DrawAVLTree() {
     Gui.DrawSecondMenu();
     Gui.DrawBack();
-    float durationtime = DrawSliderAVLTree();
+    float durationtime = DrawSlider();
     Gui.insertanimationavltree.SetTime(durationtime);
        
     Gui.DrawInputBox();
@@ -609,6 +571,8 @@ void GUI::DrawGraph() {
         graph.clear();
 		currentInputMode = NONE;
     }
+    if (is_graph_fixed == false && buttonfix.IsClick()) { is_graph_fixed = true; graph.set_fix_graph(true); }
+    if (is_graph_fixed == true && buttonunfix.IsClick()) { is_graph_fixed = false; graph.set_fix_graph(false); }
 
     int val = Gui.Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
     
@@ -622,7 +586,6 @@ void GUI::DrawGraph() {
 
             if (buttonrandom.IsClick()) {
                 GraphRandomStep = 0;
-                //currentInputMode = RANDOM;
 				activemenu_graph = INIT_RAND;
             }
             if (buttonloadfile.IsClick()) {
@@ -663,7 +626,7 @@ void GUI::DrawGraph() {
                         n_edge = val;
 
                         graph.clear();
-                        graph.rand_graph(n_vertex, n_edge);
+                        if (!graph.rand_graph(n_vertex, n_edge)) { ResetMenuState(); }
 
                         GraphRandomStep = 3;
                     }
@@ -749,7 +712,7 @@ void GUI::DrawGraph() {
                 }
                 else if (GraphVertexStep == 3) {
                     weight = val;
-                    graph.add_edge(vertex1, vertex2, weight);
+                    if (!graph.add_edge(vertex1, vertex2, weight)) { ResetMenuState(); }
 
                     GraphVertexStep = 4;
 
@@ -825,7 +788,7 @@ void GUI::DrawGraph() {
                 }
                 else if (GraphVertexStep == 2) {
                     vertex2 = val;
-                    graph.delete_edge(vertex1, vertex2);
+					if (!graph.delete_edge(vertex1, vertex2)) { ResetMenuState(); }
 
                     GraphVertexStep = 3;
                 }
@@ -884,19 +847,20 @@ void GUI::DrawGraph() {
             }
             else {
 				if (isAuto) {
-					buttonpause.ConfigureButton(10);
-					int speed = DrawSlider(5, 90);
-					dijkstra_animation.set_speed(speed);
+					buttonpause.ConfigureButton(13);
+					float speed = DrawSlider();
+					//dijkstra_animation.set_speed(speed);
+					dijkstra_animation.set_duration(speed);
 
                     dijkstra_animation.next_state();
 
 					if (buttonpause.IsClick()) { isAuto = false; dijkstra_animation.set_auto(isAuto); }
                 }
                 else {
-					buttonfinal.ConfigureButton(9);
-					buttonrun.ConfigureButton(10);
-                    buttonnext.ConfigureButton(11);
-					buttonprev.ConfigureButton(12);
+					buttonfinal.ConfigureButton(12);
+					buttonrun.ConfigureButton(13);
+                    buttonnext.ConfigureButton(14);
+					buttonprev.ConfigureButton(15);
 
                     if (buttonnext.IsClick()) { dijkstra_animation.next_state(); }
                     if (buttonprev.IsClick()) { dijkstra_animation.prev_state(); }
@@ -1193,38 +1157,12 @@ int GUI::Input(int posX, int posY) {
     return -1;
 }
 
-int GUI::DrawSlider(float minValue, float maxValue) {
-    float x = (ScreenWidth / 5.0f) * 0.075f;
-    float y = ScreenHeight / 8.0f + 11 * ScreenHeight * 0.062f;
-    float width = (ScreenWidth / 5.0f) * 0.85;
-	float height = 5.0f;
-
-	Rectangle sliderRect = { x, y, width, height };
-	DrawRectangleRec(sliderRect, C[3]);
-
-    static float handlePos = x + ((40 - minValue) / (float)(maxValue - minValue)) * width;
-    DrawCircle((int)handlePos, (int)y + height / 2, height * 1.5f, C[2]);
-
-	static bool is_dragging = false;
-	Vector2 mouse = GetMousePosition();
-
-    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && CheckCollisionPointCircle(mouse, { handlePos, y + height / 2 }, height * 1.5f)) { is_dragging = true; }
-	if (IsMouseButtonUp(MOUSE_LEFT_BUTTON)) { is_dragging = false; }
-
-	if (is_dragging) {
-		handlePos = Clamp(mouse.x, x, x + width);
-	}
-
-    int value = minValue + (1.0f - ((handlePos - x) / (float)width)) * (maxValue - minValue);
-    return value;
-}
-
-float GUI::DrawSliderAVLTree() {
+float GUI::DrawSlider() {
     const float minValue = 0.1f;
     const float maxValue = 2.0f;
 
     float x = (ScreenWidth / 5.0f) * 0.075f;
-    float y = ScreenHeight - 40;
+    float y = ScreenHeight / 8.0f + 11 * ScreenHeight * 0.062f;
     float width = (ScreenWidth / 5.0f) * 0.85;
     float height = 7.0f;
 
@@ -1246,8 +1184,8 @@ float GUI::DrawSliderAVLTree() {
 
     float value = minValue + (((handlePos - x) / (float)width)) * (maxValue - minValue);
     char buffer[32];
-    sprintf_s(buffer,sizeof(buffer), "%.3f", value);
+    sprintf_s(buffer, sizeof(buffer), "%.3f", value);
 
-    DrawText(buffer, handlePos - x / float(width) - minValue, ScreenHeight - 80, 20, WHITE);
+	DrawText(buffer, handlePos - MeasureText(buffer, 20) / 2, y - 25, 20, C[0]);
     return maxValue - value;
 }

@@ -14,8 +14,8 @@ private:
 	int path_state = -1;
 	bool is_path_shown = false;
 
-	int frameCounter = 0;
-	int delayFrame = 40;
+	float duration = 1.0f;         
+	float animation_time = 0.0f;    
 
 	bool is_auto = true;
 public:
@@ -25,7 +25,7 @@ public:
 
 	void set_auto(bool is_at);
 	void set_path_shown(bool is_shown);
-	void set_speed(int speed);
+	void set_duration(float speed);
 
 	void load_state_general(int start);
 	void next_state();

@@ -5,8 +5,8 @@ ButtonInsert buttoninsert("Insert", C[2]);
 ButtonDelete buttondelete("Delete", C[2]);
 ButtonSearch buttonsearch("Search", C[2]);
 ButtonClear buttonclear("Clear", C[2]);
-ButtonRandom buttonrandom("Random", WHITE);
-ButtonLoadFile buttonloadfile("LoadFile", WHITE);
+ButtonRandom buttonrandom("Random", C[2]);
+ButtonLoadFile buttonloadfile("LoadFile", C[2]);
 Button buttonvertex("Vertex", C[2]);
 Button buttonedge("Edge", C[2]);
 Button buttondijkstra("Dijkstra", C[2]);
@@ -18,6 +18,8 @@ Button buttonreturn("Return", C[2]);
 Button buttonpause("Pause", C[2]);
 Button buttonrun("Run", C[2]);
 Button buttonfinal("Final", C[2]);
+Button buttonfix("Fix", C[2]);
+Button buttonunfix("Unfix", C[2]);
 
 bool Button::IsCover() {
 	return GetMouseX() >= this->coordinateX && GetMouseX() <= this->coordinateX + this->width && GetMouseY() >= this->coordinateY && GetMouseY() <= this->coordinateY + this->height;

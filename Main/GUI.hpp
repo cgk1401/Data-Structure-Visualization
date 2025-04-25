@@ -43,9 +43,11 @@ private:
 
 	Graph graph;
 	ActiveMenuTypeGraph activemenu_graph = DEFAULT;
+	bool is_graph_fixed = false;
 	int GraphRandomStep = 0;
 	int GraphVertexStep = 0;
 	DijkstraAnimationGraph dijkstra_animation;
+
 	HashTable hashtable;
 public :
 
@@ -89,8 +91,7 @@ public:
 	int Input(int posX, int posY);   
     void DrawInputBox();
 
-	int DrawSlider(float minValue, float maxValue);
-	float DrawSliderAVLTree();
+	float DrawSlider();
 };
 
 extern GUI Gui;

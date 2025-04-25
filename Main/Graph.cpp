@@ -8,22 +8,24 @@
 #include "Graph.hpp"
 #include "Config.hpp"
 
-void Graph::add_node(int id) {
-	if (nodes.find(id) == nodes.end()) { 
-		nodes.emplace(id, Node(id)); 
+// ------------------------- Graph class -----------------------
+bool Graph::add_node(int id) {
+	if (nodes.find(id) == nodes.end()) {
+		nodes.emplace(id, Node(id));
 
-		int k = nodes.size() - 1;
-		nodes[id].pos.x = ScreenWidth / 4 + (ScreenWidth * 7.0f / 40) * (k / 5);
-		nodes[id].pos.y = ScreenHeight / 4 + (ScreenWidth * 5.0f / 40) * (k % 5);
+		float minX = ScreenWidth / 5.0f;
+		float maxX = ScreenWidth;
+		float minY = 0.0f;
+		float maxY = ScreenHeight;
+		nodes[id].pos.x = minX + GetRandomValue(0, 10000) / 10000.0f * (maxX - minX);
+		nodes[id].pos.y = minY + GetRandomValue(0, 10000) / 10000.0f * (maxY - minY);
 
-		if (k%5 >= 3) {
-			nodes[id].pos.x += (ScreenWidth * 7.00f / 80);
-			nodes[id].pos.y -= (ScreenWidth * 25.0f / 80);
-		}
+		return true;
 	}
+	return false;
 }
 
-void Graph::add_edge(int id1, int id2, int w) {
+bool Graph::add_edge(int id1, int id2, int w) {
 	if (nodes.find(id1) != nodes.end() && nodes.find(id2) != nodes.end()) {
 		delete_edge(id1, id2); // delete the edge if it already exists
 
@@ -32,11 +34,13 @@ void Graph::add_edge(int id1, int id2, int w) {
 		if (is_directed == false) {
 			nodes[id2].adj.push_back({ id1, w });
 		}
+		return true;
 	}
+	return false;
 }
 
-void Graph::delete_node(int id) {
-	if (nodes.find(id) == nodes.end()) { std::cout << "Cant find node\n"; return; }
+bool Graph::delete_node(int id) {
+	if (nodes.find(id) == nodes.end()) { std::cout << "Cant find node\n"; return false; }
 
 	if (is_directed == false) {
 		for (auto& neighbor : nodes[id].adj) {
@@ -53,14 +57,17 @@ void Graph::delete_node(int id) {
 
 	nodes.erase(id);
 	if (active_node1 == id) { active_node1 = -1; }
+	return true;
 }
 
-void Graph::delete_edge(int id1, int id2) {
-	if (nodes.find(id1) == nodes.end() || nodes.find(id2) == nodes.end()) { std::cout << "Cant find node\n"; return; }
+bool Graph::delete_edge(int id1, int id2) {
+	if (nodes.find(id1) == nodes.end() || nodes.find(id2) == nodes.end()) { std::cout << "Cant find node\n"; return false; }
 	int i = 0;
+	bool found = false;
 	for (auto& x : nodes[id1].adj) {
 		if (x.first == id2) {
-			nodes[id1].adj.erase(nodes[id1].adj.begin() + i);
+			nodes[id1].adj.erase(nodes[id1].adj.begin() + i); // it work?
+			found = true;
 			break;
 		}
 		i++;
@@ -75,15 +82,135 @@ void Graph::delete_edge(int id1, int id2) {
 			i++;
 		}
 	}
+
+	return found;
+}
+
+void Graph::clear() {
+	nodes.clear();
+}
+
+int Graph::get_active1() {
+	return active_node1;
+}
+
+std::pair<int, int> Graph::get_active2() {
+	return active_edge;
+}
+
+bool Graph::rand_graph(int n_vertex, int n_edge) {
+	if (is_directed == false && n_edge > ((n_vertex - 1) * n_vertex) / 2) { std::cout << "Too many edge for that number of vertex\n"; return false; }
+	if (is_directed == true && n_edge > (n_vertex - 1) * n_vertex) { std::cout << "Too many edge for that number of vertex\n"; return false; }
+
+	for (int i = 0; i < n_vertex; i++) { add_node(i); }
+
+	srand(time(0));
+	for (int i = 0; i < n_edge; i++) {
+		int a = rand() % n_vertex;
+		int b = rand() % n_vertex;
+
+		if (a == b) { i--; continue; }
+		//std::cout << a << " " << b << std::endl;
+		bool neighbor_check = true; //check if have been neighbor
+		for (const auto& x : nodes[a].adj) {
+			if (x.first == b) { neighbor_check = false; break; }
+		}
+		if (neighbor_check == true) { add_edge(a, b, rand() % 10 + 1); }
+		else { i--; }
+	}
+	return true;
+}
+
+void Graph::input_graph(std::ifstream& fin) {
+	int n_vertex; //nums of nodes
+	int n_edge; //nums of edges
+	bool is_dir; //directed/undirected graph
+	fin >> n_vertex >> n_edge >> is_dir;
+	is_directed = is_dir;
+
+	for (int i = 0; i < n_vertex; i++) {
+		int id; fin >> id;
+		add_node(id);
+	}
+
+	for (int i = 0; i < n_edge; i++) {
+		int a, b;
+		int w;
+		fin >> a >> b >> w;
+		add_edge(a, b, w);
+	}
+}
+
+// ------------------------- Force directed -----------------------
+void Graph::set_fix_graph(bool is_fixed) {
+	this->is_graph_fixed = is_fixed;
+}
+
+void Graph::update_repulsive_force() {
+	for (auto it1 = nodes.begin(); it1 != nodes.end(); ++it1) {
+		for (auto it2 = std::next(it1); it2 != nodes.end(); ++it2) {
+			Node& a = it1->second;
+			Node& b = it2->second;
+
+			Vector2 delta = Vector2Subtract(a.pos, b.pos);
+			float distance = Vector2Length(delta) + 0.01f; // avoid division by zero
+			float force_magnitude = k_repulsion / (distance * distance);
+			Vector2 force = Vector2Scale(Vector2Normalize(delta), force_magnitude);
+
+			a.force = Vector2Add(a.force, force);
+			b.force = Vector2Subtract(b.force, force);
+		}
+	}
+}
+
+void Graph::update_attractive_force() {
+	for (auto& node : nodes) {
+		Node& a = node.second;
+		for (auto& neighbor : a.adj) {
+			Node& b = nodes[neighbor.first];
+			if (a.id < b.id) { continue; } // avoid double counting
+
+			Vector2 delta = Vector2Subtract(a.pos, b.pos);
+			float distance = Vector2Length(delta) + 0.01f; // avoid div by zero
+			float force_magnitude = k_spring * (distance - spring_length);
+			Vector2 force = Vector2Scale(Vector2Normalize(delta), -force_magnitude);
+
+			a.force = Vector2Add(a.force, force);
+			b.force = Vector2Subtract(b.force, force);
+		}
+	}
+}
+
+void Graph::update_centering_force() {
+	Vector2 center = { ScreenWidth * 0.6f, ScreenHeight * 0.5f };
+	float centering_strength = 10.0f;
+
+	for (auto& nd : nodes) {
+		Node& node = nd.second;
+		Vector2 delta = Vector2Subtract(center, node.pos);
+		Vector2 centering_force = Vector2Scale(delta, centering_strength);
+		node.force = Vector2Add(node.force, centering_force);
+	}
+}
+
+void Graph::update_pos() {
+	float dt = GetFrameTime();
+	for (auto& nd : nodes) {
+		Node& node = nd.second;
+		node.velocity = Vector2Add(node.velocity, Vector2Scale(node.force, dt));
+		node.velocity = Vector2Scale(node.velocity, damping); // to stabilize
+		node.pos = Vector2Add(node.pos, Vector2Scale(node.velocity, dt));
+		node.force = { 0, 0 }; // reset force
+	}
 }
 
 void Graph::update() {
 	static int cur_node = -1;
 
 	Vector2 mouse = GetMousePosition();
-	
+
 	// update cur_node (moving)
-	if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && cur_node == -1) { 
+	if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && cur_node == -1) {
 		for (auto& node : nodes) {
 			if (CheckCollisionPointCircle(mouse, node.second.pos, node_rad)) {
 				cur_node = node.first;
@@ -142,63 +269,15 @@ void Graph::update() {
 		if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) { cur_node = -1; }
 	}
 
-	//if (active_node1 >= 0 && buttondel)
-}
-
-void Graph::clear() {
-	nodes.clear();
-}
-
-int Graph::get_active1() {
-	return active_node1;
-}
-
-std::pair<int, int> Graph::get_active2() {
-	return active_edge;
-}
-
-void Graph::rand_graph(int n_vertex, int n_edge) {
-	if (is_directed == false && n_edge > ((n_vertex - 1) * n_vertex) / 2) { std::cout << "Too many edge for that number of vertex\n"; return; }
-	if (is_directed == true && n_edge > (n_vertex - 1) * n_vertex) { std::cout << "Too many edge for that number of vertex\n"; return; }
-
-	for (int i = 0; i < n_vertex; i++) { add_node(i); }
-
-	srand(time(0));
-	for (int i = 0; i < n_edge; i++) {
-		int a = rand() % n_vertex;
-		int b = rand() % n_vertex;
-
-		if (a == b) { i--; continue; }
-		//std::cout << a << " " << b << std::endl;
-		bool neighbor_check = true; //check if have been neighbor
-		for (const auto& x : nodes[a].adj) {
-			if (x.first == b) { neighbor_check = false; break; }
-		}
-		if (neighbor_check == true) { add_edge(a, b, rand() % 10 + 1); }
-		else { i--; }
+	if (is_graph_fixed == false) {
+		update_attractive_force();
+		update_repulsive_force();
+		update_centering_force();
+		update_pos();
 	}
 }
 
-void Graph::input_graph(std::ifstream& fin) {
-	int n_vertex; //nums of nodes
-	int n_edge; //nums of edges
-	bool is_dir; //directed/undirected graph
-	fin >> n_vertex >> n_edge >> is_dir;
-	is_directed = is_dir;
-
-	for (int i = 0; i < n_vertex; i++) {
-		int id; fin >> id;
-		add_node(id);
-	}
-
-	for (int i = 0; i < n_edge; i++) {
-		int a, b;
-		int w;
-		fin >> a >> b >> w;
-		add_edge(a, b, w);
-	}
-}
-
+// ------------------------- Dijkstra's algorithm -----------------------
 void Graph::dijkstra(int start) {
 	if (nodes.find(start) == nodes.end()) { std::cout << "Can not find node\n"; return; }
 
@@ -318,6 +397,10 @@ std::vector<Graph::GraphStage> Graph::dijkstra_steps(int start) {
 std::vector<Graph::GraphStage> Graph::dijkstra_paths(int end, std::unordered_map<int, int> previous) {
 	std::vector<GraphStage> steps;
 
+	if (nodes.size() == 0) { std::cout << "Graph is empty\n"; return steps; }
+	if (previous.find(end) == previous.end()) { std::cout << "Can not find node\n"; return steps; }
+	if (previous[end] == -1) { std::cout << "No path\n"; return steps; }
+
 	steps.push_back({ {}, {}, {}, end, { -1,-1 } });
 	while (end != -1 && previous[end] != -1) {
 		steps.push_back({ {}, {}, {}, end, {previous[end], end} });
@@ -352,6 +435,7 @@ void Graph::set_state(GraphStage state) {
 	this->highlight_line = state.highlight_line;
 }
 
+// ------------------------- Drawing -----------------------
 void Graph::print_nodes() {
 	for (const auto& x : nodes) {
 		std::cout << "Node: " << x.first;
@@ -429,11 +513,11 @@ void Graph::draw() {
 			for (int i = 0; i < DijkstraSteps.size(); i++) {
 				for (int j = 0; j < highlight_line.size(); j++) {
 					if (i == highlight_line[j]) {
-						DrawRectangle(startX - 10, startY + spacing * i - 5, ScreenWidth / 5.2f - 4, 25, tmp);
+						DrawRectangle(startX - 10, startY + spacing * i - 5, ScreenWidth / 5.2f - 4, 28, tmp);
 						break;
 					}
 				}
-				DrawText(DijkstraSteps[i].c_str(), startX, startY + spacing * i, 20, C[0]);
+				DrawText(DijkstraSteps[i].c_str(), startX, startY + spacing * i, 19, C[0]);
 			}
 		}
 	}
