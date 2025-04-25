@@ -10,7 +10,6 @@
 #include "LinkedList.hpp"
 #include "Config.hpp"
 
-// Constants
 #define NODE_WIDTH 80.0f
 #define NODE_HEIGHT 60.0f
 #define NODE_RADIUS 30.0f
@@ -20,7 +19,6 @@
 #define ARROW_HEAD_ANGLE (20.0f * DEG2RAD)
 #define ANIM_SMOOTHNESS 0.1f
 
-// Static member initialization
 float LinkedList::nodeScale = 1.0f;
 int LinkedList::currentDisplayMode = 0;
 float LinkedList::listScrollX = 0.0f;
@@ -44,13 +42,11 @@ LinkedList::~LinkedList() {
 }
 
 void LinkedList::calculate_layout() {
-    // Constants for layout
     const int MAX_NODES_PER_ROW = 10;
     const float ROW_SPACING = 100.0f;
     const float MENU_WIDTH = ScreenWidth / 5.0f;
     const float AVAILABLE_WIDTH = ScreenWidth - MENU_WIDTH;
 
-    // Calculate node count
     nodeCount = 0;
     Node* temp = head;
     while (temp) {
@@ -58,16 +54,12 @@ void LinkedList::calculate_layout() {
         temp = temp->next;
     }
 
-    // Calculate how many rows we need
     int rowCount = (nodeCount + MAX_NODES_PER_ROW - 1) / MAX_NODES_PER_ROW;
 
-    // Calculate total content height needed for scrolling
-    contentHeight = rowCount * (NODE_HEIGHT + ROW_SPACING) + 100; // Add padding
+    contentHeight = rowCount * (NODE_HEIGHT + ROW_SPACING) + 100;
 
-    // Center the rows vertically (without scroll offset here)
-    float startY = 150.0f; // Fixed starting position, scrolling will handle the offset
+    float startY = 150.0f;
 
-    // Calculate positions
     int index = 0;
     temp = head;
     while (temp) {
@@ -220,12 +212,10 @@ void LinkedList::update_node_animation(Node* node, float delta_time) {
 void LinkedList::update() {
     float deltaTime = GetFrameTime();
 
-    // Handle scrolling input
     float wheelMove = GetMouseWheelMove();
     if (wheelMove != 0) {
-        scrollOffset -= wheelMove * 20.0f; // Adjust scroll speed as needed
+        scrollOffset -= wheelMove * 20.0f;
 
-        // Clamp scrolling to prevent going too far
         float maxScroll = contentHeight - ScreenHeight;
         scrollOffset = Clamp(scrollOffset, 0.0f, maxScroll > 0 ? maxScroll : 0.0f);
     }
@@ -234,7 +224,6 @@ void LinkedList::update() {
         update_delete_animation(deltaTime);
     }
 
-    // Update node animations (position smoothing)
     Node* temp = head;
     while (temp) {
         update_node_animation(temp, deltaTime);
@@ -290,7 +279,7 @@ void LinkedList::rand_list(int n_nodes) {
 }
 
 bool LinkedList::load_from_file(const string& filename) {
-    clear(); // Clear existing list
+    clear();
 
     ifstream file(filename);
     if (!file.is_open()) {
@@ -300,7 +289,6 @@ bool LinkedList::load_from_file(const string& filename) {
 
     int value;
     while (file >> value) {
-        // Validate input (optional)
         if (value < -9999 || value > 9999) {
             std::cerr << "Warning: Skipping invalid value " << value << std::endl;
             continue;
@@ -313,7 +301,7 @@ bool LinkedList::load_from_file(const string& filename) {
     }
 
     file.close();
-    calculate_layout(); // Update visual layout
+    calculate_layout();
     return true;
 }
 
@@ -329,7 +317,6 @@ void LinkedList::print_list() const {
 void LinkedList::draw_node(const Node* node) const {
     if (!node) return;
 
-    // Apply scroll offset to node position
     Vector2 drawPos = { node->pos.x, node->pos.y - scrollOffset };
 
     std::string dataText = std::to_string(node->data);
@@ -358,7 +345,6 @@ void LinkedList::draw_node(const Node* node) const {
 void LinkedList::draw_link(const Node* from, const Node* to) const {
     if (!from || !to) return;
 
-    // Apply scroll offset to positions
     Vector2 fromPos = { from->pos.x, from->pos.y - scrollOffset };
     Vector2 toPos = { to->pos.x, to->pos.y - scrollOffset };
 
@@ -391,7 +377,6 @@ void LinkedList::draw_link(const Node* from, const Node* to) const {
 }
 
 void LinkedList::draw() const {
-    // Set up scissor mode to clip drawing to visible area
     float menuWidth = ScreenWidth / 5.0f;
     BeginScissorMode(menuWidth, 0, ScreenWidth - menuWidth, ScreenHeight);
 
@@ -421,7 +406,6 @@ void LinkedList::draw() const {
 }
 
 bool LinkedList::search_node(int data) {
-    // Reset previous search states
     Node* current = head;
     while (current) {
         current->is_highlighted = false;
@@ -430,10 +414,9 @@ bool LinkedList::search_node(int data) {
     }
 
     active_node = data;
-    search_state = 0;  // Start search animation
+    search_state = 0;
     search_timer = 0.5f;
 
-    // Actual search implementation
     current = head;
     bool found = false;
     while (current) {
