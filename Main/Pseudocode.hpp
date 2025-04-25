@@ -20,23 +20,25 @@ public:
     vector <string> linedelete;
 
     // Pseudocode cho HashTable
-    vector <string> lineinsert_hashtable = {
-        "Insert:",
-        "  Tính index = key % capacity",
-        "  Nếu slot bị chiếm, dò tiếp",
-        "  Chèn key vào slot trống/xóa"
+    vector<string> lineinsert_hashtable = {
+     "Insert:",
+     "Compute index = key % capacity",
+     "If slot is occupied, probe next",
+     "Insert key into empty/deleted slot"
     };
-    vector <string> linesearch_hashtable = {
+
+    vector<string> linesearch_hashtable = {
         "Search:",
-        "  Tính index = key % capacity",
-        "  Dò cho đến khi tìm thấy key",
-        "  Trả về index hoặc -1 nếu không thấy"
+        "Compute index = key % capacity",
+        "Probe until key is found",
+        "Return index or -1 if not found"
     };
-    vector <string> linedelete_hashtable = {
+
+    vector<string> linedelete_hashtable = {
         "Delete:",
-        "  Tính index = key % capacity",
-        "  Dò cho đến khi tìm thấy key",
-        "  Đánh dấu slot là đã xóa"
+        "Compute index = key % capacity",
+        "Probe until key is found",
+        "Mark slot as deleted"
     };
 
     vector <string> line;

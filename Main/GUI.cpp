@@ -293,7 +293,7 @@ void GUI::DrawHashTable() {
     static bool firstFrame = true;
     if (firstFrame) {
         pseudocode.SetstringPseudocode("INSERT_HASHTABLE");
-        explanationcode.Setstringexplancode("Chọn thao tác để bắt đầu.");
+        explanationcode.Setstringexplancode("Select Action To Start");
         explanationcode.SetHighLight(0);
         firstFrame = false;
     }
@@ -337,7 +337,7 @@ void GUI::DrawHashTable() {
     else if (buttonclear.IsClick()) {
         hashtable.clear();
         pseudocode.SetstringPseudocode("");
-        explanationcode.Setstringexplancode("Đã xóa bảng.");
+        explanationcode.Setstringexplancode("Talbe Deleted.");
         explanationcode.SetHighLight(-1);
     }
 
@@ -366,7 +366,7 @@ void GUI::DrawHashTable() {
             inputActive = false;
             currentInputMode = NONE;
             pseudocode.SetstringPseudocode("");
-            explanationcode.Setstringexplancode("Khởi tạo bảng với kích thước " + std::to_string(val) + ".");
+            explanationcode.Setstringexplancode("Initialize table with dimensions " + std::to_string(val) + ".");
             explanationcode.SetHighLight(-1);
         }
 
@@ -376,7 +376,7 @@ void GUI::DrawHashTable() {
             inputActive = false;
             currentInputMode = NONE;
             pseudocode.SetstringPseudocode("");
-            explanationcode.Setstringexplancode("Đã tạo bảng ngẫu nhiên.");
+            explanationcode.Setstringexplancode("Random table generated.");
             explanationcode.SetHighLight(-1);
         }
         else if (hashtable.getInitMode() == HashTable::LOADFILE_HASHTABLE) {
@@ -385,7 +385,7 @@ void GUI::DrawHashTable() {
             inputActive = false;
             currentInputMode = NONE;
             pseudocode.SetstringPseudocode("");
-            explanationcode.Setstringexplancode("Đã tải bảng từ file.");
+            explanationcode.Setstringexplancode("Loaded table from file.");
             explanationcode.SetHighLight(-1);
         }
     }
@@ -395,7 +395,7 @@ void GUI::DrawHashTable() {
             inputActive = false;
             currentInputMode = NONE;
             pseudocode.SetstringPseudocode("INSERT_HASHTABLE");
-            explanationcode.Setstringexplancode("Đã chèn giá trị " + std::to_string(val) + ".");
+            explanationcode.Setstringexplancode("Value inserted " + std::to_string(val) + ".");
             explanationcode.SetHighLight(-1);
         }
     }
@@ -405,7 +405,7 @@ void GUI::DrawHashTable() {
             inputActive = false;
             currentInputMode = NONE;
             pseudocode.SetstringPseudocode("DELETE_HASHTABLE");
-            explanationcode.Setstringexplancode("Đã xóa giá trị " + std::to_string(val) + ".");
+            explanationcode.Setstringexplancode("Value deleted " + std::to_string(val) + ".");
             explanationcode.SetHighLight(-1);
         }
     }
@@ -415,7 +415,7 @@ void GUI::DrawHashTable() {
             inputActive = false;
             currentInputMode = NONE;
             pseudocode.SetstringPseudocode("SEARCH_HASHTABLE");
-            explanationcode.Setstringexplancode("Đã tìm giá trị " + std::to_string(val) + ".");
+            explanationcode.Setstringexplancode("Value found" + std::to_string(val) + ".");
             explanationcode.SetHighLight(-1);
         }
     }
