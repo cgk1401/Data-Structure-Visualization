@@ -9,7 +9,7 @@
 #include "Config.hpp"
 
 // ------------------------- Graph class -----------------------
-void Graph::add_node(int id) {
+bool Graph::add_node(int id) {
 	if (nodes.find(id) == nodes.end()) {
 		nodes.emplace(id, Node(id));
 
@@ -19,10 +19,13 @@ void Graph::add_node(int id) {
 		float maxY = ScreenHeight;
 		nodes[id].pos.x = minX + GetRandomValue(0, 10000) / 10000.0f * (maxX - minX);
 		nodes[id].pos.y = minY + GetRandomValue(0, 10000) / 10000.0f * (maxY - minY);
+
+		return true;
 	}
+	return false;
 }
 
-void Graph::add_edge(int id1, int id2, int w) {
+bool Graph::add_edge(int id1, int id2, int w) {
 	if (nodes.find(id1) != nodes.end() && nodes.find(id2) != nodes.end()) {
 		delete_edge(id1, id2); // delete the edge if it already exists
 
@@ -31,11 +34,13 @@ void Graph::add_edge(int id1, int id2, int w) {
 		if (is_directed == false) {
 			nodes[id2].adj.push_back({ id1, w });
 		}
+		return true;
 	}
+	return false;
 }
 
-void Graph::delete_node(int id) {
-	if (nodes.find(id) == nodes.end()) { std::cout << "Cant find node\n"; return; }
+bool Graph::delete_node(int id) {
+	if (nodes.find(id) == nodes.end()) { std::cout << "Cant find node\n"; return false; }
 
 	if (is_directed == false) {
 		for (auto& neighbor : nodes[id].adj) {
@@ -52,14 +57,17 @@ void Graph::delete_node(int id) {
 
 	nodes.erase(id);
 	if (active_node1 == id) { active_node1 = -1; }
+	return true;
 }
 
-void Graph::delete_edge(int id1, int id2) {
-	if (nodes.find(id1) == nodes.end() || nodes.find(id2) == nodes.end()) { std::cout << "Cant find node\n"; return; }
+bool Graph::delete_edge(int id1, int id2) {
+	if (nodes.find(id1) == nodes.end() || nodes.find(id2) == nodes.end()) { std::cout << "Cant find node\n"; return false; }
 	int i = 0;
+	bool found = false;
 	for (auto& x : nodes[id1].adj) {
 		if (x.first == id2) {
-			nodes[id1].adj.erase(nodes[id1].adj.begin() + i);
+			nodes[id1].adj.erase(nodes[id1].adj.begin() + i); // it work?
+			found = true;
 			break;
 		}
 		i++;
@@ -74,6 +82,8 @@ void Graph::delete_edge(int id1, int id2) {
 			i++;
 		}
 	}
+
+	return found;
 }
 
 void Graph::clear() {
@@ -88,9 +98,9 @@ std::pair<int, int> Graph::get_active2() {
 	return active_edge;
 }
 
-void Graph::rand_graph(int n_vertex, int n_edge) {
-	if (is_directed == false && n_edge > ((n_vertex - 1) * n_vertex) / 2) { std::cout << "Too many edge for that number of vertex\n"; return; }
-	if (is_directed == true && n_edge > (n_vertex - 1) * n_vertex) { std::cout << "Too many edge for that number of vertex\n"; return; }
+bool Graph::rand_graph(int n_vertex, int n_edge) {
+	if (is_directed == false && n_edge > ((n_vertex - 1) * n_vertex) / 2) { std::cout << "Too many edge for that number of vertex\n"; return false; }
+	if (is_directed == true && n_edge > (n_vertex - 1) * n_vertex) { std::cout << "Too many edge for that number of vertex\n"; return false; }
 
 	for (int i = 0; i < n_vertex; i++) { add_node(i); }
 
@@ -108,6 +118,7 @@ void Graph::rand_graph(int n_vertex, int n_edge) {
 		if (neighbor_check == true) { add_edge(a, b, rand() % 10 + 1); }
 		else { i--; }
 	}
+	return true;
 }
 
 void Graph::input_graph(std::ifstream& fin) {

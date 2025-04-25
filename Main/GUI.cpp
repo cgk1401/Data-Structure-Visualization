@@ -620,7 +620,7 @@ void GUI::DrawGraph() {
                         n_edge = val;
 
                         graph.clear();
-                        graph.rand_graph(n_vertex, n_edge);
+                        if (!graph.rand_graph(n_vertex, n_edge)) { ResetMenuState(); }
 
                         GraphRandomStep = 3;
                     }
@@ -706,7 +706,7 @@ void GUI::DrawGraph() {
                 }
                 else if (GraphVertexStep == 3) {
                     weight = val;
-                    graph.add_edge(vertex1, vertex2, weight);
+                    if (!graph.add_edge(vertex1, vertex2, weight)) { ResetMenuState(); }
 
                     GraphVertexStep = 4;
 
@@ -782,7 +782,7 @@ void GUI::DrawGraph() {
                 }
                 else if (GraphVertexStep == 2) {
                     vertex2 = val;
-                    graph.delete_edge(vertex1, vertex2);
+					if (!graph.delete_edge(vertex1, vertex2)) { ResetMenuState(); }
 
                     GraphVertexStep = 3;
                 }

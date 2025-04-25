@@ -87,10 +87,10 @@ public:
 public:
 	Graph(bool dir) : is_directed(dir) {}
 
-	void add_node(int id);
-	void add_edge(int id1, int id2, int w);
-	void delete_node(int id);
-	void delete_edge(int id1, int id2);
+	bool add_node(int id);
+	bool add_edge(int id1, int id2, int w);
+	bool delete_node(int id);
+	bool delete_edge(int id1, int id2);
 
 	void update();
 	void clear();
@@ -99,7 +99,7 @@ public:
 
 	void set_fix_graph(bool is_fixed);
 
-	void rand_graph(int n_vertex, int n_edge);
+	bool rand_graph(int n_vertex, int n_edge);
 	void input_graph(std::ifstream& fin);
 
 	void dijkstra(int start);
