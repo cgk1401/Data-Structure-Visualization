@@ -47,7 +47,8 @@
     <ClCompile Include="ExplanationCode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HashTable.cpp">
+    <ClCompile Include="HashTable.cpp" />
+    <ClCompile Include="Pseudocode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,7 +87,8 @@
     <ClInclude Include="ExplanationCode.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HashTable.hpp">
+    <ClInclude Include="HashTable.hpp" />
+    <ClInclude Include="Pseudocode.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

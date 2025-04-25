@@ -12,6 +12,7 @@
 #include "InsertAnimationAVLTree.hpp"
 #include "DijkstraAnimationGraph.hpp"
 #include "ExplanationCode.hpp"
+#include "Pseudocode.hpp"
 
 #include"HashTable.hpp"
 #include <fstream>
@@ -89,6 +90,7 @@ public:
     void DrawInputBox();
 
 	int DrawSlider(float minValue, float maxValue);
+	float DrawSliderAVLTree();
 };
 
 extern GUI Gui;
