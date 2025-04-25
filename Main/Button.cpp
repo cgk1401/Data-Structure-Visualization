@@ -20,6 +20,7 @@ Button buttonrun("Run", C[2]);
 Button buttonfinal("Final", C[2]);
 Button buttonfix("Fix", C[2]);
 Button buttonunfix("Unfix", C[2]);
+Button buttonscreen("Screenshot", C[2]);
 
 bool Button::IsCover() {
 	return GetMouseX() >= this->coordinateX && GetMouseX() <= this->coordinateX + this->width && GetMouseY() >= this->coordinateY && GetMouseY() <= this->coordinateY + this->height;

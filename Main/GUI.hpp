@@ -19,7 +19,7 @@
 #include <string>
 
 
-enum TypeDataStructure { MENU, THEME, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
+enum TypeDataStructure { MENU, SETTING, CREDIT, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
 
 enum ActiveMenuTypeAVLTree { NONE_AVLTREE, INIT_AVLTREE, INSERT_AVLTREE, SEARCH_AVLTREE, DELETE_AVLTREE };
 enum ActiveMenuInitAVLTree { NONEINITAVLTREE, RANDOM_AVLTREE, LOADFILE_AVLTREE };
@@ -49,6 +49,8 @@ private:
 	DijkstraAnimationGraph dijkstra_animation;
 
 	HashTable hashtable;
+
+	Music music;
 public :
 
 	void SetActiveMenuAVLTree(ActiveMenuTypeAVLTree newMenu);
@@ -78,15 +80,17 @@ public:
 	void DrawBack();
 
 	void DrawMainMenu();
-	void DrawThemeMenu();
+	void DrawSettingMenu();
+	void DrawCreditMenu();
 	void DrawSecondMenu();
-	void DrawListMenu();
-	void DrawDivider();
+	float DrawVolumeSlider();
 
 	void ResetMenuState();
 
 	bool LoadFileAVLTree();
 	bool LoadFileGraph();
+
+	bool ExportScreenshot();
 
 	int Input(int posX, int posY);   
     void DrawInputBox();

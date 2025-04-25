@@ -79,5 +79,6 @@ extern Button buttonrun;
 extern Button buttonfinal;
 extern Button buttonfix;
 extern Button buttonunfix;
+extern Button buttonscreen;
 
 #endif // BUTTON_HPP
