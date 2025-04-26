@@ -31,14 +31,19 @@ LinkedList::LinkedList() :
     deleteState(DeleteState::IDLE),
     nodeToDelete(nullptr),
     prevNode(nullptr),
-    lastDeletedNode(nullptr),
-    lastDeletedPrevNode(nullptr),
-    lastInsertedNode(nullptr),
     currentAnimation(AnimationType::NONE),
     animationStep(0),
     isPaused(false),
     animationDuration(0.5f),
-    currentAnimationTime(0.0f)
+    currentAnimationTime(0.0f),
+    currentSearchIndex(0),
+    lastInsertedNode(nullptr),
+    lastInsertedPrevNode(nullptr),
+    lastInsertWasFront(false),
+    lastDeletedNode(nullptr),
+    lastDeletedPrevNode(nullptr),
+    searchPath(),
+    descriptionBox()
 {
     descriptionBox.SetDescription("Ready to start.");
 }
@@ -48,7 +53,7 @@ LinkedList::~LinkedList() {
 }
 
 void LinkedList::calculate_layout() {
-    const int MAX_NODES_PER_ROW = 10;
+    const int MAX_NODES_PER_ROW = 8;
     const float ROW_SPACING = 100.0f;
     const float MENU_WIDTH = ScreenWidth / 5.0f;
     const float AVAILABLE_WIDTH = ScreenWidth - MENU_WIDTH;
@@ -86,16 +91,16 @@ void LinkedList::calculate_layout() {
 
 void LinkedList::add_node(int data) {
     Node* new_node = new Node(data);
-    new_node->is_highlighted = false;
+    lastInsertedNode = new_node;
+    lastInsertWasFront = false;
 
     if (!head) {
         head = new_node;
     }
     else {
         Node* current = head;
-        while (current->next) {
-            current = current->next;
-        }
+        while (current->next) current = current->next;
+        lastInsertedPrevNode = current;
         current->next = new_node;
     }
     nodeCount++;
@@ -106,6 +111,9 @@ void LinkedList::add_node_front(int data) {
     Node* new_node = new Node(data);
     new_node->next = head;
     head = new_node;
+    lastInsertedNode = new_node;
+    lastInsertedPrevNode = nullptr;
+    lastInsertWasFront = true;
     nodeCount++;
     calculate_layout();
 }
@@ -113,8 +121,29 @@ void LinkedList::add_node_front(int data) {
 void LinkedList::delete_node(int data) {
     lastDeletedNode = nullptr;
     lastDeletedPrevNode = nullptr;
-    active_node = data;
-    start_animation(AnimationType::DELETE, data);
+
+    Node* current = head;
+    Node* prev = nullptr;
+
+    while (current && current->data != data) {
+        prev = current;
+        current = current->next;
+    }
+
+    if (current) {
+        lastDeletedNode = current;
+        lastDeletedPrevNode = prev;
+
+        if (!prev) {
+            head = head->next;
+        }
+        else {
+            prev->next = current->next;
+        }
+
+        nodeCount--;
+        calculate_layout();
+    }
 }
 
 void LinkedList::start_animation(AnimationType type, int value) {
@@ -164,12 +193,8 @@ void LinkedList::animate_insert(int val) {
         Node* newNode = new Node(val);
         lastInsertedNode = newNode;
 
-        if (!head) {
-            head = newNode;
-        }
-        else {
-            oldTail->next = newNode;
-        }
+        if (!head) head = newNode;
+        else oldTail->next = newNode;
 
         nodeCount++;
         calculate_layout();
@@ -183,9 +208,7 @@ void LinkedList::animate_insert(int val) {
     }
 
     case 1: {
-        if (lastInsertedNode) {
-            lastInsertedNode->is_highlighted = false;
-        }
+        if (lastInsertedNode) lastInsertedNode->is_highlighted = false;
         currentAnimation = AnimationType::NONE;
         animationStep = 0;
         descriptionBox.SetDescription("Insertion complete");
@@ -261,9 +284,7 @@ void LinkedList::animate_delete(int val) {
             animationStep = 2;
             descriptionBox.SetDescription("Found node");
         }
-        else {
-            prevNode = current;
-        }
+        else prevNode = current;
         break;
     }
 
@@ -294,6 +315,9 @@ void LinkedList::animate_delete(int val) {
 void LinkedList::animate_search(int val) {
     switch (animationStep) {
     case 0: {
+        searchPath.clear();
+        currentSearchIndex = 0;
+
         Node* temp = head;
         while (temp) {
             temp->is_highlighted = false;
@@ -308,63 +332,45 @@ void LinkedList::animate_search(int val) {
             break;
         }
 
-        head->is_highlighted = true;
-        head->searched = true;
-        descriptionBox.SetDescription("Visiting node with value " + std::to_string(head->data));
+        Node* current = head;
+        while (current) {
+            searchPath.push_back(current);
+            current = current->next;
+        }
 
-        if (head->data == val) {
-            search_state = 1;
-            animationStep = 2;
-            descriptionBox.SetDescription("Found " + std::to_string(val));
+        if (!searchPath.empty()) {
+            searchPath[0]->is_highlighted = true;
+            descriptionBox.SetDescription("Visiting node with value " +
+                std::to_string(searchPath[0]->data));
         }
-        else {
-            prevNode = head;
-            animationStep = 1;
-        }
+        animationStep = 1;
         break;
     }
+
     case 1: {
-        if (!prevNode || !prevNode->next) {
-            search_state = 2;
-            animationStep = 2;
-            descriptionBox.SetDescription(val + " not found");
-            break;
-        }
+        if (currentSearchIndex < searchPath.size()) {
+            searchPath[currentSearchIndex]->is_highlighted = true;
+            descriptionBox.SetDescription("Visiting node with value " +
+                std::to_string(searchPath[currentSearchIndex]->data));
 
-        Node* temp = head;
-        while (temp) {
-            temp->is_highlighted = false;
-            temp->searched = false;
-            temp = temp->next;
-        }
-
-        Node* current = prevNode->next;
-        current->is_highlighted = true;
-        current->searched = true;
-        descriptionBox.SetDescription("Visiting node with value " + std::to_string(current->data));
-
-        if (current->data == val) {
-            search_state = 1;
-            animationStep = 2;
-            descriptionBox.SetDescription("Found " + std::to_string(val));
-        }
-        else {
-            prevNode = current;
-        }
-        break;
-    }
-    case 2: {
-        if (search_state != 1) {
-            Node* temp = head;
-            while (temp) {
-                temp->is_highlighted = false;
-                temp->searched = false;
-                temp = temp->next;
+            if (searchPath[currentSearchIndex]->data == val) {
+                search_state = 1;
+                animationStep = 2;
+                descriptionBox.SetDescription("Found " + std::to_string(val));
+            }
+            else {
+                currentSearchIndex++;
             }
         }
-        currentAnimation = AnimationType::NONE;
-        animationStep = 0;
-        descriptionBox.SetDescription("Search complete");
+        else {
+            search_state = 2;
+            animationStep = 2;
+            descriptionBox.SetDescription(std::to_string(val) + " not found");
+        }
+        break;
+    }
+
+    case 2: {
         break;
     }
     }
@@ -492,48 +498,27 @@ void LinkedList::draw_node(const Node* node) const {
     DrawCircleV(drawPos, radius, baseColor);
     DrawCircleLinesV(drawPos, radius, borderColor);
 
-    if (node == nodeToDelete && deleteState == DeleteState::DELETING) {
-        float fade = 1.0f - (currentAnimationTime / animationDuration);
-        DrawText("Deleting...", drawPos.x - 40, drawPos.y - 10, 20, Fade(RED, fade));
-    }
-    else {
-        int width = MeasureText(dataText.c_str(), fontSize);
-        DrawText(dataText.c_str(), drawPos.x - width / 2, drawPos.y - fontSize / 2,
-            fontSize, node->is_highlighted ? BLACK : C[0]);
-    }
+    int width = MeasureText(dataText.c_str(), fontSize);
+    DrawText(dataText.c_str(), drawPos.x - width / 2, drawPos.y - fontSize / 2,
+        fontSize, node->is_highlighted ? BLACK : C[0]);
 }
 
 void LinkedList::draw_link(const Node* from, const Node* to) const {
     if (!from || !to) return;
-
     Vector2 fromPos = { from->pos.x, from->pos.y - scrollOffset };
     Vector2 toPos = { to->pos.x, to->pos.y - scrollOffset };
+    Vector2 direction = Vector2Normalize(Vector2Subtract(toPos, fromPos));
+    Vector2 start = Vector2Add(fromPos, Vector2Scale(direction, NODE_RADIUS * nodeScale));
+    Vector2 end = Vector2Subtract(toPos, Vector2Scale(direction, NODE_RADIUS * nodeScale));
 
-    Vector2 direction = Vector2Subtract(toPos, fromPos);
-    float distance = Vector2Length(direction);
-    if (distance < 1.0f) return;
+    Color lineColor = (from->is_highlighted && to->is_highlighted) ? GOLD : C[3];
+    DrawLineEx(start, end, 3.0f * nodeScale, lineColor);
 
-    direction = Vector2Normalize(direction);
-
-    Vector2 start_point = Vector2Add(fromPos, Vector2Scale(direction, NODE_RADIUS * nodeScale));
-    Vector2 end_point = Vector2Subtract(toPos, Vector2Scale(direction, NODE_RADIUS * nodeScale));
-
-    Color linkColor = from->is_highlighted && to->is_highlighted ? GOLD : C[3];
-    DrawLineEx(start_point, end_point, 3.0f * nodeScale, linkColor);
-
-    if (distance > NODE_RADIUS * 2 * nodeScale) {
-        float activation = 20.0f * DEG2RAD;
-        Vector2 arrow_left = {
-            end_point.x - ARROW_HEAD_LENGTH * (cosf(activation) * direction.x + sinf(activation) * direction.y),
-            end_point.y - ARROW_HEAD_LENGTH * (cosf(activation) * direction.y - sinf(activation) * direction.x)
-        };
-        Vector2 arrow_right = {
-            end_point.x - ARROW_HEAD_LENGTH * (cosf(activation) * direction.x - sinf(activation) * direction.y),
-            end_point.y - ARROW_HEAD_LENGTH * (cosf(activation) * direction.y + sinf(activation) * direction.x)
-        };
-
-        DrawLineEx(end_point, arrow_left, 3.0f * nodeScale, linkColor);
-        DrawLineEx(end_point, arrow_right, 3.0f * nodeScale, linkColor);
+    if (Vector2Distance(fromPos, toPos) > NODE_RADIUS * 2 * nodeScale) {
+        Vector2 arrowLeft = Vector2Add(end, Vector2Rotate(Vector2Scale(direction, -ARROW_HEAD_LENGTH), ARROW_HEAD_ANGLE));
+        Vector2 arrowRight = Vector2Add(end, Vector2Rotate(Vector2Scale(direction, -ARROW_HEAD_LENGTH), -ARROW_HEAD_ANGLE));
+        DrawLineEx(end, arrowLeft, 3.0f * nodeScale, lineColor);
+        DrawLineEx(end, arrowRight, 3.0f * nodeScale, lineColor);
     }
 }
 
@@ -600,87 +585,21 @@ void LinkedList::step_forward() {
 }
 
 void LinkedList::step_backward() {
-    if (currentAnimation == AnimationType::NONE) {
-        descriptionBox.SetDescription("No operation to undo");
+    if (currentAnimation != AnimationType::SEARCH) {
+        descriptionBox.SetDescription("Can only step backward during search");
         return;
     }
 
-    switch (currentAnimation) {
-    case AnimationType::INSERT: {
-        if (lastInsertedNode) {
-            // Special case: undoing insertion at head
-            if (head == lastInsertedNode) {
-                head = head->next;
-            }
-            else {
-                // Find the node before the inserted node
-                Node* prev = head;
-                while (prev && prev->next != lastInsertedNode) {
-                    prev = prev->next;
-                }
-
-                if (prev) {
-                    prev->next = lastInsertedNode->next;
-                }
-            }
-
-            delete lastInsertedNode;
-            nodeCount--;
-            calculate_layout();
-            lastInsertedNode = nullptr;
-
-            descriptionBox.SetDescription("Undo: Removed inserted node");
-        }
-        currentAnimation = AnimationType::NONE;
-        break;
+    if (searchPath.empty() || currentSearchIndex == 0) {
+        descriptionBox.SetDescription("Already at start of search");
+        return;
     }
 
-    case AnimationType::DELETE: {
-        if (lastDeletedNode) {
-            // Restore the node to its original position
-            if (lastDeletedPrevNode) {
-                // Node was in middle or end of list
-                lastDeletedNode->next = lastDeletedPrevNode->next;
-                lastDeletedPrevNode->next = lastDeletedNode;
-            }
-            else {
-                // Node was at head
-                lastDeletedNode->next = head;
-                head = lastDeletedNode;
-            }
-
-            nodeCount++;
-            calculate_layout();
-
-            // Restore highlight states
-            lastDeletedNode->is_highlighted = true;
-            if (lastDeletedPrevNode) {
-                lastDeletedPrevNode->is_highlighted = true;
-            }
-
-            descriptionBox.SetDescription("Undo: Restored deleted node " +
-                std::to_string(lastDeletedNode->data));
-
-            // Don't clear these yet - allow multiple undos if needed
-            // lastDeletedNode = nullptr;
-            // lastDeletedPrevNode = nullptr;
-        }
-        currentAnimation = AnimationType::NONE;
-        break;
-    }
-
-    case AnimationType::SEARCH: {
-        Node* current = head;
-        while (current) {
-            current->is_highlighted = false;
-            current->searched = false;
-            current = current->next;
-        }
-        descriptionBox.SetDescription("Undo: Cleared search highlights");
-        currentAnimation = AnimationType::NONE;
-        break;
-    }
-    }
+    searchPath[currentSearchIndex]->is_highlighted = false;
+    currentSearchIndex--;
+    searchPath[currentSearchIndex]->is_highlighted = true;
+    descriptionBox.SetDescription("Back to node with value " +
+        std::to_string(searchPath[currentSearchIndex]->data));
 }
 
 int LinkedList::Max(int a, int b) {

@@ -50,8 +50,6 @@ public:
     void step_backward();
     bool get_paused() const { return isPaused; }
 
-    void set_animation_speed(float speed) { animationSpeed = speed; }
-
 private:
     struct Node {
         int data;
@@ -106,17 +104,17 @@ private:
     float scrollOffset = 0.0f;
     float contentHeight = 0.0f;
 
-    float animationSpeed;
-    float animationTimer;
-
     float animationDuration;
     float currentAnimationTime;
-    Vector2 nodeStartPos;
 
+    Node* lastInsertedNode = nullptr;
+    Node* lastInsertedPrevNode = nullptr;
+    bool lastInsertWasFront = false;
     Node* lastDeletedNode = nullptr;
     Node* lastDeletedPrevNode = nullptr;
-    Node* lastInsertedNode = nullptr;
 
+    std::vector<Node*> searchPath;
+    size_t currentSearchIndex = 0;
 };
 
 #endif
