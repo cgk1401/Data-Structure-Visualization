@@ -444,6 +444,7 @@ void GUI::DrawAVLTree() {
     }
     else if (buttonsearch.IsClick()) {
         Gui.SetActiveMenuAVLTree(SEARCH_AVLTREE);
+        Gui.insertanimationavltree.pseudocode.SetstringPseudocode("SEARCH");
         currentInputMode = SEARCH;
         inputActive = true;
     }
@@ -504,9 +505,6 @@ void GUI::DrawAVLTree() {
     else if (activemenu_avltree == DELETE_AVLTREE) {
         Gui.insertanimationavltree.explanationcode.Setstringexplancode("Starting Deletion.");
         if (val != -1) {
-            /*if (!Gui.insertanimationavltree.isFinished()) {
-                Gui.insertanimationavltree = InsertAnimationAVLTree(&tree);
-            }*/
             Gui.insertanimationavltree.StartDeleteAnimation(val);
             inputActive = false;
         }
@@ -523,12 +521,9 @@ void GUI::DrawAVLTree() {
         }
         Gui.insertanimationavltree.UpdateStepSearch(val);
     }
-
     Gui.insertanimationavltree.explanationcode.DrawExplancodeArea();
     Gui.insertanimationavltree.pseudocode.DrawPseudocode();
     Gui.insertanimationavltree.SetTree(&tree);
-
-    
     tree.DrawTree();
 }
 

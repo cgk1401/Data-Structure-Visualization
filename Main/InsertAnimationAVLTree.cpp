@@ -115,10 +115,20 @@ void InsertAnimationAVLTree::StartDeleteAnimation(int value) {
 	}
 	if (NodeDelete == nullptr) return;
 
-	if (NodeDelete->left == nullptr && NodeDelete->right == nullptr) NodeReplace = nullptr; 
-	else if (NodeDelete->left == nullptr) NodeReplace = NodeDelete->right; 
-	else if (NodeDelete->right == nullptr) NodeReplace = NodeDelete->left; 
+	if (NodeDelete->left == nullptr && NodeDelete->right == nullptr) {
+		NodeReplace = nullptr;
+		pseudocode.SetHighLight(2);
+	}
+	else if (NodeDelete->left == nullptr) {
+		NodeReplace = NodeDelete->right;
+		pseudocode.SetHighLight(3);
+	}
+	else if (NodeDelete->right == nullptr) {
+		NodeReplace = NodeDelete->left;
+		pseudocode.SetHighLight(3);
+	}
 	else {
+		pseudocode.SetHighLight(4);
 		NodeReplace = NodeDelete->left;
 		while (NodeReplace->right != nullptr) {
 			NodeReplace = NodeReplace->right;
@@ -583,7 +593,11 @@ void InsertAnimationAVLTree::UpdateStepDelete() {
 }
 
 void InsertAnimationAVLTree::UpdateStepSearch(int value) {
-	if (NodeSearch == nullptr) return;
+	if (NodeSearch == nullptr) {
+		pseudocode.SetHighLight(2);
+		return;
+	}
+	pseudocode.SetHighLight(1);
 	AnimationTime += GetFrameTime();
 	float t = AnimationTime / duration;
 
