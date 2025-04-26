@@ -270,6 +270,13 @@ void GUI::DrawSecondMenu() {
     float titleY = 20.0f + 20.0f; // Positioned at top of menu
     DrawText(titleText, titleX, titleY, TITLE_FONT_SIZE, C[0]);
 
+    buttonscreen.ConfigureButton(7.5);
+
+    if (buttonscreen.IsClick()) {
+        graph.set_fix_graph(true); is_graph_fixed = true;
+        ExportScreenshot();
+    }
+
     if (CurrentStruture == GRAPH && currentInputMode == DIJKSTRA && activemenu_graph != DEFAULT) { return; }
     // Draw all buttons
     if (CurrentStruture == LINKEDLIST) {

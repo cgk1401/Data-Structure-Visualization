@@ -125,8 +125,8 @@ void Graph::input_graph(std::ifstream& fin) {
 	int n_vertex; //nums of nodes
 	int n_edge; //nums of edges
 	bool is_dir; //directed/undirected graph
-	fin >> n_vertex >> n_edge >> is_dir;
-	is_directed = is_dir;
+	fin >> n_vertex >> n_edge;
+	is_directed = false;
 
 	for (int i = 0; i < n_vertex; i++) {
 		int id; fin >> id;
