@@ -39,7 +39,6 @@ Button::Button(string s, Color color) {
 }
 
 
-
 void Button::DrawButton() {
 	//Font custom = LoadFont("../../Data-Structure-Visualization/assets/PublicSans-Bold.ttf");
 	int textWidth = MeasureText(this->s.c_str(), 20);

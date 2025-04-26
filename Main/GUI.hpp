@@ -30,6 +30,7 @@ enum InputMode { NONE, INIT, INSERT, DELETE, SEARCH, DIJKSTRA };
 
 class GUI {
 private:
+	HashTable table;
 
 	LinkedList list;
     float linkedListScrollY = 0;
@@ -105,5 +106,6 @@ public:
 };
 
 extern GUI Gui;
+
 
 #endif // GUI_HPP

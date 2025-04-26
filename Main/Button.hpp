@@ -7,7 +7,10 @@
 #include "Config.hpp"
 using namespace std;
 
+
+
 class Button {
+
 public:
 	float coordinateX;
 	float coordinateY;
