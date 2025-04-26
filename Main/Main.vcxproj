@@ -140,7 +140,7 @@
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="GUI.cpp" />
-    <ClCompile Include="InsertAnimationAVLTree.cpp" />
+    <ClCompile Include="AnimationAVLTree.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="Pseudocode.cpp" />
@@ -158,7 +158,7 @@
     <ClInclude Include="Config.hpp" />
     <ClInclude Include="Graph.hpp" />
     <ClInclude Include="GUI.hpp" />
-    <ClInclude Include="InsertAnimationAVLTree.hpp" />
+    <ClInclude Include="AnimationAVLTree.hpp" />
     <ClInclude Include="Node.hpp" />
     <ClInclude Include="Pseudocode.hpp" />
   </ItemGroup>
