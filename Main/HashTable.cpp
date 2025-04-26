@@ -183,7 +183,7 @@ void HashTable::draw(int currentStep) {
                 bucketColor = (fmod(collisionProgress, 0.5f) < 0.25f) ? C[0] : C[1];
             }
             else if (i == highlightedIndex) {
-                bucketColor = PINK; // Tô hồng cho bucket đang kiểm tra
+                bucketColor = C[5]; // Tô hồng cho bucket đang kiểm tra
             }
             // Chỉ nháy đỏ khi ở bước 2 (dòng "If slot is occupied, probe next")
             else if (currentStep == 2 && std::find(stepCollisionIndices.begin(), stepCollisionIndices.end(), i) != stepCollisionIndices.end()) {

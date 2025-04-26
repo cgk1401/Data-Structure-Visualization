@@ -130,38 +130,36 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AVLTree.cpp" />
-    <ClCompile Include="DijkstraAnimationGraph.cpp" />
-    <ClCompile Include="ExplanationCode.cpp" />
-    <ClCompile Include="HashTable.cpp" />
-    <ClCompile Include="LinkedList.cpp" />
-    <ClCompile Include="Button.cpp" />
-    <ClCompile Include="Config.cpp" />
-    <ClCompile Include="Graph.cpp" />
-    <ClCompile Include="GUI.cpp" />
-    <ClCompile Include="HashTable.cpp" />
-    <ClCompile Include="InsertAnimationAVLTree.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Node.cpp" />
-    <ClCompile Include="Pseudocode.cpp" />
-    <ClCompile Include="tinyfiledialogs.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\tinyfiledialogs\tinyfiledialogs.h" />
-    <ClInclude Include="AVLTree.hpp" />
-    <ClInclude Include="DijkstraAnimationGraph.hpp" />
-    <ClInclude Include="ExplanationCode.hpp" />
-    <ClInclude Include="HashTable.hpp" />
-    <ClInclude Include="LinkedList.hpp" />
-    <ClInclude Include="Button.hpp" />
-    <ClInclude Include="Config.hpp" />
-    <ClInclude Include="Graph.hpp" />
-    <ClInclude Include="GUI.hpp" />
-    <ClInclude Include="HashTable.hpp" />
-    <ClInclude Include="InsertAnimationAVLTree.hpp" />
-    <ClInclude Include="Node.hpp" />
-    <ClInclude Include="Pseudocode.hpp" />
-  </ItemGroup>
+  <ClCompile Include="AVLTree.cpp" />
+  <ClCompile Include="DijkstraAnimationGraph.cpp" />
+  <ClCompile Include="ExplanationCode.cpp" />
+  <ClCompile Include="HashTable.cpp" />  <!-- Only once -->
+  <ClCompile Include="LinkedList.cpp" />
+  <ClCompile Include="Button.cpp" />
+  <ClCompile Include="Config.cpp" />
+  <ClCompile Include="Graph.cpp" />
+  <ClCompile Include="GUI.cpp" />
+  <ClCompile Include="InsertAnimationAVLTree.cpp" />
+  <ClCompile Include="Main.cpp" />
+  <ClCompile Include="Node.cpp" />
+  <ClCompile Include="Pseudocode.cpp" />
+  <ClCompile Include="tinyfiledialogs.c" />
+</ItemGroup>
+<ItemGroup>
+  <ClInclude Include="..\..\..\tinyfiledialogs\tinyfiledialogs.h" />
+  <ClInclude Include="AVLTree.hpp" />
+  <ClInclude Include="DijkstraAnimationGraph.hpp" />
+  <ClInclude Include="ExplanationCode.hpp" />
+  <ClInclude Include="LinkedList.hpp" />
+  <ClInclude Include="Button.hpp" />
+  <ClInclude Include="Config.hpp" />
+  <ClInclude Include="Graph.hpp" />
+  <ClInclude Include="GUI.hpp" />
+  <ClInclude Include="InsertAnimationAVLTree.hpp" />
+  <ClInclude Include="Node.hpp" />
+  <ClInclude Include="Pseudocode.hpp" />
+  <ClInclude Include="HashTable.hpp" />  <!-- Only once -->
+</ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

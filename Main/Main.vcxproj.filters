@@ -8,86 +8,92 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <!-- Assign .cpp files to "Source Files" -->
-  <ItemGroup>
-    <ClCompile Include="AVLTree.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LinkedList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Button.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Config.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InsertAnimationAVLTree.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Node.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tinyfiledialogs.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DijkstraAnimationGraph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HashTable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HashTable.cpp" />
-    <ClCompile Include="Pseudocode.cpp" />
-    <ClCompile Include="ExplanationCode.cpp" />
-  </ItemGroup>
-  <!-- Assign .hpp files to "Header Files" -->
-  <ItemGroup>
-    <ClInclude Include="..\..\..\tinyfiledialogs\tinyfiledialogs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AVLTree.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LinkedList.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Button.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Config.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graph.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InsertAnimationAVLTree.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Node.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DijkstraAnimationGraph.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HashTable.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HashTable.hpp" />
-    <ClInclude Include="Pseudocode.hpp" />
-    <ClInclude Include="ExplanationCode.hpp" />
-  </ItemGroup>
+ <ItemGroup>
+  <!-- Source Files -->
+  <ClCompile Include="AVLTree.cpp">
+    <Filter>Source Files</Filter>
+  </ClCompile>
+  <ClCompile Include="LinkedList.cpp">
+    <Filter>Source Files</Filter>
+  </ClCompile>
+  <ClCompile Include="Button.cpp">
+    <Filter>Source Files</Filter>
+  </ClCompile>
+  <ClCompile Include="Config.cpp">
+    <Filter>Source Files</Filter>
+  </ClCompile>
+  <ClCompile Include="Graph.cpp">
+    <Filter>Source Files</Filter>
+  </ClCompile>
+  <ClCompile Include="GUI.cpp">
+    <Filter>Source Files</Filter>
+  </ClCompile>
+  <ClCompile Include="InsertAnimationAVLTree.cpp">
+    <Filter>Source Files</Filter>
+  </ClCompile>
+  <ClCompile Include="Main.cpp">
+    <Filter>Source Files</Filter>
+  </ClCompile>
+  <ClCompile Include="Node.cpp">
+    <Filter>Source Files</Filter>
+  </ClCompile>
+  <ClCompile Include="tinyfiledialogs.c">
+    <Filter>Source Files</Filter>
+  </ClCompile>
+  <ClCompile Include="DijkstraAnimationGraph.cpp">
+    <Filter>Source Files</Filter>
+  </ClCompile>
+  <ClCompile Include="HashTable.cpp">
+    <Filter>Source Files</Filter>
+  </ClCompile>
+  <ClCompile Include="Pseudocode.cpp">
+    <Filter>Source Files</Filter>
+  </ClCompile>
+  <ClCompile Include="ExplanationCode.cpp">
+    <Filter>Source Files</Filter>
+  </ClCompile>
+</ItemGroup>
+
+<ItemGroup>
+  <!-- Header Files -->
+  <ClInclude Include="..\..\..\tinyfiledialogs\tinyfiledialogs.h">
+    <Filter>Header Files</Filter>
+  </ClInclude>
+  <ClInclude Include="AVLTree.hpp">
+    <Filter>Header Files</Filter>
+  </ClInclude>
+  <ClInclude Include="LinkedList.hpp">
+    <Filter>Header Files</Filter>
+  </ClInclude>
+  <ClInclude Include="Button.hpp">
+    <Filter>Header Files</Filter>
+  </ClInclude>
+  <ClInclude Include="Config.hpp">
+    <Filter>Header Files</Filter>
+  </ClInclude>
+  <ClInclude Include="Graph.hpp">
+    <Filter>Header Files</Filter>
+  </ClInclude>
+  <ClInclude Include="GUI.hpp">
+    <Filter>Header Files</Filter>
+  </ClInclude>
+  <ClInclude Include="InsertAnimationAVLTree.hpp">
+    <Filter>Header Files</Filter>
+  </ClInclude>
+  <ClInclude Include="Node.hpp">
+    <Filter>Header Files</Filter>
+  </ClInclude>
+  <ClInclude Include="DijkstraAnimationGraph.hpp">
+    <Filter>Header Files</Filter>
+  </ClInclude>
+  <ClInclude Include="HashTable.hpp">
+    <Filter>Header Files</Filter>
+  </ClInclude>
+  <ClInclude Include="Pseudocode.hpp">
+    <Filter>Header Files</Filter>
+  </ClInclude>
+  <ClInclude Include="ExplanationCode.hpp">
+    <Filter>Header Files</Filter>
+  </ClInclude>
+</ItemGroup>
 </Project>
