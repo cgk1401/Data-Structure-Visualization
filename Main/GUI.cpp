@@ -1028,14 +1028,29 @@ bool GUI::ExportScreenshot() {
     const char* savePath = tinyfd_saveFileDialog("Save Screenshot", "screenshot.png", 1, filterPatterns, NULL);
 
     if (savePath) {
-        EndDrawing();  
-        Image screenshot = LoadImageFromScreen();
-        BeginDrawing(); 
+        // Create a RenderTexture and copy screen contents
+        RenderTexture2D target = LoadRenderTexture(ScreenWidth, ScreenHeight);
+        BeginTextureMode(target);
+        ClearBackground(C[4]); 
+        switch (CurrentStruture) {
+        case HASHTABLE: DrawHashTable(); break;
+        case LINKEDLIST: DrawLinkedList(); break;
+        case AVLTREE: DrawAVLTree(); break;
+        case GRAPH: DrawGraph(); break;
+        default: break;
+        }
+        EndTextureMode();
 
-        bool c = ExportImage(screenshot, savePath);
+        // Extract image and export
+        Image screenshot = LoadImageFromTexture(target.texture);
+        ImageFlipVertical(&screenshot);
+        bool success = ExportImage(screenshot, savePath);
+
+        // Cleanup
         UnloadImage(screenshot);
+        UnloadRenderTexture(target);
 
-        return c;
+        return success;
     }
 
     return false;
