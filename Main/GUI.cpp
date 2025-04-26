@@ -39,13 +39,12 @@ void GUI::Start() {
     for (int i = 0; i < 6; i++) { C[i] = ColorPalette[1][i]; }
 
     // Set icon
-	Image icon = LoadImage("../../Data-Structure-Visualization/assets/Icon1.png");
+	Image icon = LoadImage("../assets/Icon1.png");
 	SetWindowIcon(icon);
-    UnloadImage(icon);
 
     //Set music
 	InitAudioDevice();
-	music = LoadMusicStream("../../Data-Structure-Visualization/assets/BackgroundMusic.mp3");
+	music = LoadMusicStream("../assets/BackgroundMusic.mp3");
     PlayMusicStream(music);
 	SetMusicVolume(music, 0.5f);
 
@@ -82,16 +81,13 @@ void GUI::Start() {
 
     UnloadMusicStream(music);
     CloseAudioDevice();
-
+    UnloadImage(icon);
     UnloadTexture(ImageBack);
     CloseWindow();
 }
 
 void GUI::DrawMainMenu() {
     DrawText("Choose Data Structure", ScreenWidth * float(2) / 5, ScreenHeight * float(5) / 6, 40, WHITE);
-
-    //Font custom = LoadFont("../../Data-Structure-Visualization/assets/PublicSans-Bold.ttf");
-    //DrawTextEx(customfont, "Choose Data Structure", { ScreenWidth * float(2) / 5, ScreenHeight * float(5) / 6 }, 60, 1, C[0]);
     DrawText("Choose Data Structure", ScreenWidth * float(2) / 5, ScreenHeight * float(0.5) / 6, 40, C[0]);
 
     Rectangle HASHTABLEBUTTON = { ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
@@ -910,11 +906,7 @@ void GUI::DrawHashTable() {
             }
         }
     }
-
-    // Vẽ HashTable, pseudocode và explanation
     hashtable.draw(isStepByStepMode ? currentStep : autoStep);
-    explanationcode.area_text.y = 570;
-    pseudocode.area_text.y = explanationcode.area_text.y + explanationcode.area_text.height + 10;
     pseudocode.DrawPseudocode();
     explanationcode.DrawExplancodeArea();
 }

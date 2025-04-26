@@ -9,6 +9,7 @@ using namespace std;
 class Pseudocode {
 public:
     string text = "";
+
     vector <string> lineinsert = {
         "Insert:",
         "Check Balance Factor :",
@@ -22,6 +23,15 @@ public:
         "Search: ",
         "Found",
         "Not found"
+    };
+
+    vector <string> linedelete = {
+    "Delete: ",
+    "Find node to delete",
+    "Node is a leaf -> remove directly",
+    "One child -> replace with child",
+    "Two children -> ",
+
     };
 
     // Pseudocode cho HashTable
@@ -43,15 +53,6 @@ public:
         "Delete:",
         "Compute index = key % capacity",
         "Probe until key is found",
-    };
-
-	vector <string> linedelete = {
-		"Delete: ",
-		"Find node to delete",
-		"Node is a leaf -> remove directly",
-		"One child -> replace with child",
-		"Two children -> ",
-
     };
 
     vector <string> line;
