@@ -180,14 +180,14 @@ void HashTable::draw(int currentStep) {
 
             Color bucketColor = C[1];
             if (isCollisionAnimation && std::find(collisionIndices.begin(), collisionIndices.end(), i) != collisionIndices.end()) {
-                bucketColor = (fmod(collisionProgress, 0.5f) < 0.25f) ? RED : C[1];
+                bucketColor = (fmod(collisionProgress, 0.5f) < 0.25f) ? C[0] : C[1];
             }
             else if (i == highlightedIndex) {
                 bucketColor = PINK; // Tô hồng cho bucket đang kiểm tra
             }
             // Chỉ nháy đỏ khi ở bước 2 (dòng "If slot is occupied, probe next")
             else if (currentStep == 2 && std::find(stepCollisionIndices.begin(), stepCollisionIndices.end(), i) != stepCollisionIndices.end()) {
-                bucketColor = (fmod(GetTime(), 0.5f) < 0.25f) ? RED : C[1]; // Nháy đỏ cho va chạm
+                bucketColor = (fmod(GetTime(), 0.5f) < 0.25f) ? C[0] : C[1]; // Nháy đỏ cho va chạm
             }
             // Chỉ tô xanh khi đang ở bước 3 và giá trị đã được chèn
             else if (i == stepInsertIndex && table[i] != EMPTY && table[i] != DELETED) {
@@ -199,7 +199,7 @@ void HashTable::draw(int currentStep) {
 
             if (progress >= 1.0f && table[i] != EMPTY && table[i] != DELETED) {
                 std::string value = std::to_string(table[i]);
-                DrawText(value.c_str(), x + 30, y + 15, 20, RED);
+                DrawText(value.c_str(), x + 30, y + 15, 20, C[0]);
             }
 
             std::string indexStr = std::to_string(i);
@@ -226,7 +226,7 @@ void HashTable::draw(int currentStep) {
                 removedValue = -1;
             }
         }
-        DrawText(std::to_string(removedValue).c_str(), removeX, removeY, 20, RED);
+        DrawText(std::to_string(removedValue).c_str(), removeX, removeY, 20, C[0]);
     }
 }
 
