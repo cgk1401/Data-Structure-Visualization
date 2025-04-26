@@ -1,6 +1,6 @@
-﻿#include "InsertAnimationAVLTree.hpp"
+﻿#include "AnimationAVLTree.hpp"
 
-InsertAnimationAVLTree::InsertAnimationAVLTree(AVLTree* root) {
+AnimationAVLTree::AnimationAVLTree(AVLTree* root) {
 	this->tree = root;
 	this->InsertValue = -1;
 	this->Indexpath = 0;
@@ -22,7 +22,7 @@ InsertAnimationAVLTree::InsertAnimationAVLTree(AVLTree* root) {
 	this->RotateTargetPosition.clear();
 }
 
-void InsertAnimationAVLTree::StartInsertAnimation(int value) {
+void AnimationAVLTree::StartInsertAnimation(int value) {
 	this->InsertValue = value;
 	this->Indexpath = 0;
 	this->ReverseIndexpath = 0;
@@ -86,7 +86,7 @@ void InsertAnimationAVLTree::StartInsertAnimation(int value) {
 	tree->DeleteLeafNode(tree->Root, InsertValue);
 }
 
-void InsertAnimationAVLTree::StartDeleteAnimation(int value) {
+void AnimationAVLTree::StartDeleteAnimation(int value) {
 	this->InsertValue = value;
 	this->Indexpath = 0;
 	this->AnimationStep = 1;
@@ -115,10 +115,20 @@ void InsertAnimationAVLTree::StartDeleteAnimation(int value) {
 	}
 	if (NodeDelete == nullptr) return;
 
-	if (NodeDelete->left == nullptr && NodeDelete->right == nullptr) NodeReplace = nullptr; 
-	else if (NodeDelete->left == nullptr) NodeReplace = NodeDelete->right; 
-	else if (NodeDelete->right == nullptr) NodeReplace = NodeDelete->left; 
+	if (NodeDelete->left == nullptr && NodeDelete->right == nullptr) {
+		NodeReplace = nullptr;
+		pseudocode.SetHighLight(2);
+	}
+	else if (NodeDelete->left == nullptr) {
+		NodeReplace = NodeDelete->right;
+		pseudocode.SetHighLight(3);
+	}
+	else if (NodeDelete->right == nullptr) {
+		NodeReplace = NodeDelete->left;
+		pseudocode.SetHighLight(3);
+	}
 	else {
+		pseudocode.SetHighLight(4);
 		NodeReplace = NodeDelete->left;
 		while (NodeReplace->right != nullptr) {
 			NodeReplace = NodeReplace->right;
@@ -131,7 +141,7 @@ void InsertAnimationAVLTree::StartDeleteAnimation(int value) {
 	}
 }
 
-void InsertAnimationAVLTree::StartSearchAnimation(int value) {
+void AnimationAVLTree::StartSearchAnimation(int value) {
 	AnimationTime = 0.0f;
 	duration = 0.5f;
 	Node* curr = tree->Root;
@@ -145,7 +155,7 @@ void InsertAnimationAVLTree::StartSearchAnimation(int value) {
 	}
 }
 
-void InsertAnimationAVLTree::UpdateStepInsert() {
+void AnimationAVLTree::UpdateStepInsert() {
 	if (NodeSearch != nullptr && isDuplicate == true) {
 		AnimationTime += GetFrameTime();
 		float t = AnimationTime / duration;
@@ -339,7 +349,7 @@ void InsertAnimationAVLTree::UpdateStepInsert() {
 	}
 }
 
-void InsertAnimationAVLTree::UpdateStepDelete() {
+void AnimationAVLTree::UpdateStepDelete() {
 	if (NodeDelete == nullptr) return;
 
 	AnimationTime += GetFrameTime();
@@ -582,8 +592,12 @@ void InsertAnimationAVLTree::UpdateStepDelete() {
 	}
 }
 
-void InsertAnimationAVLTree::UpdateStepSearch(int value) {
-	if (NodeSearch == nullptr) return;
+void AnimationAVLTree::UpdateStepSearch(int value) {
+	if (NodeSearch == nullptr) {
+		pseudocode.SetHighLight(2);
+		return;
+	}
+	pseudocode.SetHighLight(1);
 	AnimationTime += GetFrameTime();
 	float t = AnimationTime / duration;
 
@@ -603,6 +617,6 @@ void InsertAnimationAVLTree::UpdateStepSearch(int value) {
 	DrawText(text.c_str(), NodeSearch->position.x - textWidth / 2, NodeSearch->position.y - fontSize / 2, fontSize, WHITE);
 }
 
-bool InsertAnimationAVLTree::isFinished() const { return AnimationStep == 0;}
+bool AnimationAVLTree::isFinished() const { return AnimationStep == 0;}
 
-void InsertAnimationAVLTree::SetTree(AVLTree* root) {this->tree = root;}
+void AnimationAVLTree::SetTree(AVLTree* root) {this->tree = root;}

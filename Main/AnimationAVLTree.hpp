@@ -1,12 +1,12 @@
-﻿#ifndef INSERTANIMATIONAVLTREE_HPP
-#define INSERTANIMATIONAVLTREE_HPP
+﻿#ifndef ANIMATIONAVLTREE_HPP
+#define ANIMATIONAVLTREE_HPP
 
 #include "AVLTree.hpp"
 #include "ExplanationCode.hpp"
 #include "Pseudocode.hpp"
 #include <map>
 
-class InsertAnimationAVLTree {
+class AnimationAVLTree {
 private:
 	AVLTree* tree;
 
@@ -37,7 +37,7 @@ private:
 	map <Node*, Vector2> RotateStartPosition;
 	map <Node*, Vector2> RotateTargetPosition;
 public:
-	InsertAnimationAVLTree(AVLTree* root);
+	AnimationAVLTree(AVLTree* root);
 	ExplanationCode explanationcode;
 	Pseudocode pseudocode;
 	
@@ -55,4 +55,4 @@ public:
 	bool isFinished() const;
 };
 
-#endif // !INSERTANIMATIONAVLTREE_HPP
+#endif // !ANIMATIONAVLTREE_HPP
