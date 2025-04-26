@@ -34,7 +34,7 @@ LinkedList::LinkedList() :
     currentAnimation(AnimationType::NONE),
     animationStep(0),
     isPaused(false),
-    animationDuration(0.5f),
+    animationDuration(1.0f),
     currentAnimationTime(0.0f),
     currentSearchIndex(0),
     lastInsertedNode(nullptr),

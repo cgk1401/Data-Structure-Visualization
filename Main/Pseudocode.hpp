@@ -38,7 +38,7 @@ public:
 	float highlightline = -1;
 
 	const float MENU_WIDTH = ScreenWidth / 5.0f;
-	const float Height_Area = 380.0f;
+	const float Height_Area = 300.0f;
 	const float Weigh_Area = MENU_WIDTH * 0.85f;
 	const float Coordinate_X_Area = MENU_WIDTH * 0.075f;
 	const float Coordinate_Y_Area = (20 + 60  /*Start position Button Init*/) + 8.3 * (30 + 15) + 115; /*position * (BUTTON_HEIGHT + BUTTON_SPACING)*/

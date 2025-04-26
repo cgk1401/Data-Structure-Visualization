@@ -268,7 +268,7 @@ void GUI::DrawSecondMenu() {
     float titleY = 20.0f + 20.0f; // Positioned at top of menu
     DrawText(titleText, titleX, titleY, TITLE_FONT_SIZE, C[0]);
 
-    buttonscreen.ConfigureButton(7.5);
+    buttonscreen.ConfigureButton(18);
 
     if (buttonscreen.IsClick()) {
         graph.set_fix_graph(true); is_graph_fixed = true;
@@ -433,6 +433,8 @@ void GUI::DrawLinkedList() {
     DrawSecondMenu();
     DrawBack();
     DrawInputBox();
+    float durationtime = DrawSlider();
+    list.SetanimationDurationLinkedList(durationtime);
 
     if (buttoninit.IsClick()) {
         currentInputMode = INIT;
@@ -1270,7 +1272,7 @@ float GUI::DrawSlider() {
     const float maxValue = 2.0f;
 
     float x = (ScreenWidth / 5.0f) * 0.075f;
-    float y = ScreenHeight / 8.0f + 11 * ScreenHeight * 0.062f;
+    float y = ScreenHeight - 30;
     float width = (ScreenWidth / 5.0f) * 0.85;
     float height = 7.0f;
 
@@ -1294,7 +1296,7 @@ float GUI::DrawSlider() {
     char buffer[32];
     sprintf_s(buffer, sizeof(buffer), "%.3f", value);
 
-	DrawText(buffer, handlePos - MeasureText(buffer, 20) / 2, y - 25, 20, C[0]);
+	DrawText(buffer, handlePos - MeasureText(buffer, 20) / 2, y - 30, 20, C[0]);
     return maxValue - value;
 }
 

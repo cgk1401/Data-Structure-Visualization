@@ -49,6 +49,7 @@ public:
     void step_forward();
     void step_backward();
     bool get_paused() const { return isPaused; }
+    void SetanimationDurationLinkedList(float t) { animationDuration = t; }
 
 private:
     struct Node {
