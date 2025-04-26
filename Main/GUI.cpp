@@ -219,7 +219,6 @@ void GUI::DrawSecondMenu() {
         buttonsearch.ConfigureButton(3);
         buttonclear.ConfigureButton(4);
     }
-
 }
 
 void GUI::DrawDivider() {
@@ -408,26 +407,6 @@ void GUI::DrawLinkedList() {
         if (buttonPausePlay.IsClick()) {
             list.set_paused(!list.get_paused());
         }
-    }
-
-    if (search_result_timer > 0.0f && list.get_search_state() != -1) {
-        search_result_timer -= GetFrameTime();
-        float boxWidth = 150;
-        float boxHeight = 40;
-        float boxX = 150;
-        float boxY = ScreenHeight - 60;
-        Color bgColor = C[2];
-        Color borderColor = C[3];
-        borderColor.a = 150;
-        Color textColor = C[0];
-        const char* resultText = (list.get_search_state() == 1) ? "Found" : "Not Found";
-        if (list.get_search_state() != 1) bgColor.a = 180;
-
-        Rectangle resultRect = { boxX, boxY, boxWidth, boxHeight };
-        DrawRectangleRounded(resultRect, 0.3f, 100, bgColor);
-        DrawRectangleLinesEx(resultRect, 2.0f, borderColor);
-        Vector2 textSize = MeasureTextEx(GetFontDefault(), resultText, 20, 1);
-        DrawText(resultText, boxX + (boxWidth - textSize.x) / 2, boxY + (boxHeight - textSize.y) / 2, 20, textColor);
     }
 }
 
