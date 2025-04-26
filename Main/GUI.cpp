@@ -288,11 +288,15 @@ void GUI::DrawHashTable() {
     static Pseudocode pseudocode;
     static ExplanationCode explanationcode;
     static bool firstFrame = true;
-    static int currentStep = -1; // Bước hiện tại
+    static int currentStep = -1; // Bước hiện tại trong chế độ step-by-step
     static int pendingKey = -1; // Giá trị đang chờ xử lý
     static bool isStepping = false; // Trạng thái step-by-step
-    static bool isStepByStepMode = false; // Chế độ: true = step-by-step, false = at once
+    static bool isStepByStepMode = false; // Chế độ: true = step-by-step, false = at-once
     static string currentOperation = ""; // Thao tác hiện tại: "INSERT", "SEARCH", "DELETE"
+    static bool isAutoHighlighting = false; // Trạng thái highlight tự động trong chế độ at-once
+    static int autoStep = -1; // Bước hiện tại trong highlight tự động
+    static float timer = 0.0f; // Đếm thời gian cho highlight tự động
+    static float speedValue = 2.0f; // Tốc độ mặc định (s mỗi bước)
 
     if (firstFrame) {
         pseudocode.SetstringPseudocode("");
@@ -300,6 +304,9 @@ void GUI::DrawHashTable() {
         explanationcode.SetHighLight(0);
         firstFrame = false;
     }
+
+    // Vẽ và lấy giá trị từ slider
+    speedValue = DrawSlider(0.5f, 2.0f); // Tốc độ từ 0.5s đến 2.0s mỗi bước
 
     // Xử lý nút Pause
     if (buttonpause.IsClick()) {
@@ -342,6 +349,9 @@ void GUI::DrawHashTable() {
         currentStep = -1;
         pendingKey = -1;
         currentOperation = "";
+        isAutoHighlighting = false;
+        autoStep = -1;
+        timer = 0.0f;
     }
     else if (buttoninsert.IsClick()) {
         hashtable.setInitMode(HashTable::NONE_INIT);
@@ -355,6 +365,9 @@ void GUI::DrawHashTable() {
         currentStep = -1;
         pendingKey = -1;
         currentOperation = "INSERT";
+        isAutoHighlighting = false;
+        autoStep = -1;
+        timer = 0.0f;
     }
     else if (buttondelete.IsClick()) {
         hashtable.setInitMode(HashTable::NONE_INIT);
@@ -368,6 +381,9 @@ void GUI::DrawHashTable() {
         currentStep = -1;
         pendingKey = -1;
         currentOperation = "DELETE";
+        isAutoHighlighting = false;
+        autoStep = -1;
+        timer = 0.0f;
     }
     else if (buttonsearch.IsClick()) {
         hashtable.setInitMode(HashTable::NONE_INIT);
@@ -381,6 +397,9 @@ void GUI::DrawHashTable() {
         currentStep = -1;
         pendingKey = -1;
         currentOperation = "SEARCH";
+        isAutoHighlighting = false;
+        autoStep = -1;
+        timer = 0.0f;
     }
     else if (buttonclear.IsClick()) {
         hashtable.clear();
@@ -391,6 +410,9 @@ void GUI::DrawHashTable() {
         currentStep = -1;
         pendingKey = -1;
         currentOperation = "";
+        isAutoHighlighting = false;
+        autoStep = -1;
+        timer = 0.0f;
     }
 
     int val = Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
@@ -454,12 +476,18 @@ void GUI::DrawHashTable() {
             currentInputMode = NONE;
         }
         else if (!isStepByStepMode) {
-            hashtable.insert(val);
-            inputActive = false;
-            currentInputMode = NONE;
-            pseudocode.SetstringPseudocode("INSERT_HASHTABLE");
-            explanationcode.Setstringexplancode("Inserted value " + std::to_string(val) + ".");
-            explanationcode.SetHighLight(-1);
+            if (!isAutoHighlighting) {
+                // Bắt đầu highlight tự động
+                isAutoHighlighting = true;
+                autoStep = 0;
+                timer = 0.0f;
+                pseudocode.SetHighLight(autoStep);
+                explanationcode.Setstringexplancode("Starting insertion of value " + std::to_string(val) + ".");
+                explanationcode.SetHighLight(0);
+                hashtable.insert(val); // Thực hiện thao tác ngay lập tức
+                inputActive = false;
+                currentInputMode = NONE;
+            }
         }
     }
     else if (currentInputMode == SEARCH && val != -1) {
@@ -475,12 +503,18 @@ void GUI::DrawHashTable() {
             currentInputMode = NONE;
         }
         else if (!isStepByStepMode) {
-            hashtable.search(val);
-            inputActive = false;
-            currentInputMode = NONE;
-            pseudocode.SetstringPseudocode("SEARCH_HASHTABLE");
-            explanationcode.Setstringexplancode("Searched for value " + std::to_string(val) + ".");
-            explanationcode.SetHighLight(-1);
+            if (!isAutoHighlighting) {
+                // Bắt đầu highlight tự động
+                isAutoHighlighting = true;
+                autoStep = 0;
+                timer = 0.0f;
+                pseudocode.SetHighLight(autoStep);
+                explanationcode.Setstringexplancode("Starting search for value " + std::to_string(val) + ".");
+                explanationcode.SetHighLight(0);
+                hashtable.search(val); // Thực hiện thao tác ngay lập tức
+                inputActive = false;
+                currentInputMode = NONE;
+            }
         }
     }
     else if (currentInputMode == DELETE && val != -1) {
@@ -496,16 +530,91 @@ void GUI::DrawHashTable() {
             currentInputMode = NONE;
         }
         else if (!isStepByStepMode) {
-            hashtable.remove(val);
-            inputActive = false;
-            currentInputMode = NONE;
-            pseudocode.SetstringPseudocode("DELETE_HASHTABLE");
-            explanationcode.Setstringexplancode("Value " + std::to_string(val) + " deleted.");
-            explanationcode.SetHighLight(-1);
+            if (!isAutoHighlighting) {
+                // Bắt đầu highlight tự động
+                isAutoHighlighting = true;
+                autoStep = 0;
+                timer = 0.0f;
+                pseudocode.SetHighLight(autoStep);
+                explanationcode.Setstringexplancode("Starting deletion of value " + std::to_string(val) + ".");
+                explanationcode.SetHighLight(0);
+                hashtable.remove(val); // Thực hiện thao tác ngay lập tức
+                inputActive = false;
+                currentInputMode = NONE;
+            }
         }
     }
 
-    // Xử lý nút Next và Prev
+    // Xử lý highlight tự động trong chế độ at-once
+    if (!isStepByStepMode && isAutoHighlighting) {
+        timer += GetFrameTime(); // Tăng timer dựa trên thời gian khung hình
+        if (timer >= speedValue) { // Nếu đủ thời gian cho một bước
+            autoStep++;
+            timer = 0.0f; // Reset timer
+            if (autoStep >= 4) { // Hoàn thành 4 bước (0-3)
+                isAutoHighlighting = false;
+                autoStep = -1;
+                pseudocode.SetHighLight(-1);
+                if (currentOperation == "INSERT") {
+                    explanationcode.Setstringexplancode("Inserted value " + std::to_string(val) + ".");
+                }
+                else if (currentOperation == "SEARCH") {
+                    explanationcode.Setstringexplancode("Searched for value " + std::to_string(val) + ".");
+                }
+                else if (currentOperation == "DELETE") {
+                    explanationcode.Setstringexplancode("Value " + std::to_string(val) + " deleted.");
+                }
+                explanationcode.SetHighLight(-1);
+            }
+            else {
+                pseudocode.SetHighLight(autoStep);
+                if (currentOperation == "INSERT") {
+                    if (autoStep == 1) {
+                        explanationcode.Setstringexplancode("Computed index for value " + std::to_string(val) + ".");
+                        explanationcode.SetHighLight(1);
+                    }
+                    else if (autoStep == 2) {
+                        explanationcode.Setstringexplancode("Checking for collisions and probing.");
+                        explanationcode.SetHighLight(2);
+                    }
+                    else if (autoStep == 3) {
+                        explanationcode.Setstringexplancode("Inserted value into slot.");
+                        explanationcode.SetHighLight(3);
+                    }
+                }
+                else if (currentOperation == "SEARCH") {
+                    if (autoStep == 1) {
+                        explanationcode.Setstringexplancode("Computed index for value " + std::to_string(val) + ".");
+                        explanationcode.SetHighLight(1);
+                    }
+                    else if (autoStep == 2) {
+                        explanationcode.Setstringexplancode("Probing linearly to find value.");
+                        explanationcode.SetHighLight(2);
+                    }
+                    else if (autoStep == 3) {
+                        explanationcode.Setstringexplancode(hashtable.getStepSearchIndex() != -1 ? "Value found." : "Value not found.");
+                        explanationcode.SetHighLight(3);
+                    }
+                }
+                else if (currentOperation == "DELETE") {
+                    if (autoStep == 1) {
+                        explanationcode.Setstringexplancode("Computed index for value " + std::to_string(val) + ".");
+                        explanationcode.SetHighLight(1);
+                    }
+                    else if (autoStep == 2) {
+                        explanationcode.Setstringexplancode("Probing linearly to find value.");
+                        explanationcode.SetHighLight(2);
+                    }
+                    else if (autoStep == 3) {
+                        explanationcode.Setstringexplancode(hashtable.getStepDeleteIndex() != -1 ? "Value deleted from slot." : "Value not found.");
+                        explanationcode.SetHighLight(3);
+                    }
+                }
+            }
+        }
+    }
+
+    // Xử lý nút Next và Prev trong chế độ step-by-step
     if (isStepping && isStepByStepMode) {
         if (buttonnext.IsClick()) {
             currentStep++;
@@ -1428,4 +1537,43 @@ int GUI::Input(int posX, int posY) {
     }
 
     return -1;
+}
+
+float GUI::DrawSlider(float minValue, float maxValue) {
+    float x = (ScreenWidth / 5.0f) * 0.075f;
+    float y = ScreenHeight / 8.0f + 11 * 55.0f;
+    float width = (ScreenWidth / 5.0f) * 0.85;
+    float height = 5.0f;
+
+    Rectangle sliderRect = { x, y, width, height };
+    DrawRectangleRec(sliderRect, C[3]); // Màu thanh trượt
+
+    // Đồng bộ handlePos với speedValue ban đầu
+    static float handlePos = x + ((2.0f - minValue) / (maxValue - minValue)) * width; // Khởi tạo tại speedValue = 2.0
+    DrawCircle((int)handlePos, (int)y + height / 2, height * 2.0f, C[2]); // Tăng kích thước con trượt
+
+    static bool is_dragging = false;
+    Vector2 mouse = GetMousePosition();
+
+    // Tăng vùng va chạm để dễ kéo
+    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && CheckCollisionPointCircle(mouse, { handlePos, y + height / 2 }, height * 2.5f)) {
+        is_dragging = true;
+    }
+    if (IsMouseButtonUp(MOUSE_LEFT_BUTTON)) {
+        is_dragging = false;
+    }
+
+    if (is_dragging) {
+        handlePos = Clamp(mouse.x, x, x + width);
+    }
+
+    // Tính giá trị tốc độ (đảo ngược ánh xạ để kéo sang phải tăng tốc độ)
+    float value = minValue + ((handlePos - x) / width) * (maxValue - minValue);
+
+    // Hiển thị giá trị tốc độ
+    char speedText[32];
+    snprintf(speedText, sizeof(speedText), "Speed: %.1fs", value);
+    DrawText(speedText, (int)x, (int)(y - 20), 20, BLACK);
+
+    return value;
 }

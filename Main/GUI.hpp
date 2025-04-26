@@ -89,6 +89,7 @@ public:
 	int Input(int posX, int posY);   
     void DrawInputBox();
 	float DrawSlider(float minValue, float maxValue);
+
 };
 
 extern GUI Gui;
