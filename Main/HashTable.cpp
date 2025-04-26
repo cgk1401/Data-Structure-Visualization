@@ -107,8 +107,8 @@ void HashTable::init(int newCapacity) {
 }
 
 void HashTable::draw(int currentStep) {
-    int bucketWidth = 80;
-    int bucketHeight = 50;
+    float bucketWidth = ScreenWidth/float (24);
+    int bucketHeight = ScreenHeight/float(21.6);
     int startX = GetScreenWidth() / 5 + 50;
     int startY = 150;
     int bucketsPerRow = 15;
@@ -147,6 +147,27 @@ void HashTable::draw(int currentStep) {
         }
     }
 
+    // Khởi tạo animation xóa dựa trên stepDeleteIndex
+    if (currentStep == 3 && stepDeleteIndex != -1 && stepDeleteIndex < capacity && !isRemoveAnimating) {
+        isRemoveAnimating = true;
+        isJumping = true;
+        removeIndex = stepDeleteIndex;
+        removedValue = table[stepDeleteIndex];
+        removeProgress = 0.0f;
+
+        // Tính tọa độ bucket tại stepDeleteIndex
+        int row = stepDeleteIndex / bucketsPerRow;
+        int col = stepDeleteIndex % bucketsPerRow;
+        int targetX = startX + col * (bucketWidth + spacingX);
+        int targetY = startY + row * (bucketHeight + spacingY);
+        int bucketX = centerX + (targetX - centerX) * easedProgress;
+        int bucketY = centerY + (targetY - centerY) * easedProgress;
+
+        // Căn chỉnh giống hệt cách vẽ giá trị trong bucket
+        removeX = bucketX + 30; // Khớp với x + 30 khi vẽ giá trị
+        removeY = bucketY + 15; // Khớp với y + 15 khi vẽ giá trị
+    }
+
     BeginScissorMode(GetScreenWidth() / 5, 0, GetScreenWidth() - GetScreenWidth() / 5, GetScreenHeight());
     {
         for (int i = 0; i < capacity; i++) {
@@ -157,16 +178,16 @@ void HashTable::draw(int currentStep) {
             int x = centerX + (targetX - centerX) * easedProgress;
             int y = centerY + (targetY - centerY) * easedProgress;
 
-            Color bucketColor = YELLOW;
+            Color bucketColor = C[1];
             if (isCollisionAnimation && std::find(collisionIndices.begin(), collisionIndices.end(), i) != collisionIndices.end()) {
-                bucketColor = (fmod(collisionProgress, 0.5f) < 0.25f) ? RED : YELLOW;
+                bucketColor = (fmod(collisionProgress, 0.5f) < 0.25f) ? RED : C[1];
             }
             else if (i == highlightedIndex) {
                 bucketColor = PINK; // Tô hồng cho bucket đang kiểm tra
             }
             // Chỉ nháy đỏ khi ở bước 2 (dòng "If slot is occupied, probe next")
             else if (currentStep == 2 && std::find(stepCollisionIndices.begin(), stepCollisionIndices.end(), i) != stepCollisionIndices.end()) {
-                bucketColor = (fmod(GetTime(), 0.5f) < 0.25f) ? RED : YELLOW; // Nháy đỏ cho va chạm
+                bucketColor = (fmod(GetTime(), 0.5f) < 0.25f) ? RED : C[1]; // Nháy đỏ cho va chạm
             }
             // Chỉ tô xanh khi đang ở bước 3 và giá trị đã được chèn
             else if (i == stepInsertIndex && table[i] != EMPTY && table[i] != DELETED) {
@@ -187,7 +208,7 @@ void HashTable::draw(int currentStep) {
     }
     EndScissorMode();
 
-    if(isRemoveAnimating) {
+    if (isRemoveAnimating) {
         removeProgress += 0.05f;
         if (isJumping) {
             float jumpHeight = bucketHeight / 15;
@@ -354,7 +375,6 @@ void HashTable::revertInsertStep(int step) {
     }
 }
 
-// Cập nhật resetStepState để bao gồm các biến mới
 void HashTable::resetStepState() {
     stepInsertIndex = -1;
     stepSearchIndex = -1;
@@ -364,6 +384,7 @@ void HashTable::resetStepState() {
     stepCollisionDetected = false;
     stepCurrentIndex = -1;
 }
+
 void HashTable::startSearchStep(int key) {
     pendingKey = key;
     stepCollisionIndices.clear();

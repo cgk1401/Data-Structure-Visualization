@@ -21,10 +21,10 @@ public:
 
     // Pseudocode cho HashTable
     vector<string> lineinsert_hashtable = {
-     "Insert:",
-     "Compute index = key % capacity",
-     "If slot is occupied, probe next",
-     "Insert key into empty/deleted slot"
+        "Insert:",
+        "Compute index = key % capacity",
+        "If slot is occupied, probe next",
+        "Insert key into empty/deleted slot"
     };
 
     vector<string> linesearch_hashtable = {
@@ -45,10 +45,11 @@ public:
     float highlightline = -1;
 
     const float MENU_WIDTH = ScreenWidth / 5.0f;
-    const float Height_Area = 380.0f;
+    const float Height_Area = 175.0f; // Tăng để chứa ~7 dòng (7 * 25px)
     const float Weigh_Area = MENU_WIDTH * 0.85f;
     const float Coordinate_X_Area = MENU_WIDTH * 0.075f;
-    const float Coordinate_Y_Area = (20 + 60  /*Start position Button Init*/) + 8.3 * (30 + 15) + 115; /*position * (BUTTON_HEIGHT + BUTTON_SPACING)*/
+    // Đặt Y ngay dưới nút Next
+    const float Coordinate_Y_Area = 20.0f + 28.0f + 20.0f + 9 * (40.0f + 15.0f) + 30.0f; // titleY + titleSize + margin + 9 buttons + spacing
     Color color_area = C[1];
 
     Rectangle area_text{
