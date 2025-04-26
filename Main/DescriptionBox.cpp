@@ -6,10 +6,10 @@ extern Color C[6];
 
 DescriptionBox::DescriptionBox() {
     box_area = {
-        ScreenWidth - 300.0f, 
-        ScreenHeight - 150.0f,  
-        280.0f,         
-        130.0f
+        (ScreenWidth / 5.0f) * 0.075f,
+        (20 + 60  /*Start position Button Init*/) + 8.3 * (30 + 15), /*position * (BUTTON_HEIGHT + BUTTON_SPACING)*/
+        (ScreenWidth / 5.0f) * 0.85f,
+        100.0f,
     };
     description = "";
 }

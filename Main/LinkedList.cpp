@@ -540,7 +540,7 @@ void LinkedList::draw() const {
         current = current->next;
     }
 
-    descriptionBox.DrawDescriptionBox();
+    //descriptionBox.DrawDescriptionBox();
     EndScissorMode();
 
     if (contentHeight > ScreenHeight) {

@@ -433,6 +433,7 @@ void GUI::DrawLinkedList() {
     DrawSecondMenu();
     DrawBack();
     DrawInputBox();
+    
     float durationtime = DrawSlider();
     list.SetanimationDurationLinkedList(durationtime);
 
@@ -487,12 +488,6 @@ void GUI::DrawLinkedList() {
         }
     }
 
-    list.update();
-    BeginScissorMode(SecondMenuWidth, 0, ScreenWidth - SecondMenuWidth, ScreenHeight);
-    list.setDrawOffset(linkedListScrollY);
-    list.draw();
-    EndScissorMode();
-
     if (list.get_search_state() != -1 || list.get_active() != -1) {
         buttonBackward.ConfigureButton(10.0f);
         buttonForward.ConfigureButton(11.0f);
@@ -509,6 +504,12 @@ void GUI::DrawLinkedList() {
             list.set_paused(!list.get_paused());
         }
     }
+    list.update();
+    BeginScissorMode(SecondMenuWidth, 0, ScreenWidth - SecondMenuWidth, ScreenHeight);
+    list.setDrawOffset(linkedListScrollY);
+    list.draw();
+    list.descriptionBox.DrawDescriptionBox();
+    EndScissorMode();
 }
 
 void GUI::DrawAVLTree() {

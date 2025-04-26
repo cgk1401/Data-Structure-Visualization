@@ -50,6 +50,7 @@ public:
     void step_backward();
     bool get_paused() const { return isPaused; }
     void SetanimationDurationLinkedList(float t) { animationDuration = t; }
+    DescriptionBox descriptionBox;
 
 private:
     struct Node {
@@ -93,7 +94,6 @@ private:
     AnimationType currentAnimation;
     int animationStep;
     bool isPaused;
-    DescriptionBox descriptionBox;
 
     void draw_node(const Node* node) const;
     void draw_link(const Node* from, const Node* to) const;
