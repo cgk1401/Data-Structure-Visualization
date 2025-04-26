@@ -600,18 +600,28 @@ void LinkedList::step_forward() {
 }
 
 void LinkedList::step_backward() {
+    if (currentAnimation == AnimationType::NONE) {
+        descriptionBox.SetDescription("No operation to undo");
+        return;
+    }
+
     switch (currentAnimation) {
     case AnimationType::INSERT: {
         if (lastInsertedNode) {
+            // Special case: undoing insertion at head
             if (head == lastInsertedNode) {
                 head = head->next;
             }
             else {
+                // Find the node before the inserted node
                 Node* prev = head;
                 while (prev && prev->next != lastInsertedNode) {
                     prev = prev->next;
                 }
-                if (prev) prev->next = lastInsertedNode->next;
+
+                if (prev) {
+                    prev->next = lastInsertedNode->next;
+                }
             }
 
             delete lastInsertedNode;
@@ -627,11 +637,14 @@ void LinkedList::step_backward() {
 
     case AnimationType::DELETE: {
         if (lastDeletedNode) {
+            // Restore the node to its original position
             if (lastDeletedPrevNode) {
+                // Node was in middle or end of list
                 lastDeletedNode->next = lastDeletedPrevNode->next;
                 lastDeletedPrevNode->next = lastDeletedNode;
             }
             else {
+                // Node was at head
                 lastDeletedNode->next = head;
                 head = lastDeletedNode;
             }
@@ -639,6 +652,7 @@ void LinkedList::step_backward() {
             nodeCount++;
             calculate_layout();
 
+            // Restore highlight states
             lastDeletedNode->is_highlighted = true;
             if (lastDeletedPrevNode) {
                 lastDeletedPrevNode->is_highlighted = true;
@@ -647,8 +661,9 @@ void LinkedList::step_backward() {
             descriptionBox.SetDescription("Undo: Restored deleted node " +
                 std::to_string(lastDeletedNode->data));
 
-            lastDeletedNode = nullptr;
-            lastDeletedPrevNode = nullptr;
+            // Don't clear these yet - allow multiple undos if needed
+            // lastDeletedNode = nullptr;
+            // lastDeletedPrevNode = nullptr;
         }
         currentAnimation = AnimationType::NONE;
         break;
