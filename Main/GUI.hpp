@@ -4,17 +4,19 @@
 #include "Config.hpp"
 #include "Button.hpp"
 #include "raylib.h"
+#include "raymath.h"
 #include "LinkedList.hpp"
 #include "AVLTree.hpp"
 #include "Graph.hpp"
 #include "tinyfiledialogs.h"
 #include "InsertAnimationAVLTree.hpp"
 #include "DijkstraAnimationGraph.hpp"
+#include "ExplanationCode.hpp"
+#include "Pseudocode.hpp"
+
 #include"HashTable.hpp"
 #include <fstream>
 #include <string>
-#include "Pseudocode.hpp"
-#include "ExplanationCode.hpp"
 enum TypeDataStructure { MENU, THEME, HASHTABLE, LINKEDLIST, AVLTREE, GRAPH };
 
 enum ActiveMenuTypeAVLTree { NONE_AVLTREE, INIT_AVLTREE, INSERT_AVLTREE, SEARCH_AVLTREE, DELETE_AVLTREE };
@@ -86,6 +88,7 @@ public:
 
 	int Input(int posX, int posY);   
     void DrawInputBox();
+	float DrawSlider(float minValue, float maxValue);
 };
 
 extern GUI Gui;

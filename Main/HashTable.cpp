@@ -187,7 +187,7 @@ void HashTable::draw(int currentStep) {
     }
     EndScissorMode();
 
-    if (isRemoveAnimating) {
+    if(isRemoveAnimating) {
         removeProgress += 0.05f;
         if (isJumping) {
             float jumpHeight = bucketHeight / 15;
@@ -354,10 +354,231 @@ void HashTable::revertInsertStep(int step) {
     }
 }
 
+// Cập nhật resetStepState để bao gồm các biến mới
 void HashTable::resetStepState() {
     stepInsertIndex = -1;
+    stepSearchIndex = -1;
+    stepDeleteIndex = -1;
     highlightedIndex = -1;
     stepCollisionIndices.clear();
     stepCollisionDetected = false;
     stepCurrentIndex = -1;
 }
+void HashTable::startSearchStep(int key) {
+    pendingKey = key;
+    stepCollisionIndices.clear();
+    stepCurrentIndex = hashFunction(key);
+    stepSearchIndex = -1;
+    stepCollisionDetected = false;
+    highlightedIndex = -1;
+
+    // Kiểm tra bucket ban đầu
+    if (table[stepCurrentIndex] != EMPTY && table[stepCurrentIndex] != DELETED && table[stepCurrentIndex] != key) {
+        stepCollisionDetected = true;
+        stepCollisionIndices.push_back(stepCurrentIndex);
+    }
+    else if (table[stepCurrentIndex] == key) {
+        stepSearchIndex = stepCurrentIndex;
+    }
+}
+
+void HashTable::performSearchStep(int step) {
+    if (step == 1) {
+        // Bước 1: Tô sáng bucket ban đầu
+        highlightedIndex = stepCurrentIndex;
+    }
+    else if (step == 2) {
+        if (stepCollisionDetected && stepSearchIndex == -1) {
+            // Bước 2: Dò tuyến tính
+            int originalIndex = hashFunction(pendingKey);
+            stepCurrentIndex = (stepCurrentIndex + 1) % capacity;
+            if (stepCurrentIndex == originalIndex) {
+                // Không tìm thấy
+                stepSearchIndex = -1;
+                highlightedIndex = -1;
+                return;
+            }
+            if (table[stepCurrentIndex] != EMPTY && table[stepCurrentIndex] != DELETED) {
+                if (table[stepCurrentIndex] == pendingKey) {
+                    stepSearchIndex = stepCurrentIndex; // Tìm thấy giá trị
+                    stepCollisionDetected = false;
+                }
+                else {
+                    stepCollisionIndices.push_back(stepCurrentIndex);
+                    stepCollisionDetected = true;
+                }
+            }
+            else {
+                stepSearchIndex = -1; // Không tìm thấy
+                stepCollisionDetected = false;
+            }
+            highlightedIndex = stepCurrentIndex;
+        }
+    }
+    else if (step == 3 && stepSearchIndex != -1) {
+        // Bước 3: Tô sáng vị trí tìm thấy
+        highlightedIndex = stepSearchIndex;
+    }
+}
+
+void HashTable::revertSearchStep(int step) {
+    if (step == 0) {
+        // Quay lại bước đầu: reset trạng thái
+        stepCurrentIndex = hashFunction(pendingKey);
+        stepCollisionIndices.clear();
+        stepSearchIndex = -1;
+        stepCollisionDetected = (table[stepCurrentIndex] != EMPTY && table[stepCurrentIndex] != DELETED && table[stepCurrentIndex] != pendingKey);
+        if (stepCollisionDetected) {
+            stepCollisionIndices.push_back(stepCurrentIndex);
+        }
+        highlightedIndex = -1;
+    }
+    else if (step == 1) {
+        // Quay lại bước 1: hiển thị bucket ban đầu
+        highlightedIndex = stepCurrentIndex;
+        stepSearchIndex = -1;
+    }
+    else if (step == 2) {
+        // Quay lại bước 2: hoàn tác dò tuyến tính
+        if (stepSearchIndex != -1) {
+            stepSearchIndex = -1; // Bỏ vị trí tìm thấy
+        }
+        if (!stepCollisionIndices.empty()) {
+            stepCurrentIndex = stepCollisionIndices.back();
+            stepCollisionIndices.pop_back();
+            stepCollisionDetected = true;
+        }
+        else {
+            stepCurrentIndex = hashFunction(pendingKey);
+            stepCollisionDetected = (table[stepCurrentIndex] != EMPTY && table[stepCurrentIndex] != DELETED && table[stepCurrentIndex] != pendingKey);
+            if (stepCollisionDetected) {
+                stepCollisionIndices.push_back(stepCurrentIndex);
+            }
+        }
+        highlightedIndex = stepCurrentIndex;
+    }
+}
+
+void HashTable::startDeleteStep(int key) {
+    pendingKey = key;
+    stepCollisionIndices.clear();
+    stepCurrentIndex = hashFunction(key);
+    stepDeleteIndex = -1;
+    stepCollisionDetected = false;
+    highlightedIndex = -1;
+
+    // Kiểm tra bucket ban đầu
+    if (table[stepCurrentIndex] != EMPTY && table[stepCurrentIndex] != DELETED && table[stepCurrentIndex] != key) {
+        stepCollisionDetected = true;
+        stepCollisionIndices.push_back(stepCurrentIndex);
+    }
+    else if (table[stepCurrentIndex] == key) {
+        stepDeleteIndex = stepCurrentIndex;
+    }
+}
+
+void HashTable::performDeleteStep(int step) {
+    if (step == 1) {
+        // Bước 1: Không tô sáng bucket (để đồng bộ với Search)
+        highlightedIndex = -1;
+    }
+    else if (step == 2) {
+        if (stepCollisionDetected && stepDeleteIndex == -1) {
+            // Bước 2: Dò tuyến tính
+            int originalIndex = hashFunction(pendingKey);
+            stepCurrentIndex = (stepCurrentIndex + 1) % capacity;
+            if (stepCurrentIndex == originalIndex) {
+                // Không tìm thấy
+                stepDeleteIndex = -1;
+                highlightedIndex = -1;
+                return;
+            }
+            if (table[stepCurrentIndex] != EMPTY && table[stepCurrentIndex] != DELETED) {
+                if (table[stepCurrentIndex] == pendingKey) {
+                    stepDeleteIndex = stepCurrentIndex; // Tìm thấy giá trị
+                    stepCollisionDetected = false;
+                }
+                else {
+                    stepCollisionIndices.push_back(stepCurrentIndex);
+                    stepCollisionDetected = true;
+                }
+            }
+            else {
+                stepDeleteIndex = -1; // Không tìm thấy
+                stepCollisionDetected = false;
+            }
+            highlightedIndex = stepCurrentIndex; // Tô hồng bucket ở bước 2
+        }
+    }
+    else if (step == 3) {
+        if (stepDeleteIndex != -1) {
+            // Bước 3: Xóa giá trị và kích hoạt animation
+            removedValue = table[stepDeleteIndex];
+            table[stepDeleteIndex] = DELETED;
+            size--;
+            // Khởi tạo animation
+            removeX = 300 + (stepDeleteIndex % 10) * (80 + 10) + 30;
+            removeY = 150 + (stepDeleteIndex / 10) * (50 + 30) + 15;
+            removeIndex = stepDeleteIndex;
+            removeProgress = 0.0f;
+            isRemoveAnimating = true;
+            isJumping = true;
+            highlightedIndex = stepDeleteIndex; // Tô sáng bucket trước khi animation
+        }
+        else {
+            // Không tìm thấy giá trị
+            highlightedIndex = -1;
+        }
+    }
+}
+
+void HashTable::revertDeleteStep(int step) {
+    if (step == 0) {
+        // Quay lại bước đầu: reset trạng thái
+        stepCurrentIndex = hashFunction(pendingKey);
+        stepCollisionIndices.clear();
+        stepDeleteIndex = -1;
+        stepCollisionDetected = (table[stepCurrentIndex] != EMPTY && table[stepCurrentIndex] != DELETED && table[stepCurrentIndex] != pendingKey);
+        if (stepCollisionDetected) {
+            stepCollisionIndices.push_back(stepCurrentIndex);
+        }
+        highlightedIndex = -1;
+        if (stepDeleteIndex != -1 && table[stepDeleteIndex] == DELETED) {
+            table[stepDeleteIndex] = pendingKey; // Khôi phục giá trị đã xóa
+            size++;
+        }
+    }
+    else if (step == 1) {
+        // Quay lại bước 1: hiển thị bucket ban đầu
+        highlightedIndex = stepCurrentIndex;
+        if (stepDeleteIndex != -1 && table[stepDeleteIndex] == DELETED) {
+            table[stepDeleteIndex] = pendingKey; // Khôi phục giá trị đã xóa
+            size++;
+        }
+        stepDeleteIndex = -1;
+    }
+    else if (step == 2) {
+        // Quay lại bước 2: hoàn tác dò tuyến tính
+        if (stepDeleteIndex != -1 && table[stepDeleteIndex] == DELETED) {
+            table[stepDeleteIndex] = pendingKey; // Khôi phục giá trị đã xóa
+            size++;
+        }
+        if (stepDeleteIndex != -1) {
+            stepDeleteIndex = -1; // Bỏ vị trí xóa
+        }
+        if (!stepCollisionIndices.empty()) {
+            stepCurrentIndex = stepCollisionIndices.back();
+            stepCollisionIndices.pop_back();
+            stepCollisionDetected = true;
+        }
+        else {
+            stepCurrentIndex = hashFunction(pendingKey);
+            stepCollisionDetected = (table[stepCurrentIndex] != EMPTY && table[stepCurrentIndex] != DELETED && table[stepCurrentIndex] != pendingKey);
+            if (stepCollisionDetected) {
+                stepCollisionIndices.push_back(stepCurrentIndex);
+            }
+        }
+        highlightedIndex = stepCurrentIndex;
+    }
+}
+
