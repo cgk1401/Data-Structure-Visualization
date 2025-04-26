@@ -29,7 +29,7 @@
     <ClCompile Include="GUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InsertAnimationAVLTree.cpp">
+    <ClCompile Include="AnimationAVLTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
@@ -75,7 +75,7 @@
     <ClInclude Include="GUI.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="InsertAnimationAVLTree.hpp">
+    <ClInclude Include="AnimationAVLTree.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Node.hpp">

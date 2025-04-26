@@ -9,7 +9,7 @@
 #include "AVLTree.hpp"
 #include "Graph.hpp"
 #include "tinyfiledialogs.h"
-#include "InsertAnimationAVLTree.hpp"
+#include "AnimationAVLTree.hpp"
 #include "DijkstraAnimationGraph.hpp"
 #include "ExplanationCode.hpp"
 #include "Pseudocode.hpp"
@@ -39,7 +39,7 @@ private:
 	AVLTree tree;
 	ActiveMenuTypeAVLTree activemenu_avltree = NONE_AVLTREE;
 	ActiveMenuInitAVLTree activemenuinit_avltree = NONEINITAVLTREE;
-	InsertAnimationAVLTree insertanimationavltree;
+	AnimationAVLTree AnimationAVLTree;
 
 	Graph graph;
 	ActiveMenuTypeGraph activemenu_graph = DEFAULT;
@@ -61,6 +61,8 @@ public :
 	bool isClickDijkstra = false;
 public:
 	GUI();
+
+	Texture2D ImageBack;
 
 	std::string inputstring = "";
 	InputMode currentInputMode = NONE;
@@ -91,6 +93,9 @@ public:
 
 	int DrawSlider(float minValue, float maxValue);
 	float DrawSliderAVLTree();
+
+	void LoadSource();
+	
 };
 
 extern GUI Gui;
