@@ -83,10 +83,12 @@ public:
 	void DrawSettingMenu();
 	void DrawCreditMenu();
 	void DrawSecondMenu();
+	void DrawDivider();
 	float DrawVolumeSlider();
 
 	void ResetMenuState();
 
+	bool LoadFileLinkedList();
 	bool LoadFileAVLTree();
 	bool LoadFileGraph();
 

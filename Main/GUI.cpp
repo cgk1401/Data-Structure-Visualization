@@ -305,6 +305,11 @@ void GUI::DrawSecondMenu() {
         buttonsearch.ConfigureButton(3);
         buttonclear.ConfigureButton(4);
     }
+}
+
+void GUI::DrawDivider() {
+    float y = buttonclear.coordinateY + 47.5f;
+    DrawLineEx({ 0, y }, { ScreenWidth / 5, y }, 3.5f, C[0]);
     
     
     buttonscreen.ConfigureButton(7.5);
@@ -419,14 +424,11 @@ void GUI::DrawHashTable() {
     hashtable.draw();
 }
 
-void GUI::DrawLinkedList(){
-    Gui.DrawSecondMenu();
-    Gui.DrawBack();
+void GUI::DrawLinkedList() {
+    DrawSecondMenu();
+    DrawBack();
+    DrawInputBox();
 
-    // Draw the reusable input box at a fixed position
-    Gui.DrawInputBox();
-
-    // Handle button clicks to set input mode
     if (buttoninit.IsClick()) {
         currentInputMode = INIT;
         inputActive = true;
@@ -456,51 +458,48 @@ void GUI::DrawLinkedList(){
         list.clear();
     }
 
-    int val = Gui.Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
-
-    if (val != -1) {
-        switch (currentInputMode) {
-        case INIT:
-            list.clear();
-            list.rand_list(val);
-            list.print_list();
-            break;
-        case INSERT:
-            list.add_node(val);
-            break;
-        case DELETE:
-            list.delete_node(val);
-            break;
-        case SEARCH:
-            list.search_node(val);
-            search_result_timer = 2.0f;
-            break;
-        default:
-            break;
+    if (currentInputMode == INIT) {
+        buttonloadfile.ConfigureButton(5.3f + 1.0f);
+        if (buttonloadfile.IsClick() && LoadFileLinkedList()) {
+            inputActive = false;
+            currentInputMode = NONE;
         }
-        inputActive = false;
-        currentInputMode = NONE;
+    }
+
+    if (inputActive) {
+        int val = Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
+        if (val != -1) {
+            switch (currentInputMode) {
+            case INIT: list.clear(); list.rand_list(val); break;
+            case INSERT: list.start_animation(LinkedList::AnimationType::INSERT, val); break;
+            case DELETE: list.start_animation(LinkedList::AnimationType::DELETE, val); break;
+            case SEARCH: list.start_animation(LinkedList::AnimationType::SEARCH, val); search_result_timer = 2.0f; break;
+            }
+            currentInputMode = NONE;
+            inputActive = false;
+        }
     }
 
     list.update();
-    list.draw();
-
     BeginScissorMode(SecondMenuWidth, 0, ScreenWidth - SecondMenuWidth, ScreenHeight);
-    {
-        // Apply scroll offset to the list's drawing position
-        list.setDrawOffset(linkedListScrollY);
-        list.update();
-        list.draw();
-    }
+    list.setDrawOffset(linkedListScrollY);
+    list.draw();
     EndScissorMode();
 
-    if (search_result_timer > 0.0f) {
-        search_result_timer -= GetFrameTime();
-        if (list.get_active() != -1 && list.get_search_state() == 1) {
-            DrawText("Found", ScreenWidth / 12, ScreenHeight - 50, 20, GREEN);
+    if (list.get_search_state() != -1 || list.get_active() != -1) {
+        buttonBackward.ConfigureButton(10.0f);
+        buttonForward.ConfigureButton(11.0f);
+        buttonPausePlay.ConfigureButton(12.0f);
+        buttonPausePlay.s = list.get_paused() ? "Play" : "Pause";
+
+        if (buttonBackward.IsClick()) {
+            list.step_backward();
         }
-        else if (list.get_search_state() == 2) {
-            DrawText("Not Found", ScreenWidth / 12, ScreenHeight - 50, 20, RED);
+        if (buttonForward.IsClick()) {
+            list.step_forward();
+        }
+        if (buttonPausePlay.IsClick()) {
+            list.set_paused(!list.get_paused());
         }
     }
 }
@@ -984,6 +983,20 @@ void GUI::DrawGraph() {
 	graph.draw();
 }
 
+bool GUI::LoadFileLinkedList() {
+    list.clear();
+    const char* path = tinyfd_openFileDialog(
+        "Open LinkedList File", "", 0, nullptr, nullptr, 0
+    );
+    if (path == nullptr) return false; 
+    ifstream ifs(path);
+    if (!ifs.is_open()) return false;
+    int x;
+    while (ifs >> x) list.add_node(x);
+    ifs.close();
+    return true;
+}
+
 bool GUI::LoadFileAVLTree() {
     tree.Clear(tree.Root);
     tree.NodeList.clear();
@@ -1095,7 +1108,7 @@ void GUI::DrawBack() {
 }
 
 void GUI::DrawInputBox() {
-    if (!inputActive) return;
+    if (!inputActive && currentInputMode != INIT) return;
 
     // Style constants matching other buttons
     const float MENU_WIDTH = ScreenWidth / 5.0f;

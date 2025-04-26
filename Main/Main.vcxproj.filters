@@ -51,6 +51,9 @@
     <ClCompile Include="Pseudocode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DescriptionBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <!-- Assign .hpp files to "Header Files" -->
   <ItemGroup>
@@ -89,6 +92,9 @@
     </ClInclude>
     <ClInclude Include="HashTable.hpp" />
     <ClInclude Include="Pseudocode.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptionBox.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
