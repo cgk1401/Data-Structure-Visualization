@@ -77,7 +77,11 @@ extern Button buttonreturn;
 extern Button buttonpause;
 extern Button buttonrun;
 extern Button buttonfinal;
+extern Button buttonBackward;
+extern Button buttonForward;
+extern Button buttonPausePlay;
 extern Button buttonfix;
 extern Button buttonunfix;
+extern Button buttonscreen;
 
 #endif // BUTTON_HPP

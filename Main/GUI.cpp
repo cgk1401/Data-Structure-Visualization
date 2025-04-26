@@ -34,11 +34,25 @@ void GUI::SetActiveMenuInitAVLTree(ActiveMenuInitAVLTree newMenu) {
 void GUI::Start() {
     InitWindow(ScreenWidth, ScreenHeight, "Data Structure Visualization");
 
+    // Set Color
     for (int i = 0; i < 6; i++) { C[i] = ColorPalette[1][i]; }
+
+    // Set icon
+	Image icon = LoadImage("../../Data-Structure-Visualization/assets/Icon1.png");
+	SetWindowIcon(icon);
+    UnloadImage(icon);
+
+    //Set music
+	InitAudioDevice();
+	music = LoadMusicStream("../../Data-Structure-Visualization/assets/BackgroundMusic.mp3");
+    PlayMusicStream(music);
+	SetMusicVolume(music, 0.5f);
 
     SetTargetFPS(60);
 
     while (WindowShouldClose() == false) {
+        UpdateMusicStream(music);
+
         BeginDrawing();
         ClearBackground(C[4]);
         if (CurrentStruture == MENU) {
@@ -56,11 +70,17 @@ void GUI::Start() {
         else if (CurrentStruture == GRAPH) {
             Gui.DrawGraph();
 		}
-		else if (CurrentStruture == THEME) {
-			Gui.DrawThemeMenu();
+		else if (CurrentStruture == SETTING) {
+			Gui.DrawSettingMenu();
 		}
+        else if (CurrentStruture == CREDIT) {
+            Gui.DrawCreditMenu();
+        }
         EndDrawing();
     }
+
+    UnloadMusicStream(music);
+    CloseAudioDevice();
 
     CloseWindow();
 }
@@ -79,7 +99,9 @@ void GUI::DrawMainMenu() {
 
 	Rectangle GRAPHBUTTON = { ScreenWidth * float(3) / 5, ScreenHeight * float(3) / 5, ScreenWidth * float(1) / 5, ScreenHeight * float(1) / 6 };
 
-	Rectangle THEMEBUTTON = { ScreenWidth * float(2.25) / 5, ScreenHeight * float(4.5) / 5, ScreenWidth * float(1) / 10, ScreenHeight * float(1) / 18 };
+	Rectangle SETTINGBUTTON = { ScreenWidth * float(2.25) / 5, ScreenHeight * float(4.5) / 5, ScreenWidth * float(1) / 10, ScreenHeight * float(1) / 18 };
+
+	Rectangle CREDITBUTTON = { ScreenWidth * 0.015f, ScreenHeight - ScreenWidth * 0.045f, ScreenWidth * 0.02, ScreenWidth * 0.02 };
 
 	DrawRectangleRounded(HASHTABLEBUTTON, 0.3f, 10, C[2]);
 	DrawRectangleRounded(LINKEDLISTBUTTON, 0.3f, 10, C[2]);
@@ -91,8 +113,11 @@ void GUI::DrawMainMenu() {
     DrawText("AVLTREE", ScreenWidth * float(1) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
     DrawText("GRAPH", ScreenWidth * float(3) / 5 + 20, ScreenHeight * float(3) / 5 + ScreenHeight * float(1) / 5 * float(1) / 2, 20, C[0]);
 
-    DrawRectangleRounded(THEMEBUTTON, 0.3f, 10, C[2]);
-    DrawText("THEME", THEMEBUTTON.x + (THEMEBUTTON.width - MeasureText("THEME", 20)) / 2, THEMEBUTTON.y + (THEMEBUTTON.height - 20) / 2, 20, C[0]);
+    DrawRectangleRounded(SETTINGBUTTON, 0.3f, 10, C[2]);
+    DrawText("SETTING", SETTINGBUTTON.x + (SETTINGBUTTON.width - MeasureText("SETTING", 20)) / 2, SETTINGBUTTON.y + (SETTINGBUTTON.height - 20) / 2, 20, C[0]);
+
+	DrawRectangleRounded(CREDITBUTTON, 0.5f, 15, C[2]);
+	DrawText("i", CREDITBUTTON.x + (CREDITBUTTON.width - MeasureText("i", ScreenWidth * 0.016f)) / 2, CREDITBUTTON.y + (CREDITBUTTON.height - ScreenWidth * 0.016f) / 2, ScreenWidth * 0.016f, C[0]);
 
 	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         Vector2 mouse = GetMousePosition();
@@ -108,13 +133,18 @@ void GUI::DrawMainMenu() {
         else if (CheckCollisionPointRec(mouse, GRAPHBUTTON)) {
             CurrentStruture = GRAPH;
 		}
-        else if (CheckCollisionPointRec(mouse, THEMEBUTTON)) {
-			CurrentStruture = THEME;
+        else if (CheckCollisionPointRec(mouse, SETTINGBUTTON)) {
+			CurrentStruture = SETTING;
+        }
+        else if (CheckCollisionPointRec(mouse, CREDITBUTTON)) {
+            CurrentStruture = CREDIT;
         }
     }
 }
 
-void GUI::DrawThemeMenu() {
+void GUI::DrawSettingMenu() {
+
+    // Draw Theme choices
     for (int i = 0; i < 4; i++) {
         Rectangle themeRect = { ScreenWidth * 0.05f, ScreenHeight * 0.3f + i * 80, ScreenWidth * 0.1f, ScreenHeight * 0.05f };
 
@@ -159,6 +189,57 @@ void GUI::DrawThemeMenu() {
         DrawCircleLinesV(sample[i], 35.0f, C[3]);
         int text_width = MeasureText(std::to_string(i).c_str(), 20);
         DrawText(std::to_string(i).c_str(), sample[i].x - text_width / 2, sample[i].y - 10, 20, C[0]);
+    }
+
+	// Draw Music Volume Slider
+    Rectangle volumeRect = { ScreenWidth * 0.05f, ScreenHeight * 0.15f, ScreenWidth * 0.1f, ScreenHeight * 0.05f };
+    DrawRectangleRounded(volumeRect, 0.2f, 6, C[1]);
+
+    int textWidth = MeasureText("Music Volume", 20);
+
+    DrawText("Music Volume", volumeRect.x + (volumeRect.width - textWidth) / 2, volumeRect.y + (volumeRect.height - 20) / 2, 20, C[0]);
+
+	float volume = DrawVolumeSlider();
+	SetMusicVolume(music, volume);
+
+    DrawBack();
+}
+
+void GUI::DrawCreditMenu() {
+    std::vector<std::string> credit = {
+        "Data Structure Visualizer ",
+        "HCMUS - VNU | CS163 Project",
+        "Supervising Teachers :",
+        "   MSc. Truong Phuoc Loc   ",
+        "   MSc. Ho Tuan Thanh      ",
+        "",
+        "This project purpose is to visualize fundamental data structures and algorithms for educational purpose using C++",
+        "",
+        "",
+        "",
+        "",
+        "Member:",
+        "  Tran Le Anh Tuan : HashTable         ",
+        "  Huynh Huu Phuc Minh : Linked List    ",
+        "  Do Manh Cuong : AVL Tree             ",
+        "  Nguyen Cong Kien : Graph             ",
+        "",
+        "",
+        "",
+        "Window icon by Dewi Sari - Flaticon",
+        "Music track: Horizon by Zambolino"
+        "",
+        "",
+        "",
+        "Thank you for taking your time to look at our product.",
+        "Have a nice day!"
+    };
+
+    float startY = ScreenHeight * 0.5f / 6 + 60;
+    float spacing = ScreenHeight / 36.0f;
+    for (int i = 0; i < credit.size(); i++) {
+        int tw = MeasureText(credit[i].c_str(), 20);
+        DrawText(credit[i].c_str(), (ScreenWidth - tw) / 2, startY + i * spacing, 20, C[0]);
     }
 
     DrawBack();
@@ -213,8 +294,8 @@ void GUI::DrawSecondMenu() {
         buttonclear.ConfigureButton(4);
 
         if (currentInputMode != DIJKSTRA) {
-            if (is_graph_fixed == true) { buttonunfix.ConfigureButton(11); } else
-            if (is_graph_fixed == false) { buttonfix.ConfigureButton(12); }
+            if (is_graph_fixed == true) { buttonunfix.ConfigureButton(16); } else
+            if (is_graph_fixed == false) { buttonfix.ConfigureButton(17); }
         }
     }
     else if (CurrentStruture == HASHTABLE) {
@@ -224,12 +305,19 @@ void GUI::DrawSecondMenu() {
         buttonsearch.ConfigureButton(3);
         buttonclear.ConfigureButton(4);
     }
-
 }
 
 void GUI::DrawDivider() {
     float y = buttonclear.coordinateY + 47.5f;
     DrawLineEx({ 0, y }, { ScreenWidth / 5, y }, 3.5f, C[0]);
+    
+    
+    buttonscreen.ConfigureButton(7.5);
+
+    if (buttonscreen.IsClick()) {
+        graph.set_fix_graph(true); is_graph_fixed = true;
+        ExportScreenshot();
+    }
 }
 
 void GUI::ResetMenuState() {
@@ -336,14 +424,11 @@ void GUI::DrawHashTable() {
     hashtable.draw();
 }
 
-void GUI::DrawLinkedList(){
-    Gui.DrawSecondMenu();
-    Gui.DrawBack();
+void GUI::DrawLinkedList() {
+    DrawSecondMenu();
+    DrawBack();
+    DrawInputBox();
 
-    // Draw the reusable input box at a fixed position
-    Gui.DrawInputBox();
-
-    // Handle button clicks to set input mode
     if (buttoninit.IsClick()) {
         currentInputMode = INIT;
         inputActive = true;
@@ -373,51 +458,48 @@ void GUI::DrawLinkedList(){
         list.clear();
     }
 
-    int val = Gui.Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
-
-    if (val != -1) {
-        switch (currentInputMode) {
-        case INIT:
-            list.clear();
-            list.rand_list(val);
-            list.print_list();
-            break;
-        case INSERT:
-            list.add_node(val);
-            break;
-        case DELETE:
-            list.delete_node(val);
-            break;
-        case SEARCH:
-            list.search_node(val);
-            search_result_timer = 2.0f;
-            break;
-        default:
-            break;
+    if (currentInputMode == INIT) {
+        buttonloadfile.ConfigureButton(5.3f + 1.0f);
+        if (buttonloadfile.IsClick() && LoadFileLinkedList()) {
+            inputActive = false;
+            currentInputMode = NONE;
         }
-        inputActive = false;
-        currentInputMode = NONE;
+    }
+
+    if (inputActive) {
+        int val = Input(buttonclear.coordinateX, buttonclear.coordinateY + buttonclear.height + 20);
+        if (val != -1) {
+            switch (currentInputMode) {
+            case INIT: list.clear(); list.rand_list(val); break;
+            case INSERT: list.start_animation(LinkedList::AnimationType::INSERT, val); break;
+            case DELETE: list.start_animation(LinkedList::AnimationType::DELETE, val); break;
+            case SEARCH: list.start_animation(LinkedList::AnimationType::SEARCH, val); search_result_timer = 2.0f; break;
+            }
+            currentInputMode = NONE;
+            inputActive = false;
+        }
     }
 
     list.update();
-    list.draw();
-
     BeginScissorMode(SecondMenuWidth, 0, ScreenWidth - SecondMenuWidth, ScreenHeight);
-    {
-        // Apply scroll offset to the list's drawing position
-        list.setDrawOffset(linkedListScrollY);
-        list.update();
-        list.draw();
-    }
+    list.setDrawOffset(linkedListScrollY);
+    list.draw();
     EndScissorMode();
 
-    if (search_result_timer > 0.0f) {
-        search_result_timer -= GetFrameTime();
-        if (list.get_active() != -1 && list.get_search_state() == 1) {
-            DrawText("Found", ScreenWidth / 12, ScreenHeight - 50, 20, GREEN);
+    if (list.get_search_state() != -1 || list.get_active() != -1) {
+        buttonBackward.ConfigureButton(10.0f);
+        buttonForward.ConfigureButton(11.0f);
+        buttonPausePlay.ConfigureButton(12.0f);
+        buttonPausePlay.s = list.get_paused() ? "Play" : "Pause";
+
+        if (buttonBackward.IsClick()) {
+            list.step_backward();
         }
-        else if (list.get_search_state() == 2) {
-            DrawText("Not Found", ScreenWidth / 12, ScreenHeight - 50, 20, RED);
+        if (buttonForward.IsClick()) {
+            list.step_forward();
+        }
+        if (buttonPausePlay.IsClick()) {
+            list.set_paused(!list.get_paused());
         }
     }
 }
@@ -575,9 +657,8 @@ void GUI::DrawGraph() {
     case INIT: {
         switch (activemenu_graph) {
         case DEFAULT: {
-            DrawDivider();
-            buttonrandom.ConfigureButton(5);
-            buttonloadfile.ConfigureButton(6);
+            buttonrandom.ConfigureButton(5.5);
+            buttonloadfile.ConfigureButton(6.5);
 
             if (buttonrandom.IsClick()) {
                 GraphRandomStep = 0;
@@ -598,7 +679,7 @@ void GUI::DrawGraph() {
 
             if (GraphRandomStep == 0) { GraphRandomStep = 1; }
 
-            float startY = buttonclear.coordinateY + ScreenHeight / 6.0f;
+            float startY = buttonclear.coordinateY + ScreenHeight / 4.5f;
 			float spacing = ScreenHeight / 36.0f;
             if (GraphRandomStep < 3) { DrawText("Generating Random Graph", buttonclear.coordinateX, startY, 20, C[0]); }
             else { DrawText("Generated Random Graph", buttonclear.coordinateX, startY, 20, C[0]); }
@@ -647,9 +728,8 @@ void GUI::DrawGraph() {
     case INSERT: {
         switch (activemenu_graph) {
         case DEFAULT: {
-            DrawDivider();
-            buttonvertex.ConfigureButton(5);
-            buttonedge.ConfigureButton(6);
+            buttonvertex.ConfigureButton(5.5);
+            buttonedge.ConfigureButton(6.5);
 
             if (buttonvertex.IsClick()) {
                 activemenu_graph = INSERT_V;
@@ -679,7 +759,7 @@ void GUI::DrawGraph() {
 
             if (GraphVertexStep == 0) { GraphVertexStep = 1; }
 
-            float startY = buttonclear.coordinateY + ScreenHeight / 6.0f;
+            float startY = buttonclear.coordinateY + ScreenHeight / 4.5f;
             float spacing = ScreenHeight / 36.0f;
             if (GraphVertexStep < 4) { DrawText("Drawing Edge", buttonclear.coordinateX, startY, 20, C[0]); }
             else { DrawText("Drawn Edge", buttonclear.coordinateX, startY, 20, C[0]); }
@@ -735,9 +815,8 @@ void GUI::DrawGraph() {
     case DELETE: {
         switch (activemenu_graph) {
         case DEFAULT: {
-            DrawDivider();
-            buttonvertex.ConfigureButton(5);
-            buttonedge.ConfigureButton(6);
+            buttonvertex.ConfigureButton(5.5);
+            buttonedge.ConfigureButton(6.5);
             if (buttonvertex.IsClick()) {
                 activemenu_graph = DELETE_V;
             }
@@ -763,7 +842,7 @@ void GUI::DrawGraph() {
 
             if (GraphVertexStep == 0) { GraphVertexStep = 1; }
 
-            float startY = buttonclear.coordinateY + ScreenHeight / 6.0f;
+            float startY = buttonclear.coordinateY + ScreenHeight / 4.5f;
             float spacing = ScreenHeight / 36.0f;
             if (GraphVertexStep < 3) { DrawText("Deleting Edge", buttonclear.coordinateX, startY, 20, C[0]); }
             else { DrawText("Deleted Edge", buttonclear.coordinateX, startY, 20, C[0]); }
@@ -810,9 +889,8 @@ void GUI::DrawGraph() {
 
         switch (activemenu_graph) {
         case DEFAULT: {
-            DrawDivider();
-            buttonstep.ConfigureButton(5);
-            buttonauto.ConfigureButton(6);
+            buttonstep.ConfigureButton(5.5);
+            buttonauto.ConfigureButton(6.5);
             if (buttonstep.IsClick()) {
                 isAuto = false;
                 activemenu_graph = DIJKSTRA_ST;
@@ -900,6 +978,20 @@ void GUI::DrawGraph() {
 	graph.draw();
 }
 
+bool GUI::LoadFileLinkedList() {
+    list.clear();
+    const char* path = tinyfd_openFileDialog(
+        "Open LinkedList File", "", 0, nullptr, nullptr, 0
+    );
+    if (path == nullptr) return false; 
+    ifstream ifs(path);
+    if (!ifs.is_open()) return false;
+    int x;
+    while (ifs >> x) list.add_node(x);
+    ifs.close();
+    return true;
+}
+
 bool GUI::LoadFileAVLTree() {
     tree.Clear(tree.Root);
     tree.NodeList.clear();
@@ -937,6 +1029,24 @@ bool GUI::LoadFileGraph() {
 	ifs.close();
 
 	return true;
+}
+
+bool GUI::ExportScreenshot() {
+    const char* filterPatterns[1] = { "*.png" };
+    const char* savePath = tinyfd_saveFileDialog("Save Screenshot", "screenshot.png", 1, filterPatterns, NULL);
+
+    if (savePath) {
+        EndDrawing();  
+        Image screenshot = LoadImageFromScreen();
+        BeginDrawing(); 
+
+        bool c = ExportImage(screenshot, savePath);
+        UnloadImage(screenshot);
+
+        return c;
+    }
+
+    return false;
 }
 
 void GUI::DrawBack() {
@@ -993,7 +1103,7 @@ void GUI::DrawBack() {
 }
 
 void GUI::DrawInputBox() {
-    if (!inputActive) return;
+    if (!inputActive && currentInputMode != INIT) return;
 
     // Style constants matching other buttons
     const float MENU_WIDTH = ScreenWidth / 5.0f;
@@ -1183,4 +1293,37 @@ float GUI::DrawSlider() {
 
 	DrawText(buffer, handlePos - MeasureText(buffer, 20) / 2, y - 25, 20, C[0]);
     return maxValue - value;
+}
+
+float GUI::DrawVolumeSlider() {
+    const float minValue = 0.0f;
+    const float maxValue = 1.0f;
+
+    float x = ScreenWidth * 0.30f;
+    float y = ScreenHeight * 0.17f;
+    float width = (ScreenWidth) * 0.45;
+    float height = 7.0f;
+
+    Rectangle sliderRect = { x, y, width, height };
+    DrawRectangleRec(sliderRect, C[3]);
+
+    static float handlePos = x + ((1 - minValue) / (float)(maxValue - minValue)) * width;
+    DrawCircle((int)handlePos, (int)y + height / 2, height * 1.5f, C[2]);
+
+    static bool is_dragging = false;
+    Vector2 mouse = GetMousePosition();
+
+    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && CheckCollisionPointCircle(mouse, { handlePos, y + height / 2 }, height * 1.5f)) { is_dragging = true; }
+    if (IsMouseButtonUp(MOUSE_LEFT_BUTTON)) { is_dragging = false; }
+
+    if (is_dragging) {
+        handlePos = Clamp(mouse.x, x, x + width);
+    }
+
+    float value = minValue + (((handlePos - x) / (float)width)) * (maxValue - minValue);
+    char buffer[32];
+    sprintf_s(buffer, sizeof(buffer), "%.2f", value);
+
+    DrawText(buffer, handlePos - MeasureText(buffer, 20) / 2, y - 25, 20, C[0]);
+    return value;
 }

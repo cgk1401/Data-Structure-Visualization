@@ -131,6 +131,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AVLTree.cpp" />
+    <ClCompile Include="DescriptionBox.cpp" />
     <ClCompile Include="DijkstraAnimationGraph.cpp" />
     <ClCompile Include="HashTable.cpp" />
     <ClCompile Include="ExplanationCode.cpp" />
@@ -148,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\tinyfiledialogs\tinyfiledialogs.h" />
     <ClInclude Include="AVLTree.hpp" />
+    <ClInclude Include="DescriptionBox.hpp" />
     <ClInclude Include="DijkstraAnimationGraph.hpp" />
     <ClInclude Include="ExplanationCode.hpp" />
     <ClInclude Include="HashTable.hpp" />
