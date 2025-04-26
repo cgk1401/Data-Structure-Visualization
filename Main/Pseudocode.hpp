@@ -7,19 +7,31 @@ using namespace std;
 
 
 class Pseudocode {
-public :
+public:
 	string text = "";
 	vector <string> lineinsert = {
 		"Insert: ",
 		"Check Balance Factor :",
-		"	Rotation Right",
-		"	Rotation Left",
-		"	Roation Left - Right",
-		"	Rotation Right - Left",
+		"Rotation Right",
+		"Rotation Left",
+		"Roation Left - Right",
+		"Rotation Right - Left",
 	};
 
-	vector <string> linesearch;
-	vector <string> linedelete;
+	vector <string> linesearch = {
+		"Search: ",
+		"Found",
+		"Not found"
+	};
+
+	vector <string> linedelete = {
+		"Delete: ",
+		"Find node to delete",
+		"Node is a leaf -> remove directly",
+		"One child -> replace with child",
+		"Two children -> ",
+		"replace with inorder successor"
+	};
 
 	vector <string> line;
 
