@@ -393,9 +393,9 @@ void GUI::DrawLinkedList() {
     EndScissorMode();
 
     if (list.get_search_state() != -1 || list.get_active() != -1) {
-        buttonBackward.ConfigureButton(6.0f);
-        buttonForward.ConfigureButton(7.0f);
-        buttonPausePlay.ConfigureButton(8.0f);
+        buttonBackward.ConfigureButton(10.0f);
+        buttonForward.ConfigureButton(11.0f);
+        buttonPausePlay.ConfigureButton(12.0f);
         buttonPausePlay.s = list.get_paused() ? "Play" : "Pause";
 
         if (buttonBackward.IsClick()) {
